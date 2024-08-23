@@ -1,6 +1,6 @@
 package org.medx.elixrlabs.service;
 
-import org.medx.elixrlabs.model.Role;
+import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.repository.UserRepository;
@@ -44,9 +44,7 @@ public class AdminService {
                 .email("admin@gmail.com")
                 .password("admin@123")
                 .build();
-        roleRepository.findById(1).ifPresent(role -> {
-            user.setRoles(List.of(role));
-        });
+            user.setRoles(roleRepository.findAll());
         String password = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(password);
         try {
@@ -55,4 +53,17 @@ public class AdminService {
             System.out.println("Admin already present...Skipping" + e.getMessage());
         }
     }
+
+    public User getSampleCollectorByEmail(String email) {
+        User user;
+        user = userRepository.findByEmailAndIsDeletedFalse(email);
+        if (null == user) {
+            throw new LabException("Sample collector not found with Email : " + email);
+        }
+        return user;
+    }
+
+//    public User verifySampleCollector(User user) {
+//        return
+//    }
 }

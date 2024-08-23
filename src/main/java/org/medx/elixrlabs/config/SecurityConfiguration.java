@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.config;
 
+import org.medx.elixrlabs.filter.JwtAuthenticationFilter;
 import org.medx.elixrlabs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -33,8 +34,10 @@ public class SecurityConfiguration {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers( "api/v1/auth/login/**").permitAll();
-                    registry.requestMatchers("api/v1/admin/**").hasAnyAuthority("ADMIN");
+                    registry.requestMatchers("api/v1/auth/login").permitAll();
+                    registry.requestMatchers("api/v1/admin/**").hasRole("ADMIN");
+                    registry.requestMatchers("api/v1/sample-collector/**").hasRole("SAMPLE_COLLECTOR");
+                    registry.requestMatchers("api/v1/patient/**").hasRole("PATIENT");
                     registry.anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults()).

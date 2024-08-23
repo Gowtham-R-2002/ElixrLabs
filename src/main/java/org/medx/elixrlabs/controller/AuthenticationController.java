@@ -27,7 +27,7 @@ public class AuthenticationController {
     @Autowired
     private AdminService adminService;
 
-    @PostMapping("admin")
+    @PostMapping()
     public String login(@RequestBody LoginRequestDto LoginRequestDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -39,5 +39,4 @@ public class AuthenticationController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return jwtService.generateToken(userDetails);
     }
-
 }

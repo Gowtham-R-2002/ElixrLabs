@@ -35,4 +35,5 @@ logs/
 *.class
 *.env
 *.log
+application.properties
 htmlReport/

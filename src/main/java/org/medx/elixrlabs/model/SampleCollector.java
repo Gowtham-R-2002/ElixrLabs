@@ -16,13 +16,19 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
  * @version 1.0
  */
 
-@EqualsAndHashCode(callSuper = true)
-@SuperBuilder
+@Builder
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class SampleCollector extends User {
+public class SampleCollector {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(columnDefinition = "boolean default true")
     private boolean isVerified;

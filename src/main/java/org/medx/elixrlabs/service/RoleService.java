@@ -12,8 +12,8 @@ public class RoleService {
     private RoleRepository roleRepository;
 
     public void setupInitialData() {
-        roleRepository.save(Role.builder().name(RoleEnum.ADMIN).build());
-        roleRepository.save(Role.builder().name(RoleEnum.PATIENT).build());
-        roleRepository.save(Role.builder().name(RoleEnum.SAMPLE_COLLECTOR).build());
+        roleRepository.save(Role.builder().name(RoleEnum.ROLE_ADMIN).build());
+        roleRepository.save(Role.builder().name(RoleEnum.ROLE_PATIENT).build());
+        roleRepository.save(Role.builder().name(RoleEnum.ROLE_SAMPLE_COLLECTOR).build());
     }
 }

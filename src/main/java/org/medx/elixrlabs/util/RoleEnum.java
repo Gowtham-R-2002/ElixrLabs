@@ -1,7 +1,7 @@
 package org.medx.elixrlabs.util;
 
 public enum RoleEnum {
-    ADMIN,
-    SAMPLE_COLLECTOR,
-    PATIENT,
+    ROLE_ADMIN,
+    ROLE_SAMPLE_COLLECTOR,
+    ROLE_PATIENT,
 }

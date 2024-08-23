@@ -1,4 +1,4 @@
-package org.medx.elixrlabs.config;
+package org.medx.elixrlabs.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

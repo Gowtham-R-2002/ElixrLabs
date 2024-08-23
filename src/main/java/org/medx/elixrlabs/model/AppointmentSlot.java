@@ -34,4 +34,6 @@ public class AppointmentSlot {
 
     @OneToOne
     private SampleCollector sampleCollector;
+
+    private boolean isSampleCollected;
 }
