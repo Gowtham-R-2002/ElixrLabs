@@ -34,7 +34,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private User user;
+    //private User user;
 
     @Column(name = "test_status")
     private Enum testStatus;
