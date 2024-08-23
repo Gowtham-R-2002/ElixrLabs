@@ -7,7 +7,7 @@ public class UserMapper {
     public static RegisterAndLoginUserDto toUserDto(User user) {
         return RegisterAndLoginUserDto.builder()
                 .email(user.getEmail())
-                .dob(user.getDateOfBirth())
+                .dateOfBirth(user.getDateOfBirth())
                 .place(user.getPlace())
                 .gender(user.getGender())
                 .phoneNumber(user.getPhoneNumber())
@@ -22,7 +22,7 @@ public class UserMapper {
                 .place(userDto.getPlace())
                 .gender(userDto.getGender())
                 .phoneNumber(userDto.getPhoneNumber())
-                .dateOfBirth(userDto.getDob())
+                .dateOfBirth(userDto.getDateOfBirth())
                 .build();
     }
 }

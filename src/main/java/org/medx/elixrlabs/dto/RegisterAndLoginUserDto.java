@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,8 @@ import java.time.LocalDate;
 public class RegisterAndLoginUserDto {
     private String email;
     private String password;
-    private LocalDate dob;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dateOfBirth;
     private String phoneNumber;
     private GenderEnum gender;
     private AddressEnum place;
