@@ -27,7 +27,7 @@ public class AuthenticationController {
     @Autowired
     private AdminService adminService;
 
-    @PostMapping()
+    @PostMapping
     public String login(@RequestBody LoginRequestDto LoginRequestDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
