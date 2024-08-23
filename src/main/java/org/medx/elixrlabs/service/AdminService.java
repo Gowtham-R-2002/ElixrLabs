@@ -1,6 +1,7 @@
 package org.medx.elixrlabs.service;
 
 import org.medx.elixrlabs.exception.LabException;
+import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.repository.UserRepository;
@@ -11,59 +12,43 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AdminService {
+public interface AdminService {
 
-    @Autowired
-    private UserRepository userRepository;
+    /**
+     * <p>
+     *
+     * </p>
+     */
 
-    @Autowired
-    private RoleRepository roleRepository;
+    void setupInitialData();
 
-    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    /**
+     * <p>
+     * Updates a specific sample collectors status as a verified which allows the
+     * sample collector to access the fields associated with them
+     * </p>
+     * @param id of the sample collector whose status has to be changed
+     * @return the verification status of the sample collector
+     */
 
-    public User createAdmin(User user) {
-        roleRepository.findById(1).ifPresent(role -> {
-            user.setRoles(List.of(role));
-        });
-        String password = bCryptPasswordEncoder.encode(user.getPassword());
-        user.setPassword(password);
-        return userRepository.save(user);
-    }
+    boolean verifySampleCollector(long id);
 
-    public User createSampleCollector(User user) {
-        roleRepository.findById(3).ifPresent(role -> user.setRoles(List.of(role)));
-        return userRepository.save(user);
-    }
+    /**
+     * <p>
+     * Fetches all the sample collectors who are verified
+     * </p>
+     * @return list of verified sample collectors
+     */
 
-    public List<User> getAllSampleCollectors() {
-        return userRepository.findAll();
-    }
+    //List<SampleCollectorDto> getAllSampleCollectors();
 
-    public void setupInitialData() {
-        User user = User.builder()
-                .email("admin@gmail.com")
-                .password("admin@123")
-                .build();
-            user.setRoles(roleRepository.findAll());
-        String password = bCryptPasswordEncoder.encode(user.getPassword());
-        user.setPassword(password);
-        try {
-            userRepository.save(user);
-        } catch (Exception e) {
-            System.out.println("Admin already present...Skipping" + e.getMessage());
-        }
-    }
+    /**
+     * <p>
+     * Removes a specific sample collector
+     * </p>
+     * @param id of the sample collector who has to be removed
+     */
 
-    public User getSampleCollectorByEmail(String email) {
-        User user;
-        user = userRepository.findByEmailAndIsDeletedFalse(email);
-        if (null == user) {
-            throw new LabException("Sample collector not found with Email : " + email);
-        }
-        return user;
-    }
-
-//    public User verifySampleCollector(User user) {
-//        return
-//    }
+    boolean deleteSampleCollector(String id);
 }
+
