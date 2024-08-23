@@ -1,15 +1,13 @@
 package org.medx.elixrlabs.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.medx.elixrlabs.util.AddressEnum;
+import org.medx.elixrlabs.util.PaymentStatusEnum;
+import org.medx.elixrlabs.util.TestStatusEnum;
 
 import java.util.List;
 
@@ -34,28 +32,39 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //private User user;
+    private User user;
 
     @Column(name = "test_status")
-    private Enum testStatus;
+    @Enumerated(value = EnumType.STRING)
+    private TestStatusEnum testStatus;
 
     @Column(name = "sample_collection_place")
-    private Enum sampleCollectionPlace;
+    @Enumerated(value = EnumType.STRING)
+    private AddressEnum sampleCollectionPlace;
 
     @Column(name = "payment_status")
-    private Enum paymentStatus;
+    @Enumerated(value = EnumType.STRING)
+    private PaymentStatusEnum paymentStatus;
 
     @Column(name = "lab_location")
-    private Enum labLocation;
+    @Enumerated(value = EnumType.STRING)
+    private AddressEnum labLocation;
 
     @Column(name = "home_location")
-    private String homeLocation;
+    private AddressEnum homeLocation;
 
-    //@Column(name = "test_package")
-    //private TestPackage testPackage;
+    @OneToOne
+    private TestPackage testPackage;
 
+    @OneToMany
+    @JoinTable(name = "order_test",
+    joinColumns = @JoinColumn(name = "order_id"),
+    inverseJoinColumns = @JoinColumn(name = "test_id"))
     private List<LabTest> tests;
 
-    //private AppointmentSlot slot;
+    @OneToOne
+    private AppointmentSlot slot;
 
+    @OneToOne
+    private TestResult testResult;
 }

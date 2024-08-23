@@ -1,12 +1,6 @@
 package org.medx.elixrlabs.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +25,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TestPackage {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "test_package_id")
     private Long id;
@@ -44,9 +39,10 @@ public class TestPackage {
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
-    @OneToMany
+    @ManyToMany
+    @JoinTable(name = "test_test_package",
+    joinColumns = @JoinColumn(name = "test_package_id"),
+    inverseJoinColumns = @JoinColumn(name = "test_id"))
     private List<LabTest> tests;
 
-    @OneToOne
-    private TestResult testResults;
 }
