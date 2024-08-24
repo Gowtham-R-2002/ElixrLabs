@@ -1,4 +1,4 @@
-package org.medx.elixrlabs.service.serviceImpl;
+package org.medx.elixrlabs.service.impl;
 
 import org.medx.elixrlabs.Mapper.LabTestMapper;
 import org.medx.elixrlabs.dto.CreateAndRetrieveLabTestDto;

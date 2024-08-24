@@ -1,6 +1,5 @@
-package org.medx.elixrlabs.service.serviceImpl;
+package org.medx.elixrlabs.service.impl;
 
-import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.repository.UserRepository;
@@ -8,8 +7,6 @@ import org.medx.elixrlabs.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService {

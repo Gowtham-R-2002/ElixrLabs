@@ -1,7 +1,7 @@
 package org.medx.elixrlabs.config;
 
 import org.medx.elixrlabs.service.AdminService;
-import org.medx.elixrlabs.service.RoleService;
+import org.medx.elixrlabs.service.impl.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

@@ -1,13 +1,13 @@
 package org.medx.elixrlabs.mapper;
 
-import org.medx.elixrlabs.dto.RegisterAndLoginUserDto;
+import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.User;
 
 public class UserMapper {
-    public static RegisterAndLoginUserDto toUserDto(User user) {
-        return RegisterAndLoginUserDto.builder()
+    public static UserDto toUserDto(User user) {
+        return UserDto.builder()
                 .email(user.getEmail())
-                .dob(user.getDateOfBirth())
+                .dateOfBirth(user.getDateOfBirth())
                 .place(user.getPlace())
                 .gender(user.getGender())
                 .phoneNumber(user.getPhoneNumber())
@@ -15,14 +15,14 @@ public class UserMapper {
                 .build();
     }
 
-    public static User toUser(RegisterAndLoginUserDto userDto) {
+    public static User toUser(UserDto userDto) {
         return User.builder()
                 .email(userDto.getEmail())
                 .password(userDto.getPassword())
                 .place(userDto.getPlace())
                 .gender(userDto.getGender())
                 .phoneNumber(userDto.getPhoneNumber())
-                .dateOfBirth(userDto.getDob())
+                .dateOfBirth(userDto.getDateOfBirth())
                 .build();
     }
 }

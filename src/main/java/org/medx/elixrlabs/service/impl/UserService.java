@@ -1,4 +1,4 @@
-package org.medx.elixrlabs.service;
+package org.medx.elixrlabs.service.impl;
 
 import org.medx.elixrlabs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmailAndIsDeletedFalse(email);
+        User user = userRepository.findByEmailWithRoles(email);
         if (null != user) {
             return user;
         } else {
