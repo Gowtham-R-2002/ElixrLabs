@@ -1,4 +1,4 @@
-package org.medx.elixrlabs.Mapper;
+package org.medx.elixrlabs.mapper;
 
 import org.medx.elixrlabs.dto.CreateAndRetrieveLabTestDto;
 import org.medx.elixrlabs.model.LabTest;
@@ -19,6 +19,7 @@ public class LabTestMapper {
 
     public static LabTest toLabTest(CreateAndRetrieveLabTestDto createLabTestDto) {
         return LabTest.builder()
+                .id(createLabTestDto.getId())
                 .name(createLabTestDto.getName())
                 .price(createLabTestDto.getPrice())
                 .description(createLabTestDto.getDescription())
