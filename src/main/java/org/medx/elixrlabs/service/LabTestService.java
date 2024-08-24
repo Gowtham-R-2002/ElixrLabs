@@ -8,13 +8,11 @@ import java.util.List;
 @Service
 public interface LabTestService {
 
-    CreateAndRetrieveLabTestDto createLabTest(CreateAndRetrieveLabTestDto labTestDto);
+    CreateAndRetrieveLabTestDto createOrUpdateTest(CreateAndRetrieveLabTestDto labTestDto);
 
     List<CreateAndRetrieveLabTestDto> getAllLabTests();
 
     CreateAndRetrieveLabTestDto getLabTestById(long id);
-
-    CreateAndRetrieveLabTestDto updateLabTestById(long id, CreateAndRetrieveLabTestDto labTestDto);
 
     boolean removeLabTestById(long id);
 }

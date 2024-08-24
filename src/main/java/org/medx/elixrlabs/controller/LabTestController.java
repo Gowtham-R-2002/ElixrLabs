@@ -17,8 +17,8 @@ public class LabTestController {
     private LabTestService labTestService;
 
     @PostMapping
-    public ResponseEntity<CreateAndRetrieveLabTestDto> createLabTest(CreateAndRetrieveLabTestDto labTestDto) {
-        return new ResponseEntity<>(labTestService.createLabTest(labTestDto),HttpStatus.CREATED);
+    public ResponseEntity<CreateAndRetrieveLabTestDto> createLabTest(@RequestBody CreateAndRetrieveLabTestDto labTestDto) {
+        return new ResponseEntity<>(labTestService.createOrUpdateTest(labTestDto),HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -31,9 +31,9 @@ public class LabTestController {
         return new ResponseEntity<>(labTestService.getLabTestById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CreateAndRetrieveLabTestDto> updateLabTestById(@PathVariable long id, @RequestBody CreateAndRetrieveLabTestDto labTestDto) {
-        return new ResponseEntity<>(labTestService.updateLabTestById(id, labTestDto), HttpStatus.ACCEPTED);
+    @PutMapping
+    public ResponseEntity<CreateAndRetrieveLabTestDto> updateLabTestById(@RequestBody CreateAndRetrieveLabTestDto labTestDto) {
+        return new ResponseEntity<>(labTestService.createOrUpdateTest(labTestDto), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")

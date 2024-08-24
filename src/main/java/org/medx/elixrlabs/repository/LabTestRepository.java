@@ -10,9 +10,7 @@ import java.util.List;
 @Repository
 public interface LabTestRepository extends JpaRepository<LabTest, Long> {
 
-    @Query("FROM LabTest l WHERE l.isDeleted = false")
-    public List<LabTest> findAllLabTests();
+    List<LabTest> findByIsDeletedFalse();
 
-    @Query("FROM LabTest l WHERE l.isDeleted = false AND l.id = :id")
-    public LabTest findLabTestById(long id);
+    LabTest findByIdAndIsDeletedFalse(Long id);
 }
