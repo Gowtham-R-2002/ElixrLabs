@@ -19,6 +19,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @Builder
 @Data
 @Entity
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class SampleCollector {
