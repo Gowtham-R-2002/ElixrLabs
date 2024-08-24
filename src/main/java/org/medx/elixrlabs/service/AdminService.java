@@ -11,6 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * <p>
+ * Interface for AdminService, defining the business operations related to Admin.
+ * This interface is implemented by AdminServiceImpl and defines the contract for
+ * managing Admin entities.
+ * </p>
+ */
 @Service
 public interface AdminService {
 

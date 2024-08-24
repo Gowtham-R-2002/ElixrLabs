@@ -16,6 +16,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * <p>
+ * Service implementation for managing SampleCollector-related operations.
+ * This class contains business logic for handling SampleCollector entities, including
+ * creation, retrieval, update, deletion, and assignment operations. It acts as
+ * a bridge between the controller layer and the repository layer, ensuring that
+ * business rules are applied before interacting with the database.
+ * </p>
+ */
 @Service
 public class SampleCollectorServiceImpl implements SampleCollectorService {
 

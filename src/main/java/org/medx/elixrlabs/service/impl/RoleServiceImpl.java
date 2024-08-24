@@ -3,6 +3,7 @@ package org.medx.elixrlabs.service.impl;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.repository.RoleRepository;
+import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class RoleService {
+public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleRepository roleRepository;
 

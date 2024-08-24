@@ -17,6 +17,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * <p>
+ * This class holds the data related to an User including their UUID, email, password , place and
+ * other relevant details.
+ * </p>
+ *
+ * @author  Sabarinathan K
+ * @version  1.0
+ */
 @Data
 @SuperBuilder
 @AllArgsConstructor

@@ -13,7 +13,6 @@ import java.util.List;
  *
  * <p>
  * This interface extends JpaRepository, providing CRUD operations for SampleCollector entities.
- * It leverages Spring Data JPA to simplify data access and query execution.
  * Custom queries can be defined by adding method signatures that follow the naming
  * convention understood by Spring Data JPA.
  * </p>

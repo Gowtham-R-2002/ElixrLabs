@@ -17,13 +17,22 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+/**
+ * <p>
+ * Service implementation for managing Patient-related operations.
+ * This class contains business logic for handling Patient entities, including
+ * creation, retrieval, update, deletion, and some more operations. It acts as
+ * a bridge between the controller layer and the repository layer, ensuring that
+ * business rules are applied before interacting with the database.
+ * </p>
+ */
 @Service
 public class PatientServiceImpl implements PatientService {
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private RoleService roleService;
+    private RoleServiceImpl roleServiceimpl;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -33,7 +42,7 @@ public class PatientServiceImpl implements PatientService {
         User existingUser = getPatientByEmail(userDto.getEmail());
         User user = UserMapper.toUser(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)));
+        user.setRoles(List.of(roleServiceimpl.getRoleByName(RoleEnum.ROLE_PATIENT)));
         if (null != existingUser) {
             user.setUUID(existingUser.getUUID());
         }
