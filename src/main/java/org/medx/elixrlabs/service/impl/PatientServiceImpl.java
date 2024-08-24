@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.service.impl;
 
+import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.mapper.UserMapper;
 import org.medx.elixrlabs.model.Order;

@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.service;
 
+import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
 import org.springframework.stereotype.Service;

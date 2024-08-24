@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.mapper;
 
+import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.User;
 
 public class UserMapper {

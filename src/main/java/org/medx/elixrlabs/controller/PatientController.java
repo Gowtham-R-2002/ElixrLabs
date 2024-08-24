@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.controller;
 
+import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
