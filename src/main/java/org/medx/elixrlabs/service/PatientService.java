@@ -1,26 +1,22 @@
 package org.medx.elixrlabs.service;
 
-import org.medx.elixrlabs.dto.RegisterAndLoginUserDto;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
-import org.medx.elixrlabs.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public interface PatientService {
-    RegisterAndLoginUserDto createPatient(RegisterAndLoginUserDto userDto);
+    UserDto createOrUpdatePatient(UserDto userDto);
 
-    List<RegisterAndLoginUserDto> getAllPatients();
+    List<UserDto> getAllPatients();
 
-    boolean boolSlotAndReturnStatus();
+    boolean bookSlotAndReturnStatus();
 
-    List<Order> getOrders(Long orderId);
+    List<Order> getOrders();
 
-    TestResult getTestReport(Long testReportId);
+    TestResult getTestReport(Long orderId);
 
-    User updatePatient(User user);
-
-    void deletePatient(Long userId);
+    void deletePatient(String email);
 }

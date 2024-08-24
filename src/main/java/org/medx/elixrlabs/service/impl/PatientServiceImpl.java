@@ -1,6 +1,5 @@
 package org.medx.elixrlabs.service.impl;
 
-import org.medx.elixrlabs.dto.RegisterAndLoginUserDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.mapper.UserMapper;
 import org.medx.elixrlabs.model.Order;
@@ -15,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,10 +29,14 @@ public class PatientServiceImpl implements PatientService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public RegisterAndLoginUserDto createPatient(RegisterAndLoginUserDto userDto) {
+    public UserDto createOrUpdatePatient(UserDto userDto) {
+        User existingUser = getPatientByEmail(userDto.getEmail());
         User user = UserMapper.toUser(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)));
+        if (null != existingUser) {
+            user.setUUID(existingUser.getUUID());
+        }
         User savedUser;
         try {
             savedUser = userRepository.save(user);
@@ -43,32 +47,43 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<RegisterAndLoginUserDto> getAllPatients() {
+    public List<UserDto> getAllPatients() {
         return userRepository.fetchAllPatients().stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
     @Override
-    public boolean boolSlotAndReturnStatus() {
+    public boolean bookSlotAndReturnStatus() {
         return false;
     }
 
     @Override
-    public List<Order> getOrders(Long orderId) {
+    public List<Order> getOrders() {
         return List.of();
     }
 
     @Override
-    public TestResult getTestReport(Long testReportId) {
+    public TestResult getTestReport(Long orderId) {
         return null;
     }
 
     @Override
-    public User updatePatient(User user) {
-        return null;
+    public void deletePatient(String email) {
+        User user = getPatientByEmail(email);
+        if (null == user) {
+            throw new NoSuchElementException("Patient not found with email : " + email);
+        }
+        user.setDeleted(true);
+        System.out.println(user);
+        userRepository.save(user);
     }
 
-    @Override
-    public void deletePatient(Long userId) {
-
+    private User getPatientByEmail(String email) {
+        User user;
+        try {
+            user = userRepository.findByEmailAndIsDeletedFalse(email);
+        } catch (Exception e) {
+            throw new LabException("Error while getting patient with email : " + email);
+        }
+        return user;
     }
 }
