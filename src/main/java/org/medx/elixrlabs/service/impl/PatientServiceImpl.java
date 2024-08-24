@@ -73,7 +73,6 @@ public class PatientServiceImpl implements PatientService {
             throw new NoSuchElementException("Patient not found with email : " + email);
         }
         user.setDeleted(true);
-        System.out.println(user);
         userRepository.save(user);
     }
 
