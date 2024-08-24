@@ -56,7 +56,7 @@ public class AdminService {
 
     public User getSampleCollectorByEmail(String email) {
         User user;
-        user = userRepository.findByEmailAndIsDeletedFalse(email);
+        user = userRepository.findByEmailWithRoles(email);
         if (null == user) {
             throw new LabException("Sample collector not found with Email : " + email);
         }

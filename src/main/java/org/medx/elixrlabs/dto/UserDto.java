@@ -26,7 +26,7 @@ import java.time.LocalDate;
 public class UserDto {
     private String email;
     private String password;
-    private LocalDate dob;
+    private LocalDate dateOfBirth;
     private String phoneNumber;
     private GenderEnum gender;
     private AddressEnum place;

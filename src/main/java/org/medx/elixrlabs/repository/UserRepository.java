@@ -6,12 +6,19 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    String getUserWithRoles = "FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email";
+    String getUserWithRoles = "FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email AND u.isDeleted = false";
+    String getAllPatientsQuery = "FROM User u LEFT JOIN FETCH u.roles r WHERE r.name = ROLE_PATIENT";
 
     @Query(getUserWithRoles)
-    User findByEmailAndIsDeletedFalse(@Param("email") String email);
+    User findByEmailWithRoles(@Param("email") String email);
 
+    @Query(getAllPatientsQuery)
+    List<User> fetchAllPatients();
+
+    User findByEmailAndIsDeletedFalse(String email);
 }
