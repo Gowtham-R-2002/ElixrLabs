@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.controller;
 
+import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.service.SampleCollectorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,7 @@ import java.util.List;
  *
  * <p>
  * This controller handles HTTP requests and provides endpoints for
- * creating, retrieving, updating, and deleting SampleCollector entities. The
- * controller maps client requests to the appropriate service methods
- * and returns responses in the form of JSON or other supported media types.
- * It is annotated with Spring MVC annotations to define the URL mappings
- * and request handling logic.
+ * creating, retrieving, updating, and deleting SampleCollector entities.
  * All responses are returned in a standardized format to ensure consistency across
  * the API.
  * </p>
@@ -37,8 +34,8 @@ public class SampleCollectorController {
      * @return The created sample collector DTO with HTTP status 201 CREATED.
      */
     @PostMapping
-    public ResponseEntity<UserDto> createSampleCollector(@RequestBody UserDto userDto) {
-        return new ResponseEntity<>(sampleCollectorService.createSampleCollector(userDto), HttpStatus.CREATED);
+    public ResponseEntity<SampleCollectorDto> createSampleCollector(@RequestBody UserDto userDto) {
+        return new ResponseEntity<>(sampleCollectorService.createOrUpdateSampleCollector(userDto), HttpStatus.CREATED);
     }
 
     /**
@@ -47,19 +44,19 @@ public class SampleCollectorController {
      * @return the list of all sample collectors as sample collector DTOs with HTTP status 200 OK.
      */
     @GetMapping
-    public ResponseEntity<List<UserDto>> getAllSampleCollector() {
-        List<UserDto> userDtos = sampleCollectorService.getAllSampleCollector();
-        return new ResponseEntity<>(userDtos, HttpStatus.OK);
+    public ResponseEntity<List<SampleCollectorDto>> getAllSampleCollector() {
+        List<SampleCollectorDto> SampleCollectorDtos = sampleCollectorService.getAllSampleCollector();
+        return new ResponseEntity<>(SampleCollectorDtos, HttpStatus.OK);
     }
 
     /**
      * Retrieves an sample collector by their unique ID.
      *
-     * @param id the unique sample collector ID
-     * @return the sample collector DTO if found with HTTP status 200 OK.
+     * @param id The unique sample collector ID
+     * @return The sample collector DTO if found with HTTP status 200 OK.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getSampleCollectorById(@PathVariable Long id) {
+    public ResponseEntity<SampleCollectorDto> getSampleCollectorById(@PathVariable Long id) {
         return new ResponseEntity<>(sampleCollectorService.getSampleCollectorById(id), HttpStatus.OK);
     }
 
@@ -70,8 +67,8 @@ public class SampleCollectorController {
      * @return the updated sample collector DTO with HTTP status 202 ACCEPTED.
      */
     @PutMapping
-    public ResponseEntity<UserDto> updateSampleCollector(@RequestBody UserDto userDto) {
-        return new ResponseEntity<>(sampleCollectorService.updateSampleCollector(userDto), HttpStatus.ACCEPTED);
+    public ResponseEntity<SampleCollectorDto> updateSampleCollector(@RequestBody UserDto userDto) {
+        return new ResponseEntity<>(sampleCollectorService.createOrUpdateSampleCollector(userDto), HttpStatus.ACCEPTED);
     }
 
     /**
@@ -80,8 +77,8 @@ public class SampleCollectorController {
      * @param id the unique employee ID
      * @return boolean value with HTTP status 204 NO CONTENT.
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> deleteSampleCollector(Long id) {
-        return new ResponseEntity<>(sampleCollectorService.deleteSampleCollector(id), HttpStatus.NO_CONTENT);
+    @DeleteMapping
+    public ResponseEntity<Boolean> deleteSampleCollector(UserDto userDto) {
+        return new ResponseEntity<>(sampleCollectorService.deleteSampleCollector(userDto), HttpStatus.NO_CONTENT);
     }
 }

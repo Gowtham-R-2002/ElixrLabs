@@ -1,6 +1,8 @@
 package org.medx.elixrlabs.service;
 
+import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
+import org.medx.elixrlabs.model.SampleCollector;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,13 +10,14 @@ import java.util.List;
 @Service
 public interface SampleCollectorService {
 
-    UserDto createSampleCollector(UserDto userDto);
+    SampleCollectorDto createOrUpdateSampleCollector(UserDto userDto);
 
-    List<UserDto> getAllSampleCollector();
+    List<SampleCollectorDto> getAllSampleCollector();
 
-    UserDto getSampleCollectorById(Long id);
+    SampleCollectorDto getSampleCollectorById(Long id);
 
-    UserDto updateSampleCollector(UserDto userDto);
+    boolean deleteSampleCollector(UserDto userDto);
 
-    boolean deleteSampleCollector(Long id);
+    SampleCollectorDto getSampleCollectorByEmail(String email);
+
 }
