@@ -3,6 +3,7 @@ package org.medx.elixrlabs.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -12,5 +13,5 @@ public class ResponseTestPackageDto {
     private String name;
     private String description;
     private double price;
-    private Map<Long, String> labTests;
+    private List<CreateAndRetrieveLabTestDto> labTests;
 }

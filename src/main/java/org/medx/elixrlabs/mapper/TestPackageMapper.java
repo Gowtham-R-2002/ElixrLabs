@@ -1,12 +1,15 @@
-package org.medx.elixrlabs.Mapper;
+package org.medx.elixrlabs.mapper;
 
+import org.medx.elixrlabs.dto.CreateAndRetrieveLabTestDto;
 import org.medx.elixrlabs.dto.TestPackageDto;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
 import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.TestPackage;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
@@ -22,10 +25,9 @@ public class TestPackageMapper {
     }
 
     public static ResponseTestPackageDto toTestPackageDto(TestPackage testPackage) {
-        Map<Long,String> tests = new HashMap<>();
-        for(LabTest labTest : testPackage.getTests()) {
-            tests.put(labTest.getId(), labTest.getName());
-        }
+        List<CreateAndRetrieveLabTestDto> tests = testPackage.getTests()
+                .stream()
+                .map(LabTestMapper::toRetrieveLabTestDto).toList();
         return ResponseTestPackageDto.builder()
                 .id(testPackage.getId())
                 .name(testPackage.getName())
