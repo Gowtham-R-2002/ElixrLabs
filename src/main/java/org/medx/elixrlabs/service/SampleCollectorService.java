@@ -1,9 +1,9 @@
 package org.medx.elixrlabs.service;
 
 import org.medx.elixrlabs.dto.SampleCollectorDto;
-import org.medx.elixrlabs.dto.TestPackageDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.SampleCollector;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +46,6 @@ public interface SampleCollectorService {
     /**
      * Deletes an SampleCollector by user id (soft deletion).
      *
-     * @param userDto {@link UserDto} The ID of the SampleCollector to delete.
      * @throws RuntimeException if the SampleCollector is not found.
      */
     boolean deleteSampleCollector();
@@ -59,5 +58,7 @@ public interface SampleCollectorService {
      * @throws NoSuchElementException if the SampleCollector is not found.
      */
     SampleCollector getSampleCollectorByEmail(String email);
+
+    SampleCollector getSampleCollectorByPlace(LocationEnum place);
 
 }

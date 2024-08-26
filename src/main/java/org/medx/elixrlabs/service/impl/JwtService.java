@@ -4,7 +4,9 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.medx.elixrlabs.util.AddressEnum;
+import lombok.Getter;
+import lombok.Setter;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +25,15 @@ import java.util.concurrent.TimeUnit;
  * </p>
  */
 @Service
+@Getter
+@Setter
 public class JwtService {
 
     private static final String SECRET = "638CBE3A90E0303BF3808F40F95A7F02A24B4B5D029C954CF553F79E9EF1DC0384BE681C249F1223F6B55AA21DC070914834CA22C8DD98E14A872CA010091ACC";
     private static final long VALIDITY = TimeUnit.MINUTES.toMillis(30);
+    private String address;
 
-    public String generateToken(UserDetails userDetails, AddressEnum place) {
+    public String generateToken(UserDetails userDetails, LocationEnum place) {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .claim("place", place)
@@ -39,10 +44,11 @@ public class JwtService {
 
     }
 
-    public AddressEnum extractAddress(String jwt) {
+    public LocationEnum extractAddress(String jwt) {
         Claims claims = getClaims(jwt);
         String addressStr = claims.get("address", String.class);
-        return AddressEnum.valueOf(addressStr);
+        setAddress(addressStr);
+        return LocationEnum.valueOf(addressStr);
     }
 
     private SecretKey generateKey() {

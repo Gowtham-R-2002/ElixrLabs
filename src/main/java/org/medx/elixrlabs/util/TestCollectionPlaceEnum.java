@@ -1,6 +1,6 @@
 package org.medx.elixrlabs.util;
 
-public enum AppointmentPlaceEnum {
+public enum TestCollectionPlaceEnum {
     HOME,
     LAB
 }

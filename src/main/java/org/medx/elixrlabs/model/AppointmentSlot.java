@@ -3,10 +3,10 @@ package org.medx.elixrlabs.model;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
-import org.medx.elixrlabs.util.AppointmentPlaceEnum;
+import org.medx.elixrlabs.util.LocationEnum;
+import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -38,14 +38,17 @@ public class AppointmentSlot {
     private LocalDate dateSlot;
 
     @Column(name = "time_slot")
-    private int timeSlot;
+    private String timeSlot;
+
+    @Column
+    private LocationEnum location;
 
     @OneToOne
     private SampleCollector sampleCollector;
 
     @Column(name = "appointment_place")
     @Enumerated(value = EnumType.STRING)
-    private AppointmentPlaceEnum appointmentPlace;
+    private TestCollectionPlaceEnum testCollectionPlace;
 
     private boolean isSampleCollected;
 }

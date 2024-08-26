@@ -1,10 +1,9 @@
 package org.medx.elixrlabs.controller;
 
 import org.medx.elixrlabs.dto.LoginRequestDto;
-import org.medx.elixrlabs.service.AdminService;
 import org.medx.elixrlabs.service.impl.JwtService;
 import org.medx.elixrlabs.service.impl.UserService;
-import org.medx.elixrlabs.util.AddressEnum;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,7 +38,7 @@ public class AuthenticationController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        AddressEnum address = userService.loadUserByUsername(userDetails.getUsername()).getPlace();
+        LocationEnum address = userService.loadUserByUsername(userDetails.getUsername()).getPlace();
         return jwtService.generateToken(userDetails, address);
     }
 }
