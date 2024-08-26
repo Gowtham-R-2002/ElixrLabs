@@ -7,6 +7,7 @@ import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.TestPackage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,15 @@ public class TestPackageMapper {
                 .description(testPackage.getDescription())
                 .price(testPackage.getPrice())
                 .labTests(tests)
+                .build();
+    }
+
+    public static TestPackage toTestPackageFromResponseDto(ResponseTestPackageDto responseTestPackageDto) {
+        return TestPackage.builder()
+                .id(responseTestPackageDto.getId())
+                .name(responseTestPackageDto.getName())
+                .description(responseTestPackageDto.getDescription())
+                .price(responseTestPackageDto.getPrice())
                 .build();
     }
 }

@@ -3,6 +3,7 @@ package org.medx.elixrlabs.service;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
+import org.medx.elixrlabs.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,14 @@ public interface PatientService {
      * @return A list of User DTOs.
      */
     List<UserDto> getAllPatients();
+
+    /**
+     * Fetches a patient with the help of their email
+     *
+     * @param email email of the specific patient
+     * @return the dto of the specific patient
+     */
+    User getPatientByEmail(String email);
 
     /**
      * Books a slot according to the patients booking time and returns a status.

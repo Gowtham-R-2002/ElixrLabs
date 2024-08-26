@@ -86,7 +86,8 @@ public class PatientServiceImpl implements PatientService {
         userRepository.save(user);
     }
 
-    private User getPatientByEmail(String email) {
+    @Override
+    public User getPatientByEmail(String email) {
         User user;
         try {
             user = userRepository.findByEmailAndIsDeletedFalse(email);

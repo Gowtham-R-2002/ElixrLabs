@@ -1,9 +1,12 @@
 package org.medx.elixrlabs.controller;
 
+import org.medx.elixrlabs.dto.CartDto;
+import org.medx.elixrlabs.dto.ResponseCartDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
+import org.medx.elixrlabs.service.CartService;
 import org.medx.elixrlabs.service.impl.JwtService;
 import org.medx.elixrlabs.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,9 @@ public class PatientController {
 
     @Autowired
     private PatientService patientService;
+
+    @Autowired
+    private CartService cartService;
 
     @PostMapping("register")
     public ResponseEntity<UserDto> createOrUpdatePatient(@RequestBody UserDto userDto) {
@@ -53,6 +59,22 @@ public class PatientController {
     public ResponseEntity<HttpStatus.Series> deletePatient() {
         String email = SecurityContextHelper.extractEmailFromContext();
         patientService.deletePatient(email);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("carts")
+    public ResponseEntity<ResponseCartDto> addTestOrPackagesToCart(@RequestBody CartDto cartDto) {
+        return new ResponseEntity<>(cartService.addTestsOrPackagesToCart(cartDto), HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("carts")
+    public ResponseEntity<ResponseCartDto> getCartByPatient(@RequestBody UserDto patient) {
+        return new ResponseEntity<>(cartService.getCartByPatient(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("carts")
+    public ResponseEntity<HttpStatus.Series> removeTestsOrPackageFromCart(@RequestBody CartDto cartDto) {
+        cartService.removeTestsOrPackageFromCart(cartDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
