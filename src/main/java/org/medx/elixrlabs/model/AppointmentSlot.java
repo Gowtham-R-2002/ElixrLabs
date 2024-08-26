@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.medx.elixrlabs.util.AppointmentPlaceEnum;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -33,8 +34,11 @@ public class AppointmentSlot {
     @JoinColumn(name = "user_id")
     private User userId;
 
-    @Column
-    private LocalDateTime slot;
+    @Column(name = "date_slot")
+    private LocalDate dateSlot;
+
+    @Column(name = "time_slot")
+    private int timeSlot;
 
     @OneToOne
     private SampleCollector sampleCollector;
