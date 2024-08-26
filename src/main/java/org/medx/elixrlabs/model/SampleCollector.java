@@ -22,6 +22,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "sample_collectors")
 public class SampleCollector {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

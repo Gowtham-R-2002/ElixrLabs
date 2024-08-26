@@ -1,4 +1,4 @@
-package org.medx.elixrlabs.model;
+package org.medx.elixrlabs.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
