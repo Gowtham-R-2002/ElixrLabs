@@ -10,6 +10,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * <p>
+ * Service implementation for managing RoleService-related operations.
+ * This class contains business logic for handling RoleService entities, including
+ * retrieval and some more operations. It acts as a bridge between the controller layer
+ * and the repository layer, ensuring that business rules are applied before
+ * interacting with the database.
+ * </p>
+ */
 @Service
 public class RoleServiceImpl implements RoleService {
     @Autowired

@@ -15,6 +15,11 @@ import java.util.List;
  * <p>
  * This class holds the data related to an user including their id, testStatus, sampleCollectionPlace,
  * paymentStatus, labLocation, homeLocation and other relevant details.
+ * The {@code Order} class represents a customer order for one or
+ * more lab tests or test packages. This class captures the details
+ * of the order, including the associated user, test status, payment
+ * status, and location information for sample collection. It also
+ * maintains a relationship with the test package and appointment slot.
  * </p>
  *
  * @author  Sabarinathan K

@@ -1,5 +1,10 @@
 package org.medx.elixrlabs.service.impl;
 
+
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.mapper.UserMapper;
@@ -12,10 +17,6 @@ import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 /**
  * <p>

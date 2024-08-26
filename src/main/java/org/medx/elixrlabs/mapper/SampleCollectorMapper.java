@@ -4,7 +4,7 @@ import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.model.SampleCollector;
 
 /**
- * Utility class for mapping between SampleCollector and SampleCollectorDTO.
+ * Mapper class for mapping between SampleCollector and SampleCollectorDTO.
  *
  * <p>
  * This class provides static methods for converting between SampleCollector entities
@@ -18,7 +18,7 @@ public class SampleCollectorMapper {
     /**
      * Converts an {@link SampleCollector} entity to an {@link SampleCollectorDto}.
      *
-     * @param sampleCollector {@link SampleCollectorDto} The SampleCollector entity to be converted.
+     * @param sampleCollector {@link SampleCollector} The SampleCollector entity to be converted.
      * @return {@link SampleCollectorDto} The corresponding SampleCollector DTO.
      */
     public static SampleCollectorDto convertToSampleCollectorDto(SampleCollector sampleCollector) {

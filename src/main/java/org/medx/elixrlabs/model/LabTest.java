@@ -10,6 +10,11 @@ import lombok.NoArgsConstructor;
  * <p>
  * This class holds the data related to an test including their ID, name, price and
  * other relevant details.
+ * The {@code LabTest} class represents an individual diagnostic
+ * or medical test offered by the lab. Each test has its own unique
+ * name, description, and price, and is associated with a test package
+ * if it belongs to one. This class also supports soft deletion
+ * via the isDeleted flag.
  * </p>
  *
  * @author  Sabarinathan K

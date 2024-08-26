@@ -10,8 +10,11 @@ import java.util.List;
 
 /**
  * <p>
- * This class holds the data related to an test including their ID, name, price and
- * other relevant details.
+ * The {@code TestPackage} class represents a collection of tests
+ * that are grouped together as a package. This package can be ordered
+ * by customers, often at a discounted rate compared to ordering
+ * individual tests. Each package has a unique name, description, and
+ * price, and may be subject to soft deletion via the isDeleted flag.
  * </p>
  *
  * @author  Sabarinathan K

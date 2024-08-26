@@ -21,6 +21,10 @@ import java.util.stream.Collectors;
  * <p>
  * This class holds the data related to an User including their UUID, email, password , place and
  * other relevant details.
+ * The {@code User} class represents the users of the system,
+ * including customers, sample collectors, and admins. It stores
+ * personal information such as name, email, and password, and also
+ * manages the roles associated with the user for access control.
  * </p>
  *
  * @author  Sabarinathan K

@@ -13,6 +13,14 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * <p>
+ * Service for managing JwtService-related operations.
+ * This class contains business logic for handling JwtService operations. It acts as
+ * a bridge between the controller layer and the repository layer, ensuring that
+ * business rules are applied before interacting with the database.
+ * </p>
+ */
 @Service
 public class JwtService {
 

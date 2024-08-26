@@ -1,12 +1,6 @@
 package org.medx.elixrlabs.service;
 
-import org.medx.elixrlabs.exception.LabException;
-import org.medx.elixrlabs.model.SampleCollector;
-import org.medx.elixrlabs.model.User;
-import org.medx.elixrlabs.repository.RoleRepository;
-import org.medx.elixrlabs.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,7 +41,7 @@ public interface AdminService {
      * @return list of verified sample collectors
      */
 
-    //List<SampleCollectorDto> getAllSampleCollectors();
+    List<SampleCollectorDto> getAllSampleCollectors();
 
     /**
      * <p>

@@ -8,8 +8,10 @@ import java.time.LocalDateTime;
 
 /**
  * <p>
- * Contains details about the slots assigned including the technicians who are
- * assigned to a specific slot and the time in which the specific slot starts.
+ * The {@code AppointmentSlot} class represents a scheduled time
+ * slot for sample collection or test appointment. Each slot is
+ * associated with a sample collector and is linked to an order to ensure
+ * that the sample collection happens at the right time.
  * </p>
  *
  * @author Deolin Jaffens

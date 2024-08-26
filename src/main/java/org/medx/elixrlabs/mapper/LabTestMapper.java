@@ -1,14 +1,32 @@
 package org.medx.elixrlabs.mapper;
 
-import org.medx.elixrlabs.dto.CreateAndRetrieveLabTestDto;
+import org.medx.elixrlabs.dto.LabTestDto;
+import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.model.LabTest;
+import org.medx.elixrlabs.model.SampleCollector;
 import org.springframework.stereotype.Component;
 
+/**
+ * Mapper class for mapping between User and LabTestDto.
+ *
+ * <p>
+ * This class provides static methods for converting between LabTest entities
+ * and their corresponding Data Transfer Objects (DTOs). It facilitates the
+ * conversion process needed for interacting with the service and controller layers
+ * while keeping the domain model and DTOs separate.
+ * </p>
+ */
 @Component
 public class LabTestMapper {
 
-    public static CreateAndRetrieveLabTestDto toRetrieveLabTestDto(LabTest labTest) {
-        return CreateAndRetrieveLabTestDto.builder()
+    /**
+     * Converts an {@link LabTest} entity to an {@link LabTestDto}.
+     *
+     * @param labTest {@link LabTest} The LabTest entity to be converted.
+     * @return {@link LabTestDto} The corresponding LabTest DTO.
+     */
+    public static LabTestDto toRetrieveLabTestDto(LabTest labTest) {
+        return LabTestDto.builder()
                 .id(labTest.getId())
                 .name(labTest.getName())
                 .price(labTest.getPrice())
@@ -17,7 +35,13 @@ public class LabTestMapper {
                 .build();
     }
 
-    public static LabTest toLabTest(CreateAndRetrieveLabTestDto createLabTestDto) {
+    /**
+     * Converts an {@link LabTestDto} to an {@link LabTest} entity.
+     *
+     * @param createLabTestDto {@link LabTestDto} The LabTest DTO to be converted.
+     * @return {@link LabTest} The corresponding LabTest entity.
+     */
+    public static LabTest toLabTest(LabTestDto createLabTestDto) {
         return LabTest.builder()
                 .id(createLabTestDto.getId())
                 .name(createLabTestDto.getName())

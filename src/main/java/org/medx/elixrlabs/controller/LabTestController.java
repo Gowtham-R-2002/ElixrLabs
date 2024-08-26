@@ -1,6 +1,6 @@
 package org.medx.elixrlabs.controller;
 
-import org.medx.elixrlabs.dto.CreateAndRetrieveLabTestDto;
+import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.service.LabTestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,22 +17,22 @@ public class LabTestController {
     private LabTestService labTestService;
 
     @PostMapping
-    public ResponseEntity<CreateAndRetrieveLabTestDto> createLabTest(@RequestBody CreateAndRetrieveLabTestDto labTestDto) {
+    public ResponseEntity<LabTestDto> createLabTest(@RequestBody LabTestDto labTestDto) {
         return new ResponseEntity<>(labTestService.createOrUpdateTest(labTestDto),HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<CreateAndRetrieveLabTestDto>> getAllLabTests() {
+    public ResponseEntity<List<LabTestDto>> getAllLabTests() {
         return new ResponseEntity<>(labTestService.getAllLabTests(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CreateAndRetrieveLabTestDto> getLabTestById(@PathVariable long id) {
+    public ResponseEntity<LabTestDto> getLabTestById(@PathVariable long id) {
         return new ResponseEntity<>(labTestService.getLabTestById(id), HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<CreateAndRetrieveLabTestDto> updateLabTestById(@RequestBody CreateAndRetrieveLabTestDto labTestDto) {
+    public ResponseEntity<LabTestDto> updateLabTestById(@RequestBody LabTestDto labTestDto) {
         return new ResponseEntity<>(labTestService.createOrUpdateTest(labTestDto), HttpStatus.ACCEPTED);
     }
 

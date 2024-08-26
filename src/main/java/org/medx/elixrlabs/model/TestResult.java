@@ -17,6 +17,10 @@ import java.time.LocalDateTime;
  * <p>
  * This class holds the data related to an test including their ID, result, generatedAt and
  * other relevant details.
+ * The {@code TestResult} class represents the outcome of a
+ * completed lab test for a particular order. Each test result is
+ * associated with an order, contains the result data, and includes
+ * the timestamp of when the result was generated.
  * </p>
  *
  * @author  Sabarinathan K

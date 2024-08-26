@@ -40,6 +40,6 @@ public class TestPackageController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> removeTestPackageById(@PathVariable long id) {
-        return new ResponseEntity<>(testPackageService.removeTestPackageById(id), HttpStatus.OK);
+        return new ResponseEntity<>(testPackageService.deleteTestPackageById(id), HttpStatus.OK);
     }
 }

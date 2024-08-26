@@ -1,6 +1,6 @@
 package org.medx.elixrlabs.service.impl;
 
-import org.medx.elixrlabs.Mapper.TestPackageMapper;
+import org.medx.elixrlabs.mapper.TestPackageMapper;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
 import org.medx.elixrlabs.dto.TestPackageDto;
 import org.medx.elixrlabs.model.TestPackage;
@@ -12,6 +12,15 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <p>
+ * Service implementation for managing TestPackage-related operations.
+ * This class contains business logic for handling TestPackage entities, including
+ * creation, retrieval, update, deletion, and some more operations. It acts as
+ * a bridge between the controller layer and the repository layer, ensuring that
+ * business rules are applied before interacting with the database.
+ * </p>
+ */
 @Service
 public class TestPackageServiceImpl implements TestPackageService {
 
@@ -48,7 +57,7 @@ public class TestPackageServiceImpl implements TestPackageService {
     }
 
     @Override
-    public boolean removeTestPackageById(long id) {
+    public boolean deleteTestPackageById(long id) {
         TestPackage TestPackage = TestPackageRepository.findByIdAndIsDeletedFalse(id);
         if (null == TestPackage) {
             throw new NullPointerException("Lab test Not Found");

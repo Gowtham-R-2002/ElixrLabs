@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CreateAndRetrieveLabTestDto {
+public class LabTestDto {
 
     private Long id;
     private String name;
