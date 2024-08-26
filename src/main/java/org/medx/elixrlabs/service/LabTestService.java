@@ -48,4 +48,9 @@ public interface LabTestService {
      * @throws RuntimeException if the LabTest is not found.
      */
     boolean removeLabTestById(long id);
+
+    /**
+     * Loads the initial test data
+     */
+    void setupInitialData();
 }
