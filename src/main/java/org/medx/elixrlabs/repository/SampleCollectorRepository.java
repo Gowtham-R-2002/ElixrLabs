@@ -1,6 +1,7 @@
 package org.medx.elixrlabs.repository;
 
 import org.medx.elixrlabs.model.SampleCollector;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,9 +26,15 @@ public interface SampleCollectorRepository extends JpaRepository<SampleCollector
     String getAllSampleCollectorQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.isVerified = true"
             + " AND s.user.isDeleted = false";
 
+    String getSampleCollectorByPlaceQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.user.place = :place"
+            + " AND s.isVerified = true AND s.user.isDeleted = false";
+
     @Query(getSampleCollectorByEmailQuery)
     SampleCollector getSampleCollectorByEmail(@Param("email") String email);
 
     @Query(getAllSampleCollectorQuery)
     List<SampleCollector> getAllSampleCollector();
+
+    @Query(getSampleCollectorByPlaceQuery)
+    SampleCollector getSampleCollectorByPlace(@Param("place")LocationEnum place);
 }

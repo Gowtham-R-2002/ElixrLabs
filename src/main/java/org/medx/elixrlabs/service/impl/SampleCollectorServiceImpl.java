@@ -12,6 +12,7 @@ import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.SampleCollectorRepository;
 import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.service.SampleCollectorService;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,7 +82,7 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         try {
             sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);
         } catch (Exception e) {
-            throw new LabException("Error while getting sampleCollector with email : " + email);
+            throw new NoSuchElementException("Error while getting sampleCollector with email : " + email);
         }
         return sampleCollector;
     }
@@ -99,6 +100,16 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
             throw new NoSuchElementException("There is no Sample Collectors");
         }
         return SampleCollectorDtos;
+    }
+
+    public SampleCollector getSampleCollectorByPlace(LocationEnum place) {
+        SampleCollector sampleCollector;
+        try {
+            sampleCollector = sampleCollectorRepository.getSampleCollectorByPlace(place);
+        } catch (Exception e) {
+            throw new NoSuchElementException("Error while getting sampleCollector with place : " + place);
+        }
+        return sampleCollector;
     }
 
     @Override
