@@ -37,7 +37,7 @@ public class AppointmentSlot {
     private LocalDate dateSlot;
 
     @Column(name = "time_slot")
-    private int timeSlot;
+    private String timeSlot;
 
     @OneToOne
     private SampleCollector sampleCollector;
