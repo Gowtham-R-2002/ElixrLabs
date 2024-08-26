@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.medx.elixrlabs.util.AddressEnum;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.PaymentStatusEnum;
 import org.medx.elixrlabs.util.TestStatusEnum;
 
@@ -45,7 +45,7 @@ public class Order {
 
     @Column(name = "sample_collection_place")
     @Enumerated(value = EnumType.STRING)
-    private AddressEnum sampleCollectionPlace;
+    private LocationEnum sampleCollectionPlace;
 
     @Column(name = "payment_status")
     @Enumerated(value = EnumType.STRING)
@@ -53,10 +53,10 @@ public class Order {
 
     @Column(name = "lab_location")
     @Enumerated(value = EnumType.STRING)
-    private AddressEnum labLocation;
+    private LocationEnum labLocation;
 
     @Column(name = "home_location")
-    private AddressEnum homeLocation;
+    private LocationEnum homeLocation;
 
     @OneToOne
     private TestPackage testPackage;

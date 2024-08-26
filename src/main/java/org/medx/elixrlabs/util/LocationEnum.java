@@ -1,6 +1,6 @@
 package org.medx.elixrlabs.util;
 
-public enum AddressEnum {
+public enum LocationEnum {
     VELACHERY,
     GUINDY,
     MARINA

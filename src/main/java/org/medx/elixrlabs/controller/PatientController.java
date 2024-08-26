@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
+import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.service.impl.JwtService;
@@ -33,6 +34,16 @@ public class PatientController {
     public ResponseEntity<UserDto> createOrUpdatePatient(@RequestBody UserDto userDto) {
         UserDto savedUser =  patientService.createOrUpdatePatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+    }
+
+    @PostMapping("appointments")
+    public ResponseEntity<Order> bookAppointment() {
+
+    }
+
+    @GetMapping
+    public ResponseEntity<List<AppointmentSlot>> getAvailableSlots() {
+
     }
 
     @GetMapping

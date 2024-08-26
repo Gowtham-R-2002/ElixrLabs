@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.medx.elixrlabs.util.AddressEnum;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.GenderEnum;
 
 import java.time.LocalDate;
@@ -29,5 +29,5 @@ public class UserDto {
     private LocalDate dateOfBirth;
     private String phoneNumber;
     private GenderEnum gender;
-    private AddressEnum place;
+    private LocationEnum place;
 }
