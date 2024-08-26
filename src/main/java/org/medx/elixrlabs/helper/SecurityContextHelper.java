@@ -1,7 +1,6 @@
 package org.medx.elixrlabs.helper;
 
 import org.medx.elixrlabs.exception.LabException;
-import org.medx.elixrlabs.model.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityContextHelper {

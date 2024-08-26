@@ -16,5 +16,10 @@ public class AdminController {
 //        return adminService.verifySampleCollector(id);
 //    }
 
+    @GetMapping
+    public String greet() {
+        return "Hi admin";
+    }
+
 
 }

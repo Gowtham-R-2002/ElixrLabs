@@ -3,13 +3,19 @@ package org.medx.elixrlabs.service.impl;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
+import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.SampleCollectorMapper;
 import org.medx.elixrlabs.mapper.UserMapper;
+import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.SampleCollectorRepository;
+import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.service.SampleCollectorService;
+import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,44 +37,53 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     @Autowired
     private SampleCollectorRepository sampleCollectorRepository;
 
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @Override
     public SampleCollectorDto createOrUpdateSampleCollector(UserDto userDto) {
+        SampleCollector existingSampleCollector = getSampleCollectorByEmail(userDto.getEmail());
         User user = UserMapper.toUser(userDto);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setRoles(
+                List.of(
+                        roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR),
+                        roleService.getRoleByName(RoleEnum.ROLE_PATIENT)
+                )
+        );
+        if (null != existingSampleCollector) {
+            user.setUUID(existingSampleCollector.getUser().getUUID());
+            existingSampleCollector.setUser(user);
+            return SampleCollectorMapper.convertToSampleCollectorDto(sampleCollectorRepository.save(existingSampleCollector));
+        }
         SampleCollector sampleCollector = SampleCollector.builder()
                 .user(user)
                 .isVerified(false)
                 .build();
-        if (null != getSampleCollectorByEmail(user.getEmail())) {
-            sampleCollector.getUser()
-                    .setUUID(getSampleCollectorByEmail
-                            (user.getEmail()).getUser()
-                            .getUUID());
-        }
         SampleCollector savedSampleCollector = sampleCollectorRepository.save(sampleCollector);
-
         return SampleCollectorMapper.convertToSampleCollectorDto(savedSampleCollector);
     }
 
     @Override
-    public boolean deleteSampleCollector(UserDto userDto) {
-        User user = UserMapper.toUser(userDto);
-        SampleCollectorDto sampleCollectorDto = getSampleCollectorByEmail(user.getEmail());
-        if (null == sampleCollectorDto) {
-            throw new NoSuchElementException("While deleting there is no Such Sample Collector : " + userDto.getEmail());
-        }
-        sampleCollectorDto.getUser().setDeleted(true);
+    public boolean deleteSampleCollector() {
+        SampleCollector sampleCollector = getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
+        sampleCollector.getUser().setDeleted(true);
+        sampleCollectorRepository.save(sampleCollector);
         return true;
     }
 
     @Override
-    public SampleCollectorDto getSampleCollectorByEmail(String email) {
+    public SampleCollector getSampleCollectorByEmail(String email) {
         SampleCollector sampleCollector;
         try {
             sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);
         } catch (Exception e) {
             throw new LabException("Error while getting sampleCollector with email : " + email);
         }
-        return SampleCollectorMapper.convertToSampleCollectorDto(sampleCollector);
+        return sampleCollector;
     }
 
     @Override

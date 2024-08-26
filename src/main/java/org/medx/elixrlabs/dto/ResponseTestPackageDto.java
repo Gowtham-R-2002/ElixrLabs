@@ -13,5 +13,5 @@ public class ResponseTestPackageDto {
     private String name;
     private String description;
     private double price;
-    private List<CreateAndRetrieveLabTestDto> labTests;
+    private List<LabTestDto> labTests;
 }

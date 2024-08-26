@@ -1,6 +1,6 @@
 package org.medx.elixrlabs.mapper;
 
-import org.medx.elixrlabs.dto.CreateAndRetrieveLabTestDto;
+import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.dto.TestPackageDto;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
 import org.medx.elixrlabs.model.LabTest;
@@ -46,7 +46,7 @@ public class TestPackageMapper {
      * @return {@link TestPackageDto} The corresponding TestPackage DTO.
      */
     public static ResponseTestPackageDto toTestPackageDto(TestPackage testPackage) {
-        List<CreateAndRetrieveLabTestDto> tests = testPackage.getTests()
+        List<LabTestDto> tests = testPackage.getTests()
                 .stream()
                 .map(LabTestMapper::toRetrieveLabTestDto).toList();
         return ResponseTestPackageDto.builder()

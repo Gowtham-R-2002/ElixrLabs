@@ -33,7 +33,7 @@ public class SampleCollectorController {
      * @param userDto {@link UserDto} The DTO containing employee data.
      * @return The created sample collector DTO with HTTP status 201 CREATED.
      */
-    @PostMapping
+    @PostMapping("register")
     public ResponseEntity<SampleCollectorDto> createSampleCollector(@RequestBody UserDto userDto) {
         return new ResponseEntity<>(sampleCollectorService.createOrUpdateSampleCollector(userDto), HttpStatus.CREATED);
     }
@@ -74,11 +74,10 @@ public class SampleCollectorController {
     /**
      * Deletes a sample collector by their unique ID.
      *
-     * @param id the unique employee ID
      * @return boolean value with HTTP status 204 NO CONTENT.
      */
     @DeleteMapping
-    public ResponseEntity<Boolean> deleteSampleCollector(UserDto userDto) {
-        return new ResponseEntity<>(sampleCollectorService.deleteSampleCollector(userDto), HttpStatus.NO_CONTENT);
+    public ResponseEntity<Boolean> deleteSampleCollector() {
+        return new ResponseEntity<>(sampleCollectorService.deleteSampleCollector(), HttpStatus.NO_CONTENT);
     }
 }

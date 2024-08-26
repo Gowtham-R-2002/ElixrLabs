@@ -32,5 +32,6 @@ public class Role {
     private int id;
 
     @Enumerated(value = EnumType.STRING)
+    @Column(unique = true)
     private RoleEnum name;
 }

@@ -22,12 +22,12 @@ public interface SampleCollectorRepository extends JpaRepository<SampleCollector
     String getSampleCollectorByEmailQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.user.email = :email"
             + " AND s.user.isDeleted = false";
 
-    String getGetAllSampleCollectorQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.isVerified = true"
+    String getAllSampleCollectorQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.isVerified = true"
             + " AND s.user.isDeleted = false";
 
     @Query(getSampleCollectorByEmailQuery)
     SampleCollector getSampleCollectorByEmail(@Param("email") String email);
 
-    @Query(getGetAllSampleCollectorQuery)
+    @Query(getAllSampleCollectorQuery)
     List<SampleCollector> getAllSampleCollector();
 }

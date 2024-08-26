@@ -25,9 +25,13 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository roleRepository;
 
     public void setupInitialData() {
-        roleRepository.save(Role.builder().name(RoleEnum.ROLE_ADMIN).build());
-        roleRepository.save(Role.builder().name(RoleEnum.ROLE_PATIENT).build());
-        roleRepository.save(Role.builder().name(RoleEnum.ROLE_SAMPLE_COLLECTOR).build());
+        try {
+            roleRepository.save(Role.builder().name(RoleEnum.ROLE_ADMIN).build());
+            roleRepository.save(Role.builder().name(RoleEnum.ROLE_PATIENT).build());
+            roleRepository.save(Role.builder().name(RoleEnum.ROLE_SAMPLE_COLLECTOR).build());
+        } catch (Exception e) {
+            System.out.println("Roles already exists.." + e.getMessage());
+        }
     }
 
     public List<Role> getAllRoles() {

@@ -49,7 +49,7 @@ public interface SampleCollectorService {
      * @param userDto {@link UserDto} The ID of the SampleCollector to delete.
      * @throws RuntimeException if the SampleCollector is not found.
      */
-    boolean deleteSampleCollector(UserDto userDto);
+    boolean deleteSampleCollector();
 
     /**
      * Retrieves an SampleCollector by email.
@@ -58,6 +58,6 @@ public interface SampleCollectorService {
      * @return The SampleCollector DTO.
      * @throws NoSuchElementException if the SampleCollector is not found.
      */
-    SampleCollectorDto getSampleCollectorByEmail(String email);
+    SampleCollector getSampleCollectorByEmail(String email);
 
 }
