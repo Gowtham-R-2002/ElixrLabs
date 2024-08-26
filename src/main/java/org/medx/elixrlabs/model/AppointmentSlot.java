@@ -3,6 +3,7 @@ package org.medx.elixrlabs.model;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import org.medx.elixrlabs.util.AppointmentPlaceEnum;
 
 import java.time.LocalDateTime;
 
@@ -29,6 +30,7 @@ public class AppointmentSlot {
     private long id;
 
     @OneToOne
+    @JoinColumn(name = "user_id")
     private User userId;
 
     @Column
@@ -36,6 +38,10 @@ public class AppointmentSlot {
 
     @OneToOne
     private SampleCollector sampleCollector;
+
+    @Column(name = "appointment_place")
+    @Enumerated(value = EnumType.STRING)
+    private AppointmentPlaceEnum appointmentPlace;
 
     private boolean isSampleCollected;
 }
