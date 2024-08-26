@@ -33,7 +33,7 @@ public class LabTest {
     @Column(name = "test_id")
     private Long id;
 
-    @Column(name = "test_name")
+    @Column(name = "test_name", unique = true)
     private String name;
 
     private String description;

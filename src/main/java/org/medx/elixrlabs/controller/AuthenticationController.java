@@ -3,6 +3,8 @@ package org.medx.elixrlabs.controller;
 import org.medx.elixrlabs.dto.LoginRequestDto;
 import org.medx.elixrlabs.service.AdminService;
 import org.medx.elixrlabs.service.impl.JwtService;
+import org.medx.elixrlabs.service.impl.UserService;
+import org.medx.elixrlabs.util.AddressEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,7 +27,7 @@ public class AuthenticationController {
     private JwtService jwtService;
 
     @Autowired
-    private AdminService adminService;
+    private UserService userService;
 
     @PostMapping
     public String login(@RequestBody LoginRequestDto LoginRequestDto) {
@@ -37,6 +39,7 @@ public class AuthenticationController {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return jwtService.generateToken(userDetails);
+        AddressEnum address = userService.loadUserByUsername(userDetails.getUsername()).getPlace();
+        return jwtService.generateToken(userDetails, address);
     }
 }

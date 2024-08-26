@@ -64,4 +64,34 @@ public class LabTestServiceImpl implements LabTestService {
         labTestRepository.save(labTest);
         return true;
     }
+
+    public void setupInitialData() {
+        LabTest bloodTest = LabTest.builder()
+                .name("Blood test")
+                .description("Simple Blood test")
+                .price(150)
+                .defaultValue("BPC : 1000")
+                .build();
+
+        LabTest HIVTest = LabTest.builder()
+                .name("HIV Test")
+                .description("Test to identify HIV status")
+                .price(500)
+                .defaultValue("Status : negative")
+                .build();
+
+        LabTest cancerTest = LabTest.builder()
+                .name("Cancer Test")
+                .description("Test to detect Cancer presence")
+                .price(1000)
+                .defaultValue("Cell count : 500")
+                .build();
+        try {
+            labTestRepository.save(bloodTest);
+            labTestRepository.save(HIVTest);
+            labTestRepository.save(cancerTest);
+        } catch (Exception e) {
+            System.out.println("Already exists..." + e.getMessage());
+        }
+    }
 }
