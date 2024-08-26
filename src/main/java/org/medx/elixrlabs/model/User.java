@@ -2,11 +2,10 @@ package org.medx.elixrlabs.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.medx.elixrlabs.util.AddressEnum;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.GenderEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -55,7 +54,7 @@ public class User implements UserDetails {
     private List<Role> roles;
 
     @Enumerated(EnumType.STRING)
-    private AddressEnum place;
+    private LocationEnum place;
 
     @Column(name = "phone_number")
     private String phoneNumber;
