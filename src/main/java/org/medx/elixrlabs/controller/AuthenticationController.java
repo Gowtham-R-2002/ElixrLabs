@@ -1,7 +1,6 @@
 package org.medx.elixrlabs.controller;
 
 import org.medx.elixrlabs.dto.LoginRequestDto;
-import org.medx.elixrlabs.service.AdminService;
 import org.medx.elixrlabs.service.impl.JwtService;
 import org.medx.elixrlabs.service.impl.UserService;
 import org.medx.elixrlabs.util.AddressEnum;
