@@ -2,11 +2,9 @@ package org.medx.elixrlabs.service.impl;
 
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
-import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.SampleCollectorMapper;
 import org.medx.elixrlabs.mapper.UserMapper;
-import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.SampleCollectorRepository;
@@ -15,7 +13,6 @@ import org.medx.elixrlabs.service.SampleCollectorService;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +78,9 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         SampleCollector sampleCollector;
         try {
             sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);
+            if (sampleCollector == null) {
+                throw new NoSuchElementException("No sampleCollector found with email : " + email);
+            }
         } catch (Exception e) {
             throw new NoSuchElementException("Error while getting sampleCollector with email : " + email);
         }
@@ -102,14 +102,14 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         return SampleCollectorDtos;
     }
 
-    public SampleCollector getSampleCollectorByPlace(LocationEnum place) {
-        SampleCollector sampleCollector;
+    public List<SampleCollector> getSampleCollectorByPlace(LocationEnum place) {
+        List<SampleCollector> sampleCollectors;
         try {
-            sampleCollector = sampleCollectorRepository.getSampleCollectorByPlace(place);
+            sampleCollectors = sampleCollectorRepository.getSampleCollectorByPlace(place);
         } catch (Exception e) {
             throw new NoSuchElementException("Error while getting sampleCollector with place : " + place);
         }
-        return sampleCollector;
+        return sampleCollectors;
     }
 
     @Override

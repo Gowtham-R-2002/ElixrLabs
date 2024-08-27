@@ -1,0 +1,213 @@
+package org.medx.elixrlabs.service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.medx.elixrlabs.dto.LabTestDto;
+import org.medx.elixrlabs.dto.ResponseTestPackageDto;
+import org.medx.elixrlabs.dto.TestPackageDto;
+import org.medx.elixrlabs.model.LabTest;
+import org.medx.elixrlabs.model.TestPackage;
+import org.medx.elixrlabs.repository.TestPackageRepository;
+import org.medx.elixrlabs.service.impl.TestPackageServiceImpl;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class TestPackageServiceImplTest {
+
+    @InjectMocks
+    private TestPackageServiceImpl testPackageService;
+
+    @Mock
+    private TestPackageRepository testPackageRepository;
+
+    @Mock
+    private LabTestService labTestService;
+
+    private TestPackageDto testPackageDto;
+    private TestPackage testPackage;
+    private LabTestDto labTestDto;
+    private List<TestPackage> testPackages;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+
+        LabTest labTest = LabTest.builder()
+                .id(1L)
+                .isDeleted(false)
+                .build();
+        
+        LabTest labTest2 = LabTest.builder()
+                .id(2L)
+                .isDeleted(false)
+                .build();
+
+        labTestDto = LabTestDto.builder()
+                .id(1L)
+                .name("Complete blood count (CBC)")
+                .build();
+
+        testPackageDto = TestPackageDto.builder()
+                .labTestIds(List.of(1L, 2L))
+                .build();
+
+        testPackage = TestPackage.builder()
+                .tests(List.of(labTest, labTest2))
+                .build();
+        
+        TestPackage testPackage2 = TestPackage.builder()
+                .tests(List.of(labTest2))
+                .build();
+
+        testPackages = Arrays.asList(testPackage, testPackage2);
+    }
+
+    @Test
+    void testCreateOrUpdateTest_positive() {
+        when(labTestService.getLabTestById(anyLong())).thenReturn(labTestDto);
+        when(testPackageRepository.save(any(TestPackage.class))).thenReturn(testPackage);
+
+        ResponseTestPackageDto response = testPackageService.createOrUpdateTest(testPackageDto);
+
+        assertNotNull(response);
+        verify(testPackageRepository).save(any(TestPackage.class));
+    }
+
+    @Test
+    void testCreateOrUpdateTest_negative() {
+        when(labTestService.getLabTestById(anyLong())).thenReturn(null);
+
+        assertThrows(NoSuchElementException.class,
+                () -> testPackageService.createOrUpdateTest(testPackageDto));
+        verify(testPackageRepository, never()).save(any(TestPackage.class));
+    }
+
+    @Test
+    void testCreateOrUpdateTest_exception() {
+        when(labTestService.getLabTestById(anyLong())).thenThrow(new RuntimeException("Exception occurred"));
+
+        Exception exception = assertThrows(RuntimeException.class,
+                () -> testPackageService.createOrUpdateTest(testPackageDto));
+
+        assertEquals("Exception occurred", exception.getMessage());
+        verify(testPackageRepository, never()).save(any(TestPackage.class));
+    }
+
+    @Test
+    void testGetAllTestPackages_positive() {
+        when(testPackageRepository.findByIsDeletedFalse()).thenReturn(testPackages);
+
+        List<ResponseTestPackageDto> response = testPackageService.getAllTestPackages();
+
+        assertNotNull(response);
+        assertFalse(response.isEmpty());
+        verify(testPackageRepository).findByIsDeletedFalse();
+    }
+
+    @Test
+    void testGetAllTestPackages_negative() {
+        when(testPackageRepository.findByIsDeletedFalse()).thenReturn(new ArrayList<>());
+
+        List<ResponseTestPackageDto> response = testPackageService.getAllTestPackages();
+
+        assertNotNull(response);
+        assertTrue(response.isEmpty());
+        verify(testPackageRepository).findByIsDeletedFalse();
+    }
+
+    @Test
+    void testGetAllTestPackages_exception() {
+        when(testPackageRepository.findByIsDeletedFalse()).thenThrow(new RuntimeException("Exception occurred"));
+
+        Exception exception = assertThrows(RuntimeException.class,
+                () -> testPackageService.getAllTestPackages());
+
+        assertEquals("Exception occurred", exception.getMessage());
+        verify(testPackageRepository).findByIsDeletedFalse();
+    }
+
+    @Test
+    void testGetTestPackageById_positive() {
+        when(testPackageRepository.findByIdAndIsDeletedFalse(anyLong())).thenReturn(testPackage);
+
+        ResponseTestPackageDto response = testPackageService.getTestPackageById(1L);
+
+        assertNotNull(response);
+        verify(testPackageRepository).findByIdAndIsDeletedFalse(1L);
+    }
+
+    @Test
+    void testGetTestPackageById_negative() {
+        when(testPackageRepository.findByIdAndIsDeletedFalse(anyLong())).thenReturn(null);
+
+        Exception exception = assertThrows(NullPointerException.class,
+                () -> testPackageService.getTestPackageById(1L));
+
+        assertEquals("Lab Test Not Found", exception.getMessage());
+        verify(testPackageRepository).findByIdAndIsDeletedFalse(1L);
+    }
+
+    @Test
+    void testGetTestPackageById_exception() {
+        when(testPackageRepository.findByIdAndIsDeletedFalse(anyLong())).thenThrow(new RuntimeException("Exception occurred"));
+
+        Exception exception = assertThrows(RuntimeException.class,
+                () -> testPackageService.getTestPackageById(1L));
+
+        assertEquals("Exception occurred", exception.getMessage());
+        verify(testPackageRepository).findByIdAndIsDeletedFalse(1L);
+    }
+
+    @Test
+    void testDeleteTestPackageById_positive() {
+        when(testPackageRepository.findByIdAndIsDeletedFalse(anyLong())).thenReturn(testPackage);
+
+        boolean result = testPackageService.deleteTestPackageById(1L);
+
+        assertTrue(result);
+        verify(testPackageRepository).save(any(TestPackage.class));
+    }
+
+    @Test
+    void testDeleteTestPackageById_negative() {
+        when(testPackageRepository.findByIdAndIsDeletedFalse(anyLong())).thenReturn(null);
+
+        Exception exception = assertThrows(NullPointerException.class,
+                () -> testPackageService.deleteTestPackageById(1L));
+
+        assertEquals("Lab test Not Found", exception.getMessage());
+        verify(testPackageRepository, never()).save(any(TestPackage.class));
+    }
+
+    @Test
+    void testDeleteTestPackageById_exception() {
+        when(testPackageRepository.findByIdAndIsDeletedFalse(anyLong())).thenThrow(new RuntimeException("Exception occurred"));
+
+        Exception exception = assertThrows(RuntimeException.class,
+                () -> testPackageService.deleteTestPackageById(1L));
+
+        assertEquals("Exception occurred", exception.getMessage());
+        verify(testPackageRepository, never()).save(any(TestPackage.class));
+    }
+}
+
