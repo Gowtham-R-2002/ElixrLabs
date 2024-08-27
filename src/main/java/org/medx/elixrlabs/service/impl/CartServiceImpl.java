@@ -7,7 +7,6 @@ import org.medx.elixrlabs.mapper.CartMapper;
 import org.medx.elixrlabs.mapper.LabTestMapper;
 import org.medx.elixrlabs.mapper.TestPackageMapper;
 import org.medx.elixrlabs.model.Cart;
-import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.CartRepository;
 import org.medx.elixrlabs.service.CartService;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class CartServiceImpl implements CartService {
