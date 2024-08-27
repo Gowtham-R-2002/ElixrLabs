@@ -1,22 +1,15 @@
 package org.medx.elixrlabs.controller;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
-import org.medx.elixrlabs.dto.CartDto;
-import org.medx.elixrlabs.dto.ResponseCartDto;
-import org.medx.elixrlabs.dto.SlotBookDto;
-import org.medx.elixrlabs.dto.UserDto;
+import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.CartService;
 import org.medx.elixrlabs.service.PatientService;
-import org.medx.elixrlabs.util.LocationEnum;
-import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
-import org.medx.elixrlabs.util.TimeSlotEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,20 +40,17 @@ public class PatientController {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
-//    @PostMapping("appointments")
-//    public ResponseEntity<Order> bookAppointment() {
-//
-//    }
-
     @GetMapping("slots")
     public ResponseEntity<Set<String>> getAvailableSlots(@RequestBody SlotBookDto slotBookDto) {
+        System.out.println(appointmentSlotService
+                .getAvailableSlots(slotBookDto));
         return new ResponseEntity<>(appointmentSlotService
                 .getAvailableSlots(slotBookDto), HttpStatus.OK);
     }
 
     @PostMapping("slots/book")
-    public boolean bookSlot(@RequestBody SlotBookDto slotBookDto) {
-        return appointmentSlotService.isSlotAvailable(slotBookDto);
+    public ResponseEntity<OrderDto> bookSlot(@RequestBody SlotBookDto slotBookDto) {
+        return new ResponseEntity<>(appointmentSlotService.bookSlot(slotBookDto), HttpStatus.OK);
     }
 
     @GetMapping
@@ -97,13 +87,13 @@ public class PatientController {
     }
 
     @GetMapping("carts")
-    public ResponseEntity<ResponseCartDto> getCartByPatient(@RequestBody UserDto patient) {
+    public ResponseEntity<ResponseCartDto> getCartByPatient() {
         return new ResponseEntity<>(cartService.getCartByPatient(), HttpStatus.OK);
     }
 
     @DeleteMapping("carts")
-    public ResponseEntity<HttpStatus.Series> removeTestsOrPackageFromCart(@RequestBody CartDto cartDto) {
-        cartService.removeTestsOrPackageFromCart(cartDto);
+    public ResponseEntity<HttpStatus.Series> removeTestsOrPackageFromCart() {
+        cartService.deleteCart();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.PaymentStatusEnum;
+import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.medx.elixrlabs.util.TestStatusEnum;
 
 import java.util.List;
@@ -37,6 +38,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
     private User user;
 
     @Column(name = "test_status")
@@ -45,7 +47,7 @@ public class Order {
 
     @Column(name = "sample_collection_place")
     @Enumerated(value = EnumType.STRING)
-    private LocationEnum sampleCollectionPlace;
+    private TestCollectionPlaceEnum sampleCollectionPlace;
 
     @Column(name = "payment_status")
     @Enumerated(value = EnumType.STRING)
@@ -55,13 +57,10 @@ public class Order {
     @Enumerated(value = EnumType.STRING)
     private LocationEnum labLocation;
 
-    @Column(name = "home_location")
-    private LocationEnum homeLocation;
-
     @OneToOne
     private TestPackage testPackage;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(name = "order_test",
     joinColumns = @JoinColumn(name = "order_id"),
     inverseJoinColumns = @JoinColumn(name = "test_id"))

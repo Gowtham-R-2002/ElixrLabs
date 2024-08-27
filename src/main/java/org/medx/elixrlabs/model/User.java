@@ -53,6 +53,9 @@ public class User implements UserDetails {
     )
     private List<Role> roles;
 
+    @OneToMany
+    private List<Order> orders;
+
     @Enumerated(EnumType.STRING)
     private LocationEnum place;
 
