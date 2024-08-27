@@ -1,13 +1,12 @@
 package org.medx.elixrlabs.service.impl;
 
-import org.medx.elixrlabs.dto.OrderDto;
+import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
 import org.medx.elixrlabs.dto.SlotBookDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.LabTestMapper;
 import org.medx.elixrlabs.model.AppointmentSlot;
-import org.medx.elixrlabs.model.Cart;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.AppointmentSlotRepository;
@@ -59,7 +58,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     }
 
     @Override
-    public OrderDto bookSlot(SlotBookDto slotBookDto) {
+    public OrderSuccessDto bookSlot(SlotBookDto slotBookDto) {
         Order order = null;
         if (isSlotAvailable(slotBookDto)) {
             User patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
@@ -87,6 +86,16 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             throw new LabException("Slot filled!");
         }
         return orderService.createOrder(order);
+    }
+
+    @Override
+    public List<AppointmentSlot> getAppointmentsByPlace(LocationEnum location, LocalDate date) {
+        return appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(location, TestCollectionPlaceEnum.LAB, date);
+    }
+
+    @Override
+    public AppointmentSlot createOrUpdateAppointment(AppointmentSlot appointmentSlot) {
+        return appointmentSlotRepository.save(appointmentSlot);
     }
 
 

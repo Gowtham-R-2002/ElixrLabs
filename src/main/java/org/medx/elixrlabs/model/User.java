@@ -1,9 +1,8 @@
 package org.medx.elixrlabs.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.ToString.Exclude;
 import lombok.experimental.SuperBuilder;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.GenderEnum;
@@ -29,7 +28,8 @@ import java.util.stream.Collectors;
  * @author  Sabarinathan K
  * @version  1.0
  */
-@Data
+@Getter
+@Setter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -53,7 +53,7 @@ public class User implements UserDetails {
     )
     private List<Role> roles;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
     private List<Order> orders;
 
     @Enumerated(EnumType.STRING)

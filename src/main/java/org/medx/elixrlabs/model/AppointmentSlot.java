@@ -45,6 +45,7 @@ public class AppointmentSlot {
     private String timeSlot;
 
     @Column
+    @Enumerated(value = EnumType.STRING)
     private LocationEnum location;
 
     @OneToOne

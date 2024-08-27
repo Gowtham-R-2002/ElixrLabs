@@ -1,6 +1,6 @@
 package org.medx.elixrlabs.service.impl;
 
-import org.medx.elixrlabs.dto.OrderDto;
+import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.mapper.OrderMapper;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.repository.OrderRepository;
@@ -17,8 +17,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Override
-    public OrderDto createOrder(Order order) {
-        return OrderMapper.toOrderDto(orderRepository.save(order));
+    public OrderSuccessDto createOrder(Order order) {
+        return OrderMapper.toOrderSuccessDto(orderRepository.save(order));
     }
 
     @Override

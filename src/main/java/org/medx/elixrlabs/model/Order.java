@@ -1,10 +1,8 @@
 package org.medx.elixrlabs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.PaymentStatusEnum;
 import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
@@ -28,7 +26,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "orders")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,7 +37,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;
 
     @Column(name = "test_status")

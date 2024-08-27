@@ -49,7 +49,7 @@ public class PatientController {
     }
 
     @PostMapping("slots/book")
-    public ResponseEntity<OrderDto> bookSlot(@RequestBody SlotBookDto slotBookDto) {
+    public ResponseEntity<OrderSuccessDto> bookSlot(@RequestBody SlotBookDto slotBookDto) {
         return new ResponseEntity<>(appointmentSlotService.bookSlot(slotBookDto), HttpStatus.OK);
     }
 
@@ -59,7 +59,7 @@ public class PatientController {
     }
 
     @GetMapping("orders")
-    public ResponseEntity<List<Order>> getOrders() {
+    public ResponseEntity<List<ResponseOrderDto>> getOrders() {
         return new ResponseEntity<>(patientService.getOrders(), HttpStatus.OK);
     }
 
@@ -76,8 +76,7 @@ public class PatientController {
 
     @DeleteMapping
     public ResponseEntity<HttpStatus.Series> deletePatient() {
-        String email = SecurityContextHelper.extractEmailFromContext();
-        patientService.deletePatient(email);
+        patientService.deletePatient(SecurityContextHelper.extractEmailFromContext());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
