@@ -6,12 +6,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.repository.LabTestRepository;
+import org.medx.elixrlabs.service.impl.LabTestServiceImpl;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LabTestServiceTest {
@@ -20,41 +26,102 @@ public class LabTestServiceTest {
     LabTestRepository labTestRepository;
 
     @InjectMocks
-    LabTestService labTestService;
+    LabTestServiceImpl labTestService;
 
     private LabTest labTest;
     private LabTest responseLabTest;
     private LabTestDto labTestDto;
     private LabTestDto responseLabTestDto;
+    private List<LabTest> responseLabTests;
+    private List<LabTestDto> responseLabTestDtos;
 
     @BeforeEach
     void setUp() {
-        labTest.setName("Cancer Test");
-        labTest.setDescription("Simple Cancer Test");
-        labTest.setPrice(300.00);
-        labTest.setDefaultValue("BPC : 1000");
-        labTest.setDeleted(false);
-        responseLabTest.setId(12L);
-        responseLabTest.setName("Cancer Test");
-        responseLabTest.setDescription("Simple Cancer Test");
-        responseLabTest.setPrice(300.00);
-        responseLabTest.setDefaultValue("BPC : 1000");
-        responseLabTest.setDeleted(false);
-        labTestDto.setName("Cancer Test");
-        labTestDto.setDescription("Simple Cancer Test");
-        labTestDto.setPrice(300.00);
-        labTestDto.setDefaultValue("BPC : 1000");
-        responseLabTestDto.setId(12L);
-        responseLabTestDto.setName("Cancer Test");
-        responseLabTestDto.setDescription("Simple Cancer Test");
-        responseLabTestDto.setPrice(300.00);
-        responseLabTestDto.setDefaultValue("BPC : 1000");
+        labTest = new LabTest();
+        labTest = LabTest.builder()
+                .name("Cancer Test")
+                .description("Simple Cancer Test")
+                .price(300.00)
+                .defaultValue("BPC : 1000")
+                .build();
+        responseLabTest = new LabTest();
+        responseLabTest = LabTest.builder()
+                .id(12L)
+                .name("Cancer Test")
+                .description("Simple Cancer Test")
+                .price(300.00)
+                .defaultValue("BPC : 1000")
+                .isDeleted(false)
+                .build();
+        labTestDto = new LabTestDto();
+        labTestDto = LabTestDto.builder()
+                .name("Cancer Test")
+                .description("Simple Cancer Test")
+                .price(300.00)
+                .defaultValue("BPC : 1000")
+                .build();
+        responseLabTestDto = new LabTestDto();
+        responseLabTestDto = LabTestDto.builder()
+                .id(12L)
+                .name("Cancer Test")
+                .description("Simple Cancer Test")
+                .price(300.00)
+                .defaultValue("BPC : 1000")
+                .build();
+        responseLabTests = Arrays.asList(responseLabTest, responseLabTest);
+        responseLabTestDtos = Arrays.asList(responseLabTestDto, responseLabTestDto);
     }
 
     @Test
     void testCreateOrUpdate_positive() {
         when(labTestRepository.save(labTest)).thenReturn(responseLabTest);
         LabTestDto result = labTestService.createOrUpdateTest(labTestDto);
-        assertEquals(responseLabTestDto,result);
+        assertEquals(responseLabTestDto, result);
+    }
+
+    @Test
+    void testCreateOrUpdate_negative() {
+
+    }
+
+    @Test
+    void testGetAllLabTests_positive() {
+        when(labTestRepository.findByIsDeletedFalse()).thenReturn(responseLabTests);
+        List<LabTestDto> result = labTestService.getAllLabTests();
+        assertEquals(responseLabTestDtos,result);
+    }
+
+    @Test
+    void testGetAllLabTests_negative() {
+        when(labTestRepository.findByIsDeletedFalse()).thenReturn(null);
+        List<LabTestDto> result = labTestService.getAllLabTests();
+        assertEquals(new ArrayList<>(), result);
+    }
+
+    @Test
+    void testGetLabTestById_positive() {
+        when(labTestRepository.findByIdAndIsDeletedFalse(responseLabTestDto.getId())).thenReturn(responseLabTest);
+        LabTestDto result = labTestService.getLabTestById(responseLabTestDto.getId());
+        assertEquals(result, responseLabTestDto);
+    }
+
+    @Test
+    void testGetLabTestById_exception() {
+        when(labTestRepository.findByIdAndIsDeletedFalse(1L)).thenReturn(null);
+        assertThrows(NullPointerException.class, () -> labTestService.getLabTestById(1L));
+    }
+
+    @Test
+    void testRemoveLabTestById_positive() {
+        when(labTestRepository.findByIdAndIsDeletedFalse(responseLabTestDto.getId())).thenReturn(responseLabTest);
+        boolean result = labTestService.removeLabTestById(responseLabTestDto.getId());
+        verify(labTestRepository).save(responseLabTest);
+        assertTrue(result);
+    }
+
+    @Test
+    void testRemoveLabTestById_exception() {
+        when(labTestRepository.findByIdAndIsDeletedFalse(1L)).thenReturn(null);
+        assertThrows(NullPointerException.class, () -> labTestService.removeLabTestById(1L));
     }
 }
