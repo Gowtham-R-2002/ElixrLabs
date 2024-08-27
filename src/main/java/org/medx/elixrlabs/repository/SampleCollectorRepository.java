@@ -36,5 +36,5 @@ public interface SampleCollectorRepository extends JpaRepository<SampleCollector
     List<SampleCollector> getAllSampleCollector();
 
     @Query(getSampleCollectorByPlaceQuery)
-    SampleCollector getSampleCollectorByPlace(@Param("place")LocationEnum place);
+    List<SampleCollector> getSampleCollectorsByPlace(@Param("place")LocationEnum place);
 }
