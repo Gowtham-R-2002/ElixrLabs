@@ -26,7 +26,7 @@ public class TestPackageController {
 
     @PostMapping
     public ResponseEntity<ResponseTestPackageDto> createTestPackage(@RequestBody TestPackageDto testPackageDto) {
-        return new ResponseEntity<>(testPackageService.createOrUpdateTest(testPackageDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(testPackageService.createOrUpdateTestPackage(testPackageDto), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -41,7 +41,7 @@ public class TestPackageController {
 
     @PutMapping
     public ResponseEntity<ResponseTestPackageDto> updateTestPackageById(@RequestBody TestPackageDto testPackageDto) {
-        return new ResponseEntity<>(testPackageService.createOrUpdateTest(testPackageDto), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(testPackageService.createOrUpdateTestPackage(testPackageDto), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")

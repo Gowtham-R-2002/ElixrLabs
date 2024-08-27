@@ -23,7 +23,7 @@ public interface TestPackageService {
      * @param testPackageDto {@link TestPackageDto} The DTO containing testPackage data.
      * @return The created testPackage Dto.
      */
-    ResponseTestPackageDto createOrUpdateTest(TestPackageDto testPackageDto);
+    ResponseTestPackageDto createOrUpdateTestPackage(TestPackageDto testPackageDto);
 
     /**
      * Retrieves all TestPackages.
