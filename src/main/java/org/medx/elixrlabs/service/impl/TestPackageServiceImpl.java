@@ -35,7 +35,7 @@ public class TestPackageServiceImpl implements TestPackageService {
     LabTestService labTestService;
 
     @Override
-    public ResponseTestPackageDto createOrUpdateTest(TestPackageDto testPackageDto) {
+    public ResponseTestPackageDto createOrUpdateTestPackage(TestPackageDto testPackageDto) {
         TestPackage testPackage = TestPackageMapper.toTestPackage(testPackageDto);
         List<LabTest> tests = new ArrayList<>();
         for(Long testId : testPackageDto.getLabTestIds()) {

@@ -78,9 +78,6 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         SampleCollector sampleCollector;
         try {
             sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);
-            if (sampleCollector == null) {
-                throw new NoSuchElementException("No sampleCollector found with email : " + email);
-            }
         } catch (Exception e) {
             throw new NoSuchElementException("Error while getting sampleCollector with email : " + email);
         }
@@ -103,13 +100,13 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     }
 
     public List<SampleCollector> getSampleCollectorByPlace(LocationEnum place) {
-        List<SampleCollector> sampleCollectors;
+        List<SampleCollector> sampleCollector;
         try {
-            sampleCollectors = sampleCollectorRepository.getSampleCollectorByPlace(place);
+            sampleCollector = sampleCollectorRepository.getSampleCollectorsByPlace(place);
         } catch (Exception e) {
             throw new NoSuchElementException("Error while getting sampleCollector with place : " + place);
         }
-        return sampleCollectors;
+        return sampleCollector;
     }
 
     @Override

@@ -1,8 +1,10 @@
 package org.medx.elixrlabs.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 
@@ -24,15 +26,17 @@ import java.time.LocalDate;
 @Entity
 @Data
 @Table(name = "appointment_slots")
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppointmentSlot {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     @Column(name = "date_slot")
     private LocalDate dateSlot;
@@ -41,6 +45,7 @@ public class AppointmentSlot {
     private String timeSlot;
 
     @Column
+    @Enumerated(value = EnumType.STRING)
     private LocationEnum location;
 
     @OneToOne

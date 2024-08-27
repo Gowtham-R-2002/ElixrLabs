@@ -1,12 +1,22 @@
 package org.medx.elixrlabs.service;
 
-import org.medx.elixrlabs.dto.AvailableSlotsDto;
+import org.medx.elixrlabs.dto.OrderSuccessDto;
+import org.medx.elixrlabs.dto.SlotBookDto;
+import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.util.LocationEnum;
-import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface AppointmentSlotService {
-    List<AvailableSlotsDto> getAvailableSlots(LocationEnum location, LocalDate date, TestCollectionPlaceEnum testCollectionPlace);
+    Set<String> getAvailableSlots(SlotBookDto slotBookDto);
+
+    boolean isSlotAvailable(SlotBookDto slotBookDto);
+
+    OrderSuccessDto bookSlot(SlotBookDto slotBookDto);
+
+    List<AppointmentSlot> getAppointmentsByPlace(LocationEnum location, LocalDate date);
+
+    AppointmentSlot createOrUpdateAppointment(AppointmentSlot appointmentSlot);
 }

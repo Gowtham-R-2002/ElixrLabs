@@ -4,8 +4,6 @@ import org.medx.elixrlabs.dto.CartDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public interface CartService {
 
@@ -13,5 +11,5 @@ public interface CartService {
 
     ResponseCartDto getCartByPatient();
 
-    ResponseCartDto removeTestsOrPackageFromCart(CartDto cartDto);
+    void deleteCart();
 }

@@ -19,6 +19,9 @@ import java.util.List;
  * a bridge between the controller layer and the repository layer, ensuring that
  * business rules are applied before interacting with the database.
  * </p>
+ *
+ * @author Deolin Jaffens
+ * @version 1.0
  */
 @Service
 public class LabTestServiceImpl implements LabTestService {

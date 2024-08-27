@@ -8,11 +8,7 @@ import java.util.List;
 @Builder
 @Data
 public class CartDto {
-
-    private long id;
     private boolean isPurchased;
     private List<Long> testIds;
     private Long testPackageId;
-    private String email;
-
 }
