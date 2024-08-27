@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
+import org.medx.elixrlabs.helper.SecurityContextHelper;
+import org.medx.elixrlabs.mapper.OrderMapper;
 import org.medx.elixrlabs.mapper.UserMapper;
-import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.UserRepository;
@@ -67,8 +69,9 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<Order> getOrders() {
-        return List.of();
+    public List<ResponseOrderDto> getOrders() {
+        System.out.println(userRepository.getPatientOrders(SecurityContextHelper.extractEmailFromContext()).getOrders());
+        return userRepository.getPatientOrders(SecurityContextHelper.extractEmailFromContext()).getOrders().stream().map(OrderMapper::toResponseOrderDto).toList();
     }
 
     @Override

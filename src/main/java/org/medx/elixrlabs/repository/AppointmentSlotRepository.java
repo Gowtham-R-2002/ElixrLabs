@@ -10,4 +10,5 @@ import java.util.List;
 
 public interface AppointmentSlotRepository extends JpaRepository<AppointmentSlot, Long> {
     List<AppointmentSlot> findByLocationAndTestCollectionPlaceAndDateSlot(LocationEnum location, TestCollectionPlaceEnum testCollectionPlace, LocalDate date);
+
 }

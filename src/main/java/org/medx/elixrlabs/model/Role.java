@@ -1,10 +1,7 @@
 package org.medx.elixrlabs.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.medx.elixrlabs.util.RoleEnum;
 
 import java.util.List;
@@ -21,7 +18,8 @@ import java.util.List;
  *
  * @version  1.0
  */
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

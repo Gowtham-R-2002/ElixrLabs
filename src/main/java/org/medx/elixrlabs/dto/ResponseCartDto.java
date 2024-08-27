@@ -15,6 +15,5 @@ public class ResponseCartDto {
     private boolean isPurchased;
     private List<LabTestDto> tests;
     private TestPackage testPackage;
-    private User user;
 
 }

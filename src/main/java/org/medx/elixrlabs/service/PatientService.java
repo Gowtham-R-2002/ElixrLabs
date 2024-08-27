@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.service;
 
+import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
@@ -49,7 +50,7 @@ public interface PatientService {
      *
      * @return A list of orders.
      */
-    List<Order> getOrders();
+    List<ResponseOrderDto> getOrders();
 
     /**
      * Retrieves an TestResult by orderID.
