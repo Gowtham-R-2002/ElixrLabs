@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.service.impl;
 
+import org.medx.elixrlabs.dto.SlotBookDto;
 import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.repository.AppointmentSlotRepository;
 import org.medx.elixrlabs.service.AppointmentSlotService;
@@ -27,18 +28,22 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     private JwtService jwtService;
 
     @Override
-    public Set<TimeSlotEnum> getAvailableSlots(LocationEnum location, LocalDate date, TestCollectionPlaceEnum testCollectionPlace) {
-        List<AppointmentSlot> appointments = appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(location, testCollectionPlace, date);
-
-        List<String> bookedTimeSlots = new ArrayList<>(appointments.stream().map(AppointmentSlot::getTimeSlot).toList());
-        bookedTimeSlots.add("TWELVE_PM");
-        bookedTimeSlots.add("TWELVE_PM");
-        bookedTimeSlots.add("TWELVE_PM");
-        bookedTimeSlots.add("TWELVE_PM");
+    public Set<String> getAvailableSlots(SlotBookDto slotBookDto) {
+        List<AppointmentSlot> appointments = appointmentSlotRepository
+                .findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate());
+        List<String> bookedTimeSlots = new ArrayList<>(appointments.stream()
+                .map(AppointmentSlot::getTimeSlot).toList());
         Set<TimeSlotEnum> availableSlots = Arrays.stream(TimeSlotEnum.values())
-                .filter(timeSlotEnum -> Collections.frequency(bookedTimeSlots, timeSlotEnum.name()) < sampleCollectorService.getSampleCollectorByPlace(location).size())
-                        .collect(Collectors.toSet());
-        System.out.println(availableSlots.stream().map(TimeSlotEnum::getTime).collect(Collectors.toSet()));
-        return availableSlots;
+                .filter(timeSlotEnum ->
+                        Collections.frequency(bookedTimeSlots, timeSlotEnum.name())
+                                < (slotBookDto.getTestCollectionPlace().equals(TestCollectionPlaceEnum.HOME)
+                                ? sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation()).size()
+                                : 5)).collect(Collectors.toSet());
+        return availableSlots.stream().map(TimeSlotEnum::getTime).collect(Collectors.toSet());
+    }
+
+    @Override
+    public boolean isSlotAvailable(SlotBookDto slotBookDto) {
+        return getAvailableSlots(slotBookDto).contains(slotBookDto.getTimeSlot());
     }
 }

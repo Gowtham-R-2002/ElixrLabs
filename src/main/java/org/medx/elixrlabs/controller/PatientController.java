@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.medx.elixrlabs.dto.CartDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
+import org.medx.elixrlabs.dto.SlotBookDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.model.Order;
@@ -52,11 +53,14 @@ public class PatientController {
 //    }
 
     @GetMapping("slots")
-    public ResponseEntity<Set<TimeSlotEnum>> getAvailableSlots() {
+    public ResponseEntity<Set<String>> getAvailableSlots(@RequestBody SlotBookDto slotBookDto) {
         return new ResponseEntity<>(appointmentSlotService
-                .getAvailableSlots(
-                        LocationEnum.MARINA, LocalDate.of(2024,9, 10),
-                        TestCollectionPlaceEnum.HOME), HttpStatus.OK);
+                .getAvailableSlots(slotBookDto), HttpStatus.OK);
+    }
+
+    @PostMapping("slots/book")
+    public boolean bookSlot(@RequestBody SlotBookDto slotBookDto) {
+        return appointmentSlotService.isSlotAvailable(slotBookDto);
     }
 
     @GetMapping
