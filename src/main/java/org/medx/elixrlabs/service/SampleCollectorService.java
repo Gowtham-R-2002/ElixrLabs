@@ -59,6 +59,6 @@ public interface SampleCollectorService {
      */
     SampleCollector getSampleCollectorByEmail(String email);
 
-    SampleCollector getSampleCollectorByPlace(LocationEnum place);
+    List<SampleCollector> getSampleCollectorByPlace(LocationEnum place);
 
 }

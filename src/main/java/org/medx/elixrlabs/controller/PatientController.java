@@ -1,6 +1,8 @@
 package org.medx.elixrlabs.controller;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 import org.medx.elixrlabs.dto.CartDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
@@ -8,9 +10,12 @@ import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
+import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.CartService;
-import org.medx.elixrlabs.service.impl.JwtService;
 import org.medx.elixrlabs.service.PatientService;
+import org.medx.elixrlabs.util.LocationEnum;
+import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
+import org.medx.elixrlabs.util.TimeSlotEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/patients")
 public class PatientController {
     @Autowired
-    private JwtService jwtService;
-
-    @Autowired
     private PatientService patientService;
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private AppointmentSlotService appointmentSlotService;
 
     @PostMapping("register")
     public ResponseEntity<UserDto> createOrUpdatePatient(@RequestBody UserDto userDto) {
@@ -41,14 +46,17 @@ public class PatientController {
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
-    @PostMapping("appointments")
-    public ResponseEntity<Order> bookAppointment() {
+//    @PostMapping("appointments")
+//    public ResponseEntity<Order> bookAppointment() {
+//
+//    }
 
-    }
-
-    @GetMapping
-    public ResponseEntity<List<AppointmentSlot>> getAvailableSlots() {
-
+    @GetMapping("slots")
+    public ResponseEntity<Set<TimeSlotEnum>> getAvailableSlots() {
+        return new ResponseEntity<>(appointmentSlotService
+                .getAvailableSlots(
+                        LocationEnum.MARINA, LocalDate.of(2024,9, 10),
+                        TestCollectionPlaceEnum.HOME), HttpStatus.OK);
     }
 
     @GetMapping
