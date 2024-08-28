@@ -5,12 +5,19 @@ import java.util.List;
 import org.medx.elixrlabs.dto.AppointmentDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
+import org.medx.elixrlabs.helper.SecurityContextHelper;
+import org.medx.elixrlabs.model.AppointmentSlot;
+import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.SampleCollectorService;
+import org.medx.elixrlabs.service.impl.JwtService;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static java.util.Arrays.stream;
 
 /**
  * REST controller for managing SampleCollector-related operations.
@@ -31,6 +38,9 @@ public class SampleCollectorController {
 
     @Autowired
     private AppointmentSlotService appointmentSlotService;
+
+    @Autowired
+    private JwtService jwtService;
 
     /**
      * Creates a new sample collector.
@@ -87,12 +97,25 @@ public class SampleCollectorController {
 
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentDto>> getAppointments(AppointmentDto appointmentDto) {
-        return new ResponseEntity<>(sampleCollectorService.getAppointmentByPlace(appointmentDto), HttpStatus.OK);
+        String place = jwtService.getAddress();
+        System.out.println("Place : " + place);
+        System.out.println("Enum : " + LocationEnum.valueOf(place));
+        List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(LocationEnum.valueOf(place), appointmentDto.getAppointmentDate());
+
+        List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
+                .map(slot -> AppointmentDto.builder()
+                        .appointmentDate(slot.getDateSlot())
+                        .userName(slot.getUser().getUsername())
+                        .timeSlot(slot.getTimeSlot())
+                        .appointmentId(slot.getId())
+                        .build()).toList();
+        return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
     }
 
     @PatchMapping("/appointments/{id}")
     public ResponseEntity<Void> assignAppointment(@PathVariable Long id) {
-        sampleCollectorService.assignSampleCollectorToAppointment(id);
+        SampleCollector sampleCollector = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
+        appointmentSlotService.assignSampleCollectorToAppointment(id, sampleCollector);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

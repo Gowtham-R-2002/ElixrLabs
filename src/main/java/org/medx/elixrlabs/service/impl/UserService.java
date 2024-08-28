@@ -1,12 +1,15 @@
 package org.medx.elixrlabs.service.impl;
 
-import org.medx.elixrlabs.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.medx.elixrlabs.model.User;
+import org.medx.elixrlabs.repository.UserRepository;
 
 /**
  * <p>
@@ -19,16 +22,26 @@ import org.medx.elixrlabs.model.User;
 @Service
 public class UserService implements UserDetailsService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     @Autowired
     private UserRepository userRepository;
 
     @Override
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmailWithRoles(email);
-        if (null != user) {
-            return user;
-        } else {
-            throw new UsernameNotFoundException(email);
+        logger.debug("Attempting to load user by email: {}", email);
+        try {
+            User user = userRepository.findByEmailWithRoles(email);
+            if (user != null) {
+                logger.info("Successfully loaded user with email: {}", email);
+                return user;
+            } else {
+                logger.warn("User not found with email: {}", email);
+                throw new UsernameNotFoundException("User not found with email: " + email);
+            }
+        } catch (Exception e) {
+            logger.warn("An error occurred while loading user by email: {}", email, e);
+            throw new UsernameNotFoundException("Error occurred while loading user by email: " + email, e);
         }
     }
 }

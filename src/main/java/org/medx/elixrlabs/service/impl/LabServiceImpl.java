@@ -1,62 +1,106 @@
 package org.medx.elixrlabs.service.impl;
 
-import org.medx.elixrlabs.dto.*;
+import java.util.List;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import org.medx.elixrlabs.dto.OrderLocationDto;
+import org.medx.elixrlabs.dto.OrderSuccessDto;
+import org.medx.elixrlabs.dto.TestResultDto;
+import org.medx.elixrlabs.dto.UserDto;
+import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.OrderMapper;
 import org.medx.elixrlabs.mapper.TestResultMapper;
-import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.service.LabService;
 import org.medx.elixrlabs.service.OrderService;
 import org.medx.elixrlabs.service.PatientService;
-import org.medx.elixrlabs.service.SampleCollectorService;
 import org.medx.elixrlabs.util.LocationEnum;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
 
+/**
+ * <p>
+ * Service implementation for managing lab-related operations.
+ * This class contains business logic for handling lab operations, including
+ * order management, report assignments, and status updates. It acts as
+ * a bridge between the controller layer and the other service layers.
+ * </p>
+ */
 @Service
 public class LabServiceImpl implements LabService {
 
-    @Autowired
-    JwtService jwtService;
+    private static final Logger logger = LoggerFactory.getLogger(LabServiceImpl.class);
 
     @Autowired
-    OrderService orderService;
+    private JwtService jwtService;
 
     @Autowired
-    UserService userService;
+    private OrderService orderService;
 
     @Autowired
-    PatientService patientService;
+    private UserService userService;
+
+    @Autowired
+    private PatientService patientService;
 
     @Override
     public List<OrderLocationDto> getOrders() {
-        User admin =  userService.loadUserByUsername(SecurityContextHelper.extractEmailFromContext());
-        LocationEnum location = LocationEnum.valueOf(jwtService.getAddress());
-        return orderService.getOrdersByLocation(location);
+        try {
+            User admin = userService.loadUserByUsername(SecurityContextHelper.extractEmailFromContext());
+            LocationEnum location = LocationEnum.valueOf(jwtService.getAddress());
+            return orderService.getOrdersByLocation(location);
+        } catch (Exception e) {
+            logger.warn("Error while fetching orders: {}", e.getMessage());
+            throw new LabException("Error while fetching orders: " + e.getMessage());
+        }
     }
 
     @Override
     public void assignReport(TestResult testResult) {
+        try {
+            // To Do
+            logger.info("Test result assigned successfully: {}", testResult);
+        } catch (Exception e) {
+            logger.warn("Error while assigning test report: {}", e.getMessage());
+            throw new LabException("Error while assigning test report: " + e.getMessage());
+        }
     }
 
     @Override
     public void updateStatus(Long id) {
-        orderService.updateOrderStatus(id);
+        try {
+            orderService.updateOrderStatus(id);
+            logger.info("Order status updated successfully for order id: {}", id);
+        } catch (Exception e) {
+            logger.warn("Error while updating order status for order id: {}", id);
+            throw new LabException("Error while updating order status for order id: " + id );
+        }
     }
 
     @Override
     public TestResultDto getTestResultByUser(UserDto patientDto, Long orderId) {
-        User patient = patientService.getPatientByEmail(patientDto.getEmail());
-        OrderSuccessDto order = OrderMapper.toOrderSuccessDto(orderService.getOrder(orderId));
-        for(OrderSuccessDto patientOrder : patientService.getOrdersByPatient(patientDto)) {
-            if(order == patientOrder) {
-                return TestResultMapper.toTestResultDto(patientService.getTestReport(orderId));
+        try {
+            User patient = patientService.getPatientByEmail(patientDto.getEmail());
+            OrderSuccessDto order = OrderMapper.toOrderSuccessDto(orderService.getOrder(orderId));
+            List<OrderSuccessDto> patientOrders = patientService.getOrdersByPatient(patientDto);
+
+            for (OrderSuccessDto patientOrder : patientOrders) {
+                if (Objects.equals(order.getId(), patientOrder.getId())) {
+                    TestResult testResult = patientService.getTestReport(orderId);
+                    return TestResultMapper.toTestResultDto(testResult);
+                }
             }
+            logger.info("Test result not found for user: {} and order id: {}", patientDto.getEmail(), orderId);
+            return null;
+        } catch (Exception e) {
+            logger.warn("Error while retrieving test result for user: {} and order id: {}", patientDto.getEmail(), orderId);
+            throw new LabException("Error while retrieving test result for user: " + patientDto.getEmail() + " and order id: " + orderId);
         }
-        return null;
     }
 }
