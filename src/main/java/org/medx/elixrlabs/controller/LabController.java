@@ -1,31 +1,36 @@
 package org.medx.elixrlabs.controller;
 
+import org.medx.elixrlabs.dto.OrderLocationDto;
+import org.medx.elixrlabs.dto.SampleCollectorDto;
+import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.service.LabService;
+import org.medx.elixrlabs.service.SampleCollectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("api/v1/labs")
 public class LabController {
     @Autowired
     private LabService labService;
 
+    @Autowired
+    private SampleCollectorService sampleCollectorService;
+
     @GetMapping
-    public ResponseEntity<List<Order>> getOrders() {
+    public ResponseEntity<List<OrderLocationDto>> getOrders() {
         return new ResponseEntity<>(labService.getOrders(), HttpStatus.OK);
     }
 
-    @PatchMapping
-    public ResponseEntity<HttpStatus.Series> updateOrderStatus() {
-        labService.updateStatus();
+    @PatchMapping("orders/{id}")
+    public ResponseEntity<HttpStatus.Series> updateOrderStatus(@PathVariable Long id) {
+        labService.updateStatus(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -33,5 +38,16 @@ public class LabController {
     public ResponseEntity<HttpStatus.Series> updateReport(TestResult testResult) {
         labService.assignReport(testResult);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PatchMapping("sample-collectors")
+    public ResponseEntity<HttpStatus.Series> verifySampleCollector(@RequestBody UserDto sampleCollector){
+        sampleCollectorService.verifySampleCollector(sampleCollector.getEmail());
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("sample-collectors")
+    public ResponseEntity<List<SampleCollectorDto>> getAllSampleCollectors() {
+        return new ResponseEntity<>(sampleCollectorService.getAllSampleCollectors(), HttpStatus.OK);
     }
 }
