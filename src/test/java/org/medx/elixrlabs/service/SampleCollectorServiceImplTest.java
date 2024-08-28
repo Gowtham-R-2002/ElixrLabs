@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
-import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.model.SampleCollector;
@@ -160,25 +159,25 @@ class SampleCollectorServiceImplTest {
     }
 
     @Test
-    void testGetAllSampleCollector_positive() {
+    void testGetSampleCollectors_positive() {
         when(sampleCollectorRepository.getAllSampleCollector()).thenReturn(sampleCollectors);
-        List<SampleCollectorDto> result = sampleCollectorService.getAllSampleCollector();
+        List<SampleCollectorDto> result = sampleCollectorService.getSampleCollectors();
         assertNotNull(result);
         assertEquals(2, result.size());
     }
 
     @Test
-    void testGetAllSampleCollector_negative() {
+    void testGetSampleCollectors_negative() {
         when(sampleCollectorRepository.getAllSampleCollector()).thenReturn(new ArrayList<>());
-        List<SampleCollectorDto> result = sampleCollectorService.getAllSampleCollector();
+        List<SampleCollectorDto> result = sampleCollectorService.getSampleCollectors();
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
 
     @Test
-    void testGetAllSampleCollector_exception() {
+    void testGetSampleCollectors_exception() {
         when(sampleCollectorRepository.getAllSampleCollector()).thenThrow(new RuntimeException("Database error"));
-        assertThrows(RuntimeException.class, () -> sampleCollectorService.getAllSampleCollector());
+        assertThrows(RuntimeException.class, () -> sampleCollectorService.getSampleCollectors());
     }
 
     @Test

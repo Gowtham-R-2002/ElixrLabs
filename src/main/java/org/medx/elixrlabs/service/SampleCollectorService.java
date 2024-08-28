@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.service;
 
+import org.medx.elixrlabs.dto.AppointmentDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.SampleCollector;
@@ -32,7 +33,7 @@ public interface SampleCollectorService {
      *
      * @return A list of SampleCollector DTOs.
      */
-    List<SampleCollectorDto> getAllSampleCollector();
+    List<SampleCollectorDto> getSampleCollectors();
 
     /**
      * Retrieves an SampleCollector by ID.
@@ -60,5 +61,11 @@ public interface SampleCollectorService {
     SampleCollector getSampleCollectorByEmail(String email);
 
     List<SampleCollector> getSampleCollectorByPlace(LocationEnum place);
+
+    List<AppointmentDto> getAppointmentByPlace(AppointmentDto appointmentDto);
+
+    void verifySampleCollector(String email);
+
+    List<SampleCollectorDto> getAllSampleCollectors();
 
 }

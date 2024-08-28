@@ -112,37 +112,37 @@ class SampleCollectorControllerTest {
 
     @Test
     void testGetAllSampleCollector_positive() {
-        when(sampleCollectorService.getAllSampleCollector()).thenReturn(sampleCollectorDtos);
+        when(sampleCollectorService.getSampleCollectors()).thenReturn(sampleCollectorDtos);
 
         ResponseEntity<List<SampleCollectorDto>> response = sampleCollectorController.getAllSampleCollector();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(2, response.getBody().size());
-        verify(sampleCollectorService).getAllSampleCollector();
+        verify(sampleCollectorService).getSampleCollectors();
     }
 
     @Test
     void testGetAllSampleCollector_negative() {
-        when(sampleCollectorService.getAllSampleCollector()).thenReturn(new ArrayList<>());
+        when(sampleCollectorService.getSampleCollectors()).thenReturn(new ArrayList<>());
 
         ResponseEntity<List<SampleCollectorDto>> response = sampleCollectorController.getAllSampleCollector();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().isEmpty());
-        verify(sampleCollectorService).getAllSampleCollector();
+        verify(sampleCollectorService).getSampleCollectors();
     }
 
     @Test
     void testGetAllSampleCollector_exception() {
-        when(sampleCollectorService.getAllSampleCollector()).thenThrow(new RuntimeException("Exception occurred"));
+        when(sampleCollectorService.getSampleCollectors()).thenThrow(new RuntimeException("Exception occurred"));
 
         Exception exception = assertThrows(RuntimeException.class,
                 () -> sampleCollectorController.getAllSampleCollector());
 
         assertEquals("Exception occurred", exception.getMessage());
-        verify(sampleCollectorService).getAllSampleCollector();
+        verify(sampleCollectorService).getSampleCollectors();
     }
 
     @Test
