@@ -3,6 +3,7 @@ package org.medx.elixrlabs.controller;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.validation.Valid;
 import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.model.Order;
@@ -49,7 +50,7 @@ public class PatientController {
     }
 
     @PostMapping("slots/book")
-    public ResponseEntity<OrderSuccessDto> bookSlot(@RequestBody SlotBookDto slotBookDto) {
+    public ResponseEntity<OrderSuccessDto> bookSlot(@Valid @RequestBody SlotBookDto slotBookDto) {
         return new ResponseEntity<>(appointmentSlotService.bookSlot(slotBookDto), HttpStatus.OK);
     }
 
