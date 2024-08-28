@@ -1,7 +1,9 @@
 package org.medx.elixrlabs.service;
 
+import org.medx.elixrlabs.dto.OrderLocationDto;
 import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.model.Order;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +14,9 @@ public interface OrderService {
 
     List<Order> getOrders();
 
-    Order getOrder();
+    Order getOrder(Long id);
 
-    void updateOrderStatus();
+    void updateOrderStatus(Long id);
+
+    List<OrderLocationDto> getOrdersByLocation(LocationEnum location);
 }

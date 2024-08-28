@@ -1,10 +1,12 @@
 package org.medx.elixrlabs.service.impl;
 
+import org.medx.elixrlabs.dto.AppointmentDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.SampleCollectorMapper;
 import org.medx.elixrlabs.mapper.UserMapper;
+import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.SampleCollectorRepository;
@@ -37,6 +39,12 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private JwtService jwtService;
+
+    @Autowired
+    private AppointmentSlotServiceImpl appointmentSlotService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -85,12 +93,10 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     }
 
     @Override
-    public List<SampleCollectorDto> getAllSampleCollector(){
-        List<SampleCollector> sampleCollectors;
+    public List<SampleCollectorDto> getSampleCollectors(){
         List<SampleCollectorDto> SampleCollectorDtos= new ArrayList<>();
         try {
-            sampleCollectors = sampleCollectorRepository.getAllSampleCollector();
-            for (SampleCollector sampleCollector : sampleCollectors) {
+            for (SampleCollector sampleCollector : sampleCollectorRepository.getAllSampleCollector()) {
                 SampleCollectorDtos.add(SampleCollectorMapper.convertToSampleCollectorDto(sampleCollector));
             }
         } catch (Exception e) {
@@ -112,6 +118,43 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     @Override
     public SampleCollectorDto getSampleCollectorById(Long id) {
         return null;
+    }
+
+    public List<AppointmentDto> getAppointmentByPlace(AppointmentDto appointmentDto) {
+        String place = jwtService.getAddress();
+        List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(LocationEnum.valueOf(place), appointmentDto.getAppointmentDate());
+
+        return appointmentSlots.stream()
+                .map(slot -> AppointmentDto.builder()
+                        .appointmentDate(slot.getDateSlot())
+                        .userName(slot.getUser().getUsername())
+                        .timeSlot(slot.getTimeSlot())
+                        .appointmentId(slot.getId())
+                        .build()).toList();
+    }
+
+    @Override
+    public void verifySampleCollector(String email) {
+        SampleCollector sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);
+        sampleCollector.setVerified(true);
+        sampleCollectorRepository.save(sampleCollector);
+    }
+
+    @Override
+    public List<SampleCollectorDto> getAllSampleCollectors() {
+        List<SampleCollectorDto> SampleCollectorDtos= new ArrayList<>();
+        try {
+            for (SampleCollector sampleCollector : sampleCollectorRepository.findAll()) {
+                SampleCollectorDtos.add(SampleCollectorMapper.convertToSampleCollectorDto(sampleCollector));
+            }
+        } catch (Exception e) {
+            throw new NoSuchElementException("There is no Sample Collectors");
+        }
+        return SampleCollectorDtos;
+    }
+
+    public void assignSampleCollectorToAppointment() {
+
     }
 
 }

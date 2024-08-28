@@ -2,20 +2,14 @@ package org.medx.elixrlabs.controller;
 
 import java.util.List;
 
+import org.medx.elixrlabs.dto.AppointmentDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.service.SampleCollectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST controller for managing SampleCollector-related operations.
@@ -52,8 +46,7 @@ public class SampleCollectorController {
      */
     @GetMapping
     public ResponseEntity<List<SampleCollectorDto>> getAllSampleCollector() {
-        List<SampleCollectorDto> SampleCollectorDtos = sampleCollectorService.getAllSampleCollector();
-        return new ResponseEntity<>(SampleCollectorDtos, HttpStatus.OK);
+        return new ResponseEntity<>(sampleCollectorService.getSampleCollectors(), HttpStatus.OK);
     }
 
     /**
@@ -87,4 +80,14 @@ public class SampleCollectorController {
     public ResponseEntity<Boolean> deleteSampleCollector() {
         return new ResponseEntity<>(sampleCollectorService.deleteSampleCollector(), HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/appointments")
+    public ResponseEntity<List<AppointmentDto>> getAppointments(AppointmentDto appointmentDto) {
+        return new ResponseEntity<>(sampleCollectorService.getAppointmentByPlace(appointmentDto), HttpStatus.OK);
+    }
+
+//    @PatchMapping
+//    public ResponseEntity<> assignAppointment() {
+//
+//    }
 }

@@ -24,4 +24,5 @@ public class SampleCollectorDto {
     private Long id;
     private User user;
     private boolean isVerified;
+
 }
