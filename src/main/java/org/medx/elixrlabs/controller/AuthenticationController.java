@@ -1,6 +1,10 @@
 package org.medx.elixrlabs.controller;
 
 import org.medx.elixrlabs.dto.LoginRequestDto;
+import org.medx.elixrlabs.dto.OtpDto;
+import org.medx.elixrlabs.exception.OTPValidationException;
+import org.medx.elixrlabs.model.OTP;
+import org.medx.elixrlabs.service.SmsService;
 import org.medx.elixrlabs.service.impl.JwtService;
 import org.medx.elixrlabs.service.impl.UserService;
 import org.medx.elixrlabs.util.LocationEnum;
@@ -15,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Calendar;
+import java.util.TimeZone;
+
 @RestController
 @RequestMapping("api/v1/auth/login")
 public class AuthenticationController {
@@ -26,18 +33,44 @@ public class AuthenticationController {
     private JwtService jwtService;
 
     @Autowired
+    private SmsService smsService;
+
+    @Autowired
     private UserService userService;
 
+    private Authentication userAuthentication;
+    private boolean isverified;
+    private OTP otp;
+
     @PostMapping
-    public String login(@RequestBody LoginRequestDto LoginRequestDto) {
+    public void login(@RequestBody LoginRequestDto loginRequestDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        LoginRequestDto.getEmail(),
-                        LoginRequestDto.getPassword()
+                        loginRequestDto.getEmail(),
+                        loginRequestDto.getPassword()
                 )
         );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        userAuthentication = authentication;
+        if(authentication.isAuthenticated()) {
+            otp = smsService.sendSmsAndGetOtp(userService.loadUserByUsername(loginRequestDto.getEmail()).getPhoneNumber());
+        } else {
+            SecurityContextHolder.getContext().setAuthentication(userAuthentication);
+        }
+    }
+
+    @PostMapping("verify")
+    public String verifyAndGenerateToken(@RequestBody OtpDto otpDto) {
+        if (otpDto.getOtp().equals(otp.getOtp()) &&
+                ((Calendar.getInstance(TimeZone.getTimeZone("GMT+05:30"))).compareTo(otp.getCalendar()) < 0)) {
+            SecurityContextHolder.getContext().setAuthentication(userAuthentication);
+        } else {
+            if (!otpDto.getOtp().equals(otp.getOtp())) {
+                throw new OTPValidationException("Invalid OTP Entered !");
+            } else {
+                throw new OTPValidationException("OTP Expired ! Please Re-login");
+            }
+        }
+        UserDetails userDetails = (UserDetails) userAuthentication.getPrincipal();
         LocationEnum address = userService.loadUserByUsername(userDetails.getUsername()).getPlace();
         return jwtService.generateToken(userDetails, address);
     }

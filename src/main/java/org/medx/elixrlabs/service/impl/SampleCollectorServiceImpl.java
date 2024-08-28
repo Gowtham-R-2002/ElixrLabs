@@ -10,6 +10,7 @@ import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.SampleCollectorRepository;
+import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.service.SampleCollectorService;
 import org.medx.elixrlabs.util.LocationEnum;
@@ -43,8 +44,8 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     @Autowired
     private JwtService jwtService;
 
-    @Autowired
-    private AppointmentSlotServiceImpl appointmentSlotService;
+//    @Autowired
+//    private AppointmentSlotService appointmentSlotService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -121,16 +122,17 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     }
 
     public List<AppointmentDto> getAppointmentByPlace(AppointmentDto appointmentDto) {
-        String place = jwtService.getAddress();
-        List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(LocationEnum.valueOf(place), appointmentDto.getAppointmentDate());
-
-        return appointmentSlots.stream()
-                .map(slot -> AppointmentDto.builder()
-                        .appointmentDate(slot.getDateSlot())
-                        .userName(slot.getUser().getUsername())
-                        .timeSlot(slot.getTimeSlot())
-                        .appointmentId(slot.getId())
-                        .build()).toList();
+//        String place = jwtService.getAddress();
+//        List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(LocationEnum.valueOf(place), appointmentDto.getAppointmentDate());
+//
+//        return appointmentSlots.stream()
+//                .map(slot -> AppointmentDto.builder()
+//                        .appointmentDate(slot.getDateSlot())
+//                        .userName(slot.getUser().getUsername())
+//                        .timeSlot(slot.getTimeSlot())
+//                        .appointmentId(slot.getId())
+//                        .build()).toList();
+        return new ArrayList<AppointmentDto>();
     }
 
     @Override

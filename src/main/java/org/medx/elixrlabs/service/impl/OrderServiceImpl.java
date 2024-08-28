@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -48,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderLocationDto> getOrdersByLocation(LocationEnum location) {
-        return orderRepository.findByLocation(location)
+        return orderRepository.findByLabLocation(location)
                 .stream()
                 .map(order ->
                         OrderLocationDto.builder()

@@ -67,7 +67,7 @@ class TestPackageControllerTest {
     @Test
     void testCreateTestPackage_positive() {
 
-        when(testPackageService.createOrUpdateTest(any(TestPackageDto.class)))
+        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class)))
                 .thenReturn(responseTestPackageDto);
 
         ResponseEntity<ResponseTestPackageDto> response = testPackageController
@@ -75,7 +75,7 @@ class TestPackageControllerTest {
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(responseTestPackageDto, response.getBody());
-        verify(testPackageService, times(1)).createOrUpdateTest(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
     }
 
     @Test
