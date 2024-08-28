@@ -68,4 +68,6 @@ public interface SampleCollectorService {
 
     List<SampleCollectorDto> getAllSampleCollectors();
 
+    void assignSampleCollectorToAppointment(Long id);
+
 }

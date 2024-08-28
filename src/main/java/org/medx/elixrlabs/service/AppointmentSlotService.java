@@ -3,6 +3,7 @@ package org.medx.elixrlabs.service;
 import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.SlotBookDto;
 import org.medx.elixrlabs.model.AppointmentSlot;
+import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.util.LocationEnum;
 
 import java.time.LocalDate;
@@ -19,4 +20,8 @@ public interface AppointmentSlotService {
     List<AppointmentSlot> getAppointmentsByPlace(LocationEnum location, LocalDate date);
 
     AppointmentSlot createOrUpdateAppointment(AppointmentSlot appointmentSlot);
+
+    void assignSampleCollectorToAppointment(Long id, SampleCollector sampleCollector);
+
+    void markSampleCollected(Long id);
 }
