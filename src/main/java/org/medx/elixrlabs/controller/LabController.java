@@ -1,11 +1,9 @@
 package org.medx.elixrlabs.controller;
 
-import org.medx.elixrlabs.dto.OrderLocationDto;
-import org.medx.elixrlabs.dto.SampleCollectorDto;
-import org.medx.elixrlabs.dto.UserDto;
-import org.medx.elixrlabs.model.Order;
+import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.service.LabService;
+import org.medx.elixrlabs.service.PatientService;
 import org.medx.elixrlabs.service.SampleCollectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +20,9 @@ public class LabController {
 
     @Autowired
     private SampleCollectorService sampleCollectorService;
+
+    @Autowired
+    private PatientService patientService;
 
     @GetMapping
     public ResponseEntity<List<OrderLocationDto>> getOrders() {
@@ -49,5 +50,15 @@ public class LabController {
     @GetMapping("sample-collectors")
     public ResponseEntity<List<SampleCollectorDto>> getAllSampleCollectors() {
         return new ResponseEntity<>(sampleCollectorService.getAllSampleCollectors(), HttpStatus.OK);
+    }
+
+    @GetMapping("patients/orders")
+    public ResponseEntity<List<OrderSuccessDto>> getOrdersByPatient(UserDto patientDto) {
+        return new ResponseEntity<>(patientService.getOrdersByPatient(patientDto), HttpStatus.OK);
+    }
+
+    @GetMapping("patients/orders/{id}/test-results")
+    public ResponseEntity<TestResultDto> getTestResult(@PathVariable Long orderId, @RequestBody UserDto patientDto) {
+        return null;
     }
 }

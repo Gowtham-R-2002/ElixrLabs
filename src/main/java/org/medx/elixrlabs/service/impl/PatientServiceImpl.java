@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
@@ -14,6 +15,7 @@ import org.medx.elixrlabs.mapper.UserMapper;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.UserRepository;
+import org.medx.elixrlabs.service.OrderService;
 import org.medx.elixrlabs.service.PatientService;
 import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private RoleServiceImpl roleServiceimpl;
+
+    @Autowired
+    private OrderService orderService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -87,6 +92,11 @@ public class PatientServiceImpl implements PatientService {
         }
         user.setDeleted(true);
         userRepository.save(user);
+    }
+
+    public List<OrderSuccessDto> getOrdersByPatient(UserDto patientDto) {
+        User patient =userRepository.getPatientOrders(patientDto.getEmail());
+        return patient.getOrders().stream().map(OrderMapper::toOrderSuccessDto).toList();
     }
 
     @Override
