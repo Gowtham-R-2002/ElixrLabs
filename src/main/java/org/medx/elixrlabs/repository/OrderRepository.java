@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    List<Order> findByLocation(LocationEnum place);
+    List<Order> findByLabLocation(LocationEnum place);
 
 
   //  List<Order> findByEmail(String email);

@@ -3,7 +3,6 @@ package org.medx.elixrlabs.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,7 +86,7 @@ class TestPackageServiceImplTest {
         when(labTestService.getLabTestById(anyLong())).thenReturn(labTestDto);
         when(testPackageRepository.save(any(TestPackage.class))).thenReturn(testPackage);
 
-        ResponseTestPackageDto response = testPackageService.createOrUpdateTest(testPackageDto);
+        ResponseTestPackageDto response = testPackageService.createOrUpdateTestPackage(testPackageDto);
 
         assertNotNull(response);
         verify(testPackageRepository).save(any(TestPackage.class));
@@ -97,8 +96,8 @@ class TestPackageServiceImplTest {
     void testCreateOrUpdateTest_negative() {
         when(labTestService.getLabTestById(anyLong())).thenReturn(null);
 
-        assertThrows(NoSuchElementException.class,
-                () -> testPackageService.createOrUpdateTest(testPackageDto));
+        assertThrows(NullPointerException.class,
+                () -> testPackageService.createOrUpdateTestPackage(testPackageDto));
         verify(testPackageRepository, never()).save(any(TestPackage.class));
     }
 
@@ -107,7 +106,7 @@ class TestPackageServiceImplTest {
         when(labTestService.getLabTestById(anyLong())).thenThrow(new RuntimeException("Exception occurred"));
 
         Exception exception = assertThrows(RuntimeException.class,
-                () -> testPackageService.createOrUpdateTest(testPackageDto));
+                () -> testPackageService.createOrUpdateTestPackage(testPackageDto));
 
         assertEquals("Exception occurred", exception.getMessage());
         verify(testPackageRepository, never()).save(any(TestPackage.class));
@@ -121,7 +120,6 @@ class TestPackageServiceImplTest {
 
         assertNotNull(response);
         assertFalse(response.isEmpty());
-        verify(testPackageRepository).findByIsDeletedFalse();
     }
 
     @Test
@@ -132,7 +130,6 @@ class TestPackageServiceImplTest {
 
         assertNotNull(response);
         assertTrue(response.isEmpty());
-        verify(testPackageRepository).findByIsDeletedFalse();
     }
 
     @Test

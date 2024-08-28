@@ -41,7 +41,6 @@ public class JwtService {
                 .expiration(Date.from(Instant.now().plusMillis(VALIDITY)))
                 .signWith(generateKey())
                 .compact();
-
     }
 
     public LocationEnum extractAddress(String jwt) {

@@ -3,7 +3,6 @@ package org.medx.elixrlabs.dto;
 import lombok.Builder;
 import lombok.Data;
 import org.medx.elixrlabs.model.TestPackage;
-import org.medx.elixrlabs.model.User;
 
 import java.util.List;
 

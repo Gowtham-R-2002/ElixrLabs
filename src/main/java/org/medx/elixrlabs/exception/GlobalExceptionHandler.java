@@ -8,8 +8,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.Arrays;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)
@@ -38,5 +36,14 @@ public class GlobalExceptionHandler {
                 .message(httpMessageNotReadableException.getMessage())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(OTPValidationException.class)
+    public ResponseEntity<ErrorResponse> handleOTPExpiredException(OTPValidationException otpValidationException) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                .message(otpValidationException.getMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 }

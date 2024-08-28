@@ -35,7 +35,7 @@ public class LabServiceImpl implements LabService {
     @Override
     public List<OrderLocationDto> getOrders() {
         User admin =  userService.loadUserByUsername(SecurityContextHelper.extractEmailFromContext());
-        LocationEnum location = jwtService.extractAddress(admin.getEmail());
+        LocationEnum location = LocationEnum.valueOf(jwtService.getAddress());
         return orderService.getOrdersByLocation(location);
     }
 

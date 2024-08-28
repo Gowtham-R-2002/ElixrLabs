@@ -67,7 +67,7 @@ class TestPackageControllerTest {
     @Test
     void testCreateTestPackage_positive() {
 
-        when(testPackageService.createOrUpdateTest(any(TestPackageDto.class)))
+        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class)))
                 .thenReturn(responseTestPackageDto);
 
         ResponseEntity<ResponseTestPackageDto> response = testPackageController
@@ -75,32 +75,32 @@ class TestPackageControllerTest {
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(responseTestPackageDto, response.getBody());
-        verify(testPackageService, times(1)).createOrUpdateTest(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
     }
 
     @Test
     void testCreateTestPackage_negative() {
 
-        when(testPackageService.createOrUpdateTest(any(TestPackageDto.class))).thenReturn(null);
+        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class))).thenReturn(null);
 
         ResponseEntity<ResponseTestPackageDto> response = testPackageController
                 .createTestPackage(testPackageDto);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNull(response.getBody());
-        verify(testPackageService, times(1)).createOrUpdateTest(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
     }
 
     @Test
     void testCreateTestPackage_exception() {
 
-        when(testPackageService.createOrUpdateTest(any(TestPackageDto.class)))
+        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class)))
                 .thenThrow(new RuntimeException("Exception occurred"));
 
         assertThrows(RuntimeException.class,
                 () -> testPackageController.createTestPackage(testPackageDto));
 
-        verify(testPackageService, times(1)).createOrUpdateTest(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
     }
 
     @Test
@@ -179,7 +179,7 @@ class TestPackageControllerTest {
     @Test
     void testUpdateTestPackageById_positive() {
 
-        when(testPackageService.createOrUpdateTest(any(TestPackageDto.class)))
+        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class)))
                 .thenReturn(responseTestPackageDto);
 
         ResponseEntity<ResponseTestPackageDto> response = testPackageController
@@ -187,32 +187,32 @@ class TestPackageControllerTest {
 
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         assertEquals(responseTestPackageDto, response.getBody());
-        verify(testPackageService, times(1)).createOrUpdateTest(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
     }
 
     @Test
     void testUpdateTestPackageById_negative() {
 
-        when(testPackageService.createOrUpdateTest(any(TestPackageDto.class))).thenReturn(null);
+        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class))).thenReturn(null);
 
         ResponseEntity<ResponseTestPackageDto> response = testPackageController
                 .updateTestPackageById(testPackageDto);
 
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         assertNull(response.getBody());
-        verify(testPackageService, times(1)).createOrUpdateTest(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
     }
 
     @Test
     void testUpdateTestPackageById_exception() {
 
-        when(testPackageService.createOrUpdateTest(any(TestPackageDto.class)))
+        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class)))
                 .thenThrow(new RuntimeException("Exception occurred"));
 
         assertThrows(RuntimeException.class,
                 () -> testPackageController.updateTestPackageById(testPackageDto));
 
-        verify(testPackageService, times(1)).createOrUpdateTest(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
     }
 
     @Test
