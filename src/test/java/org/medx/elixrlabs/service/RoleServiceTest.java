@@ -3,6 +3,7 @@ package org.medx.elixrlabs.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.service.impl.RoleServiceImpl;
@@ -61,7 +62,7 @@ public class RoleServiceTest {
 
     @Test
     void testGetAllRoles_exception() {
-        when(roleRepository.findAll()).thenThrow(Exception.class);
-        assertThrows(Exception.class, () -> roleService.getAllRoles());
+        when(roleRepository.findAll()).thenThrow(RuntimeException.class);
+        assertThrows(LabException.class, () -> roleService.getAllRoles());
     }
 }
