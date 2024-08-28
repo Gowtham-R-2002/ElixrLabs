@@ -155,8 +155,10 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         return SampleCollectorDtos;
     }
 
-    public void assignSampleCollectorToAppointment() {
-
+    @Override
+    public void assignSampleCollectorToAppointment(Long id) {
+        SampleCollector sampleCollector = getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
+        appointmentSlotService.assignSampleCollectorToAppointment(id, sampleCollector);
     }
 
 }

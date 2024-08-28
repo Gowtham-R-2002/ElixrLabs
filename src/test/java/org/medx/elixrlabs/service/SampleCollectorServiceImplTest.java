@@ -182,7 +182,7 @@ class SampleCollectorServiceImplTest {
 
     @Test
     void testGetSampleCollectorByPlace_positive() {
-        when(sampleCollectorRepository.getSampleCollectorByPlace(any(LocationEnum.class))).thenReturn(sampleCollectors);
+        when(sampleCollectorRepository.getSampleCollectorsByPlace(any(LocationEnum.class))).thenReturn(sampleCollectors);
         List<SampleCollector> result = sampleCollectorService.getSampleCollectorByPlace(LocationEnum.GUINDY);
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -190,7 +190,7 @@ class SampleCollectorServiceImplTest {
 
     @Test
     void testGetSampleCollectorByPlace_negative() {
-        when(sampleCollectorRepository.getSampleCollectorByPlace(any(LocationEnum.class))).thenReturn(new ArrayList<>());
+        when(sampleCollectorRepository.getSampleCollectorsByPlace(any(LocationEnum.class))).thenReturn(new ArrayList<>());
         List<SampleCollector> result = sampleCollectorService.getSampleCollectorByPlace(LocationEnum.GUINDY);
         assertNotNull(result);
         assertTrue(result.isEmpty());
@@ -198,7 +198,7 @@ class SampleCollectorServiceImplTest {
 
     @Test
     void testGetSampleCollectorByPlace_exception() {
-        when(sampleCollectorRepository.getSampleCollectorByPlace(any(LocationEnum.class))).thenThrow(new RuntimeException("Database error"));
+        when(sampleCollectorRepository.getSampleCollectorsByPlace(any(LocationEnum.class))).thenThrow(new RuntimeException("Database error"));
         assertThrows(RuntimeException.class, () -> sampleCollectorService.getSampleCollectorByPlace(LocationEnum.GUINDY));
     }
 

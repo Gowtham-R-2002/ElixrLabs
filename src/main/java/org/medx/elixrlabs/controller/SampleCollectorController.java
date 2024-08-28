@@ -5,6 +5,7 @@ import java.util.List;
 import org.medx.elixrlabs.dto.AppointmentDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
+import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.SampleCollectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,9 @@ public class SampleCollectorController {
 
     @Autowired
     private SampleCollectorService sampleCollectorService;
+
+    @Autowired
+    private AppointmentSlotService appointmentSlotService;
 
     /**
      * Creates a new sample collector.
@@ -86,8 +90,15 @@ public class SampleCollectorController {
         return new ResponseEntity<>(sampleCollectorService.getAppointmentByPlace(appointmentDto), HttpStatus.OK);
     }
 
-//    @PatchMapping
-//    public ResponseEntity<> assignAppointment() {
-//
-//    }
+    @PatchMapping("/appointments/{id}")
+    public ResponseEntity<Void> assignAppointment(@PathVariable Long id) {
+        sampleCollectorService.assignSampleCollectorToAppointment(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    @PatchMapping("/appointments/{id}/status")
+    public ResponseEntity<Void> markSampleCollected(@PathVariable Long id) {
+        appointmentSlotService.markSampleCollected(id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
 }

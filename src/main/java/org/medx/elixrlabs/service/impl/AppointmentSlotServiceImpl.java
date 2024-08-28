@@ -8,6 +8,7 @@ import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.LabTestMapper;
 import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.Order;
+import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.AppointmentSlotRepository;
 import org.medx.elixrlabs.service.*;
@@ -90,7 +91,8 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     @Override
     public List<AppointmentSlot> getAppointmentsByPlace(LocationEnum location, LocalDate date) {
-        return appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(location, TestCollectionPlaceEnum.LAB, date);
+        return appointmentSlotRepository
+                .findByLocationAndTestCollectionPlaceAndDateSlot(location, TestCollectionPlaceEnum.LAB, date);
     }
 
     @Override
@@ -98,5 +100,20 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         return appointmentSlotRepository.save(appointmentSlot);
     }
 
+    @Override
+    public void assignSampleCollectorToAppointment(Long id, SampleCollector sampleCollector) {
+        AppointmentSlot appointmentSlot = appointmentSlotRepository.findById(id)
+                .orElseThrow(() -> new LabException("No appointment slot found with id: "+ id));
+        appointmentSlot.setSampleCollector(sampleCollector);
+        appointmentSlotRepository.save(appointmentSlot);
+    }
+
+    @Override
+    public void markSampleCollected(Long id) {
+        AppointmentSlot appointmentSlot = appointmentSlotRepository.findById(id)
+                .orElseThrow(() -> new LabException("No appointment slot found with id: "+ id));
+        appointmentSlot.setSampleCollected(true);
+        appointmentSlotRepository.save(appointmentSlot);
+    }
 
 }
