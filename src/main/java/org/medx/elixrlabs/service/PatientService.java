@@ -1,12 +1,8 @@
 package org.medx.elixrlabs.service;
 
-import org.medx.elixrlabs.dto.OrderSuccessDto;
-import org.medx.elixrlabs.dto.ResponseOrderDto;
-import org.medx.elixrlabs.dto.TestResultDto;
-import org.medx.elixrlabs.dto.UserDto;
-import org.medx.elixrlabs.model.Order;
+import org.medx.elixrlabs.dto.*;
+import org.medx.elixrlabs.model.Patient;
 import org.medx.elixrlabs.model.TestResult;
-import org.medx.elixrlabs.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,14 +19,14 @@ import java.util.NoSuchElementException;
 public interface PatientService {
 
 
-    UserDto createOrUpdatePatient(UserDto userDto);
+    ResponsePatientDto createOrUpdatePatient(UserDto userDto);
 
     /**
      * Retrieves all patients.
      *
      * @return A list of User DTOs.
      */
-    List<UserDto> getAllPatients();
+    List<ResponsePatientDto> getAllPatients();
 
     /**
      * Fetches a patient with the help of their email
@@ -38,7 +34,7 @@ public interface PatientService {
      * @param email email of the specific patient
      * @return the dto of the specific patient
      */
-    User getPatientByEmail(String email);
+    Patient getPatientByEmail(String email);
 
     /**
      * Books a slot according to the patients booking time and returns a status.
@@ -78,5 +74,5 @@ public interface PatientService {
      * @return all the orders related to the patient
      */
 
-    List<OrderSuccessDto> getOrdersByPatient(UserDto patientDto);
+    List<ResponseOrderDto> getOrdersByPatient(UserDto patientDto);
 }

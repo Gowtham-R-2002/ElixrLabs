@@ -53,9 +53,6 @@ public class User implements UserDetails {
     )
     private List<Role> roles;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Order> orders;
-
     @Enumerated(EnumType.STRING)
     private LocationEnum place;
 
@@ -68,8 +65,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
 
-    @Column(name = "is_deleted")
-    private boolean isDeleted;
+    @Column(name = "is_blocked")
+    private boolean isBlocked;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(

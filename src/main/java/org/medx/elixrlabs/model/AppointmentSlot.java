@@ -36,7 +36,7 @@ public class AppointmentSlot {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private Patient patient;
 
     @Column(name = "date_slot")
     private LocalDate dateSlot;
@@ -48,7 +48,7 @@ public class AppointmentSlot {
     @Enumerated(value = EnumType.STRING)
     private LocationEnum location;
 
-    @OneToOne
+    @ManyToOne
     private SampleCollector sampleCollector;
 
     @Column(name = "appointment_place")

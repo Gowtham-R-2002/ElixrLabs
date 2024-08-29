@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.medx.elixrlabs.model.*;
 import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.CartService;
 import org.medx.elixrlabs.service.OrderService;
@@ -28,10 +29,6 @@ import org.medx.elixrlabs.dto.SlotBookDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.LabTestMapper;
-import org.medx.elixrlabs.model.AppointmentSlot;
-import org.medx.elixrlabs.model.Order;
-import org.medx.elixrlabs.model.SampleCollector;
-import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.AppointmentSlotRepository;
 
 @Service
@@ -94,11 +91,11 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         try {
             logger.debug("Attempting to book slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
             if (isSlotAvailable(slotBookDto)) {
-                User patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
+                Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
                 ResponseCartDto cart = cartService.getCartByPatient();
                 AppointmentSlot appointmentSlot = AppointmentSlot.builder()
                         .dateSlot(slotBookDto.getDate())
-                        .user(patient)
+                        .patient(patient)
                         .timeSlot(slotBookDto.getTimeSlot())
                         .location(slotBookDto.getLocation())
                         .testCollectionPlace(slotBookDto.getTestCollectionPlace())
@@ -107,7 +104,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                         .slot(appointmentSlot)
                         .tests(cart.getTests().stream().map(LabTestMapper::toLabTest).collect(Collectors.toList()))
                         .paymentStatus(PaymentStatusEnum.PAID)
-                        .user(patient)
+                        .patient(patient)
                         .sampleCollectionPlace(slotBookDto.getTestCollectionPlace())
                         .labLocation(slotBookDto.getLocation())
                         .testPackage(cart.getTestPackage())
@@ -132,7 +129,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         try {
             logger.debug("Fetching appointments for location: {}, date: {}", location, date);
             List<AppointmentSlot> appointments = appointmentSlotRepository
-                    .findByLocationAndTestCollectionPlaceAndDateSlot(location, TestCollectionPlaceEnum.LAB, date);
+                    .findByLocationAndTestCollectionPlaceAndDateSlot(location, TestCollectionPlaceEnum.HOME, date);
             logger.info("Appointments fetched successfully for location: {}, date: {}", location, date);
             return appointments;
         } catch (Exception e) {

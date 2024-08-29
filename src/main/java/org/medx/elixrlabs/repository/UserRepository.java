@@ -19,22 +19,9 @@ import java.util.List;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    String getUserWithRoles = "FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email AND u.isDeleted = false";
-    String getAllPatientsQuery = "FROM User u LEFT JOIN FETCH u.roles r WHERE r.name = ROLE_PATIENT";
-    String getPatientWithOrders = "FROM User u LEFT JOIN FETCH u.orders WHERE u.email = email";
-    String getTestResultByPatient = "FROM User u LEFT JOIN FETCH u.orders o JOIN FETCH o.testResult WHERE u.email = :email";
+    String getUserWithRoles = "FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email AND u.isBlocked = false";
 
     @Query(getUserWithRoles)
     User findByEmailWithRoles(@Param("email") String email);
 
-    @Query(getAllPatientsQuery)
-    List<User> fetchAllPatients();
-
-    @Query(getPatientWithOrders)
-    User getPatientOrders(@Param("email") String email);
-
-    User findByEmailAndIsDeletedFalse(String email);
-
-    @Query(getTestResultByPatient)
-    User fetchTestResultByPatient(@Param("email") String email);
 }

@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import org.medx.elixrlabs.dto.ResponsePatientDto;
+import org.medx.elixrlabs.mapper.PatientMapper;
+import org.medx.elixrlabs.model.Patient;
+import org.medx.elixrlabs.repository.PatientRepository;
 import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
@@ -18,7 +21,6 @@ import org.medx.elixrlabs.mapper.OrderMapper;
 import org.medx.elixrlabs.mapper.UserMapper;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.model.User;
-import org.medx.elixrlabs.repository.UserRepository;
 import org.medx.elixrlabs.service.OrderService;
 import org.medx.elixrlabs.service.PatientService;
 import org.medx.elixrlabs.service.RoleService;
@@ -36,7 +38,7 @@ import org.medx.elixrlabs.service.RoleService;
 public class PatientServiceImpl implements PatientService {
 
     @Autowired
-    private UserRepository userRepository;
+    private PatientRepository patientRepository;
 
     @Autowired
     private RoleService roleService;
@@ -48,27 +50,35 @@ public class PatientServiceImpl implements PatientService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public UserDto createOrUpdatePatient(UserDto userDto) {
-        User existingUser = getPatientByEmail(userDto.getEmail());
+    public ResponsePatientDto createOrUpdatePatient(UserDto userDto) {
+        Patient patient = getPatientByEmail(userDto.getEmail());
+        System.out.println(patient);
         User user = UserMapper.toUser(userDto);
+        System.out.println(user);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)));
-        if (existingUser != null) {
-            user.setUUID(existingUser.getUUID());
+        if(patient != null) {
+            System.out.println("inside not null part");
+            user.setUUID(patient.getUser().getUUID());
+            patient.setUser(user);
+            return PatientMapper.toPatientDto(patientRepository.save(patient));
         }
-        User savedUser;
+        Patient newPatient = Patient.builder().user(user).build();
+        Patient savedPatient;
+        System.out.println("above try");
         try {
-            savedUser = userRepository.save(user);
+            System.out.println("inside try");
+            savedPatient = patientRepository.save(newPatient);
         } catch (Exception e) {
-            throw new LabException("Error while saving Patient with email: " + userDto.getEmail());
+            throw new LabException("Error while saving Patient with email: " + userDto.getEmail() + e.getMessage());
         }
-        return UserMapper.toUserDto(savedUser);
+        return PatientMapper.toPatientDto(savedPatient);
     }
 
     @Override
-    public List<UserDto> getAllPatients() {
-        return userRepository.fetchAllPatients().stream()
-                .map(UserMapper::toUserDto)
+    public List<ResponsePatientDto> getAllPatients() {
+        return patientRepository.fetchAllPatients().stream()
+                .map(PatientMapper::toPatientDto)
                 .collect(Collectors.toList());
     }
 
@@ -79,7 +89,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<ResponseOrderDto> getOrders() {
-        return userRepository.getPatientOrders(SecurityContextHelper.extractEmailFromContext())
+        return patientRepository.getPatientOrders(SecurityContextHelper.extractEmailFromContext())
                 .getOrders().stream()
                 .map(OrderMapper::toResponseOrderDto)
                 .collect(Collectors.toList());
@@ -92,26 +102,26 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public void deletePatient(String email) {
-        User user = getPatientByEmail(email);
-        if (user == null) {
+        Patient patient = getPatientByEmail(email);
+        if (patient == null) {
             throw new NoSuchElementException("Patient not found with email: " + email);
         }
-        user.setDeleted(true);
-        userRepository.save(user);
+        patient.setDeleted(true);
+        patientRepository.save(patient);
     }
 
     @Override
-    public List<OrderSuccessDto> getOrdersByPatient(UserDto patientDto) {
-        User patient = userRepository.getPatientOrders(patientDto.getEmail());
+    public List<ResponseOrderDto> getOrdersByPatient(UserDto patientDto) {
+        Patient patient = patientRepository.getPatientOrders(patientDto.getEmail());
         return patient.getOrders().stream()
-                .map(OrderMapper::toOrderSuccessDto)
+                .map(OrderMapper::toResponseOrderDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public User getPatientByEmail(String email) {
+    public Patient getPatientByEmail(String email) {
         try {
-            return userRepository.findByEmailAndIsDeletedFalse(email);
+            return patientRepository.findByEmailAndIsDeletedFalse(email);
         } catch (Exception e) {
             throw new LabException("Error while getting patient with email: " + email);
         }

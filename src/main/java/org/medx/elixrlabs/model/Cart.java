@@ -30,5 +30,5 @@ public class Cart {
     private TestPackage testPackage;
 
     @OneToOne
-    private User patient;
+    private Patient patient;
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.medx.elixrlabs.model.Patient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ResponseCartDto addTestsOrPackagesToCart(CartDto cartDto) {
-        User patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
+        Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
         Cart userCart = cartRepository.findCartByUser(patient);
         if (userCart == null) {
             userCart = Cart.builder()
@@ -75,14 +76,14 @@ public class CartServiceImpl implements CartService {
             }
             return CartMapper.toCartDto(cartRepository.save(userCart));
         } catch (Exception e) {
-            logger.warn("Error while adding tests or packages to cart for patient: {}", patient.getEmail());
+            logger.warn("Error while adding tests or packages to cart for patient: {}", patient.getUser().getUsername());
             throw new LabException("Error while adding tests or packages to cart");
         }
     }
 
     @Override
     public ResponseCartDto getCartByPatient() {
-        User patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
+        Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
         try {
             Cart userCart = cartRepository.findCartByUser(patient);
             if (userCart == null) {
@@ -93,24 +94,24 @@ public class CartServiceImpl implements CartService {
             }
             return CartMapper.toCartDto(userCart);
         } catch (Exception e) {
-            logger.warn("Error while retrieving cart for patient: {}", patient.getEmail());
+            logger.warn("Error while retrieving cart for patient: {}", patient.getUser().getEmail());
             throw new LabException("Error while retrieving cart");
         }
     }
 
     @Override
     public void deleteCart() {
-        User patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
+        Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
         Cart userCart = cartRepository.findCartByUser(patient);
         if (userCart != null) {
             try {
                 cartRepository.delete(userCart);
             } catch (Exception e) {
-                logger.warn("Error while deleting cart for patient: {}", patient.getEmail());
+                logger.warn("Error while deleting cart for patient: {}", patient.getUser().getUsername());
                 throw new LabException("Error while deleting cart");
             }
         } else {
-            logger.warn("Attempted to delete cart for patient with no existing cart: {}", patient.getEmail());
+            logger.warn("Attempted to delete cart for patient with no existing cart: {}", patient.getUser().getUsername());
         }
     }
 }

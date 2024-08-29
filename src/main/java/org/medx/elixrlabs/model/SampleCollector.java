@@ -30,14 +30,16 @@ public class SampleCollector {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany
-    @JoinColumn(name = "appointment_slots_id")
     private List<AppointmentSlot> appointmentSlots;
 
     @Column(columnDefinition = "boolean default true")
     private boolean isVerified;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 }
