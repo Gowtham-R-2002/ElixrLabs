@@ -57,7 +57,7 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    private User user;
+    private Patient patient;
 
     @Column(name = "test_status")
     @Enumerated(value = EnumType.STRING)

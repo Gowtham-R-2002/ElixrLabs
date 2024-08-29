@@ -41,8 +41,8 @@ public class PatientController {
     private AppointmentSlotService appointmentSlotService;
 
     @PostMapping("register")
-    public ResponseEntity<UserDto> createOrUpdatePatient(@RequestBody UserDto userDto) {
-        UserDto savedUser =  patientService.createOrUpdatePatient(userDto);
+    public ResponseEntity<ResponsePatientDto> createOrUpdatePatient(@RequestBody UserDto userDto) {
+        ResponsePatientDto savedUser =  patientService.createOrUpdatePatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
@@ -59,11 +59,6 @@ public class PatientController {
         return new ResponseEntity<>(appointmentSlotService.bookSlot(slotBookDto), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserDto>> getAllPatients() {
-        return new ResponseEntity<>(patientService.getAllPatients(), HttpStatus.OK);
-    }
-
     @GetMapping("orders")
     public ResponseEntity<List<ResponseOrderDto>> getOrders() {
         return new ResponseEntity<>(patientService.getOrders(), HttpStatus.OK);
@@ -75,8 +70,8 @@ public class PatientController {
     }
 
     @PutMapping
-    public ResponseEntity<UserDto> updatePatient(@RequestBody UserDto userDto) {
-        UserDto savedUser =  patientService.createOrUpdatePatient(userDto);
+    public ResponseEntity<ResponsePatientDto> updatePatient(@RequestBody UserDto userDto) {
+        ResponsePatientDto savedUser =  patientService.createOrUpdatePatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.OK);
     }
 

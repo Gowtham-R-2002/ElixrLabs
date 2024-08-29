@@ -21,13 +21,13 @@ import java.util.List;
 @Repository
 public interface SampleCollectorRepository extends JpaRepository<SampleCollector, Long> {
     String getSampleCollectorByEmailQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.user.email = :email"
-            + " AND s.user.isDeleted = false";
+            + " AND s.isDeleted = false";
 
     String getAllSampleCollectorQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.isVerified = true"
-            + " AND s.user.isDeleted = false";
+            + " AND s.isDeleted = false";
 
     String getSampleCollectorByPlaceQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.user.place = :place"
-            + " AND s.isVerified = true AND s.user.isDeleted = false";
+            + " AND s.isVerified = true AND s.isDeleted = false";
 
     @Query(getSampleCollectorByEmailQuery)
     SampleCollector getSampleCollectorByEmail(@Param("email") String email);

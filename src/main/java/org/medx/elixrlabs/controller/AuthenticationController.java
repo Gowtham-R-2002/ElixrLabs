@@ -43,7 +43,6 @@ public class AuthenticationController {
     private UserService userService;
 
     private Authentication userAuthentication;
-    private boolean isverified;
     private OTP otp;
 
     @PostMapping

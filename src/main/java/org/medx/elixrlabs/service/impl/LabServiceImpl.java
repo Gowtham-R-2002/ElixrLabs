@@ -3,15 +3,13 @@ package org.medx.elixrlabs.service.impl;
 import java.util.List;
 import java.util.Objects;
 
+import org.medx.elixrlabs.dto.*;
+import org.medx.elixrlabs.model.Patient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.medx.elixrlabs.dto.OrderLocationDto;
-import org.medx.elixrlabs.dto.OrderSuccessDto;
-import org.medx.elixrlabs.dto.TestResultDto;
-import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.OrderMapper;
@@ -50,10 +48,12 @@ public class LabServiceImpl implements LabService {
     private PatientService patientService;
 
     @Override
-    public List<OrderLocationDto> getOrders() {
+    public List<ResponseOrderDto> getOrders() {
         try {
             User admin = userService.loadUserByUsername(SecurityContextHelper.extractEmailFromContext());
-            LocationEnum location = LocationEnum.valueOf(jwtService.getAddress());
+            System.out.println(admin);
+            LocationEnum location = admin.getPlace();
+            System.out.println(location);
             return orderService.getOrdersByLocation(location);
         } catch (Exception e) {
             logger.warn("Error while fetching orders: {}", e.getMessage());
@@ -86,11 +86,11 @@ public class LabServiceImpl implements LabService {
     @Override
     public TestResultDto getTestResultByUser(UserDto patientDto, Long orderId) {
         try {
-            User patient = patientService.getPatientByEmail(patientDto.getEmail());
+            Patient patient = patientService.getPatientByEmail(patientDto.getEmail());
             OrderSuccessDto order = OrderMapper.toOrderSuccessDto(orderService.getOrder(orderId));
-            List<OrderSuccessDto> patientOrders = patientService.getOrdersByPatient(patientDto);
+            List<ResponseOrderDto> patientOrders = patientService.getOrdersByPatient(patientDto);
 
-            for (OrderSuccessDto patientOrder : patientOrders) {
+            for (ResponseOrderDto patientOrder : patientOrders) {
                 if (Objects.equals(order.getId(), patientOrder.getId())) {
                     TestResult testResult = patientService.getTestReport(orderId);
                     return TestResultMapper.toTestResultDto(testResult);

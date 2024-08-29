@@ -26,7 +26,7 @@ public class LabController {
     private PatientService patientService;
 
     @GetMapping
-    public ResponseEntity<List<OrderLocationDto>> getOrders() {
+    public ResponseEntity<List<ResponseOrderDto>> getOrders() {
         return new ResponseEntity<>(labService.getOrders(), HttpStatus.OK);
     }
 
@@ -36,7 +36,7 @@ public class LabController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping
+    @PutMapping("orders/{id}/results")
     public ResponseEntity<HttpStatus.Series> updateReport(TestResult testResult) {
         labService.assignReport(testResult);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -54,7 +54,7 @@ public class LabController {
     }
 
     @GetMapping("patients/orders")
-    public ResponseEntity<List<OrderSuccessDto>> getOrdersByPatient(UserDto patientDto) {
+    public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(UserDto patientDto) {
         return new ResponseEntity<>(patientService.getOrdersByPatient(patientDto), HttpStatus.OK);
     }
 

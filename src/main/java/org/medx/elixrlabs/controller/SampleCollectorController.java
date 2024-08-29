@@ -63,27 +63,6 @@ public class SampleCollectorController {
     }
 
     /**
-     * Retrieves a list of all sample collector.
-     *
-     * @return the list of all sample collectors as sample collector DTOs with HTTP status 200 OK.
-     */
-    @GetMapping
-    public ResponseEntity<List<SampleCollectorDto>> getAllSampleCollector() {
-        return new ResponseEntity<>(sampleCollectorService.getSampleCollectors(), HttpStatus.OK);
-    }
-
-    /**
-     * Retrieves an sample collector by their unique ID.
-     *
-     * @param id The unique sample collector ID
-     * @return The sample collector DTO if found with HTTP status 200 OK.
-     */
-    @GetMapping("/{id}")
-    public ResponseEntity<SampleCollectorDto> getSampleCollectorById(@PathVariable Long id) {
-        return new ResponseEntity<>(sampleCollectorService.getSampleCollectorById(id), HttpStatus.OK);
-    }
-
-    /**
      * Updates an existing sample collector's details by their unique ID.
      *
      * @param userDto {@link UserDto} The DTO containing sample collector data.
@@ -105,16 +84,14 @@ public class SampleCollectorController {
     }
 
     @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentDto>> getAppointments(AppointmentDto appointmentDto) {
-        String place = jwtService.getAddress();
-        System.out.println("Place : " + place);
-        System.out.println("Enum : " + LocationEnum.valueOf(place));
-        List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(LocationEnum.valueOf(place), appointmentDto.getAppointmentDate());
+    public ResponseEntity<List<AppointmentDto>> getAppointments(@RequestBody AppointmentDto appointmentDto) {
+        LocationEnum place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
+        List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(place, appointmentDto.getAppointmentDate());
 
         List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
                 .map(slot -> AppointmentDto.builder()
                         .appointmentDate(slot.getDateSlot())
-                        .userName(slot.getUser().getUsername())
+                        .userName(slot.getPatient().getUser().getUsername())
                         .timeSlot(slot.getTimeSlot())
                         .appointmentId(slot.getId())
                         .build()).toList();

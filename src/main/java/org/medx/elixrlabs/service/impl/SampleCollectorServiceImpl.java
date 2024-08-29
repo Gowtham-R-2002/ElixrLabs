@@ -78,7 +78,7 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     public boolean deleteSampleCollector() {
         logger.info("Attempting to delete SampleCollector for current user");
         SampleCollector sampleCollector = getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
-        sampleCollector.getUser().setDeleted(true);
+        sampleCollector.setDeleted(true);
         sampleCollectorRepository.save(sampleCollector);
         logger.info("Successfully marked SampleCollector as deleted for user email: {}", SecurityContextHelper.extractEmailFromContext());
         return true;
