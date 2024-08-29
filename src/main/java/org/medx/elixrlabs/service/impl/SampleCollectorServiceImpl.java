@@ -1,27 +1,28 @@
 package org.medx.elixrlabs.service.impl;
 
-import org.medx.elixrlabs.dto.AppointmentDto;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.medx.elixrlabs.util.RoleEnum;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.SampleCollectorMapper;
 import org.medx.elixrlabs.mapper.UserMapper;
-import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.SampleCollectorRepository;
-import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.service.SampleCollectorService;
 import org.medx.elixrlabs.util.LocationEnum;
-import org.medx.elixrlabs.util.RoleEnum;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * <p>
@@ -35,6 +36,8 @@ import java.util.NoSuchElementException;
 @Service
 public class SampleCollectorServiceImpl implements SampleCollectorService {
 
+    private static final Logger logger = LoggerFactory.getLogger(SampleCollectorServiceImpl.class);
+
     @Autowired
     private SampleCollectorRepository sampleCollectorRepository;
 
@@ -42,16 +45,11 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     private RoleService roleService;
 
     @Autowired
-    private JwtService jwtService;
-
-//    @Autowired
-//    private AppointmentSlotService appointmentSlotService;
-
-    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public SampleCollectorDto createOrUpdateSampleCollector(UserDto userDto) {
+        logger.info("Attempting to create or update SampleCollector for email: {}", userDto.getEmail());
         SampleCollector existingSampleCollector = getSampleCollectorByEmail(userDto.getEmail());
         User user = UserMapper.toUser(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -61,9 +59,10 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
                         roleService.getRoleByName(RoleEnum.ROLE_PATIENT)
                 )
         );
-        if (null != existingSampleCollector) {
+        if (existingSampleCollector != null) {
             user.setUUID(existingSampleCollector.getUser().getUUID());
             existingSampleCollector.setUser(user);
+            logger.debug("Updating existing SampleCollector with email: {}", userDto.getEmail());
             return SampleCollectorMapper.convertToSampleCollectorDto(sampleCollectorRepository.save(existingSampleCollector));
         }
         SampleCollector sampleCollector = SampleCollector.builder()
@@ -71,94 +70,88 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
                 .isVerified(false)
                 .build();
         SampleCollector savedSampleCollector = sampleCollectorRepository.save(sampleCollector);
+        logger.info("Successfully created new SampleCollector for email: {}", userDto.getEmail());
         return SampleCollectorMapper.convertToSampleCollectorDto(savedSampleCollector);
     }
 
     @Override
     public boolean deleteSampleCollector() {
+        logger.info("Attempting to delete SampleCollector for current user");
         SampleCollector sampleCollector = getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
         sampleCollector.getUser().setDeleted(true);
         sampleCollectorRepository.save(sampleCollector);
+        logger.info("Successfully marked SampleCollector as deleted for user email: {}", SecurityContextHelper.extractEmailFromContext());
         return true;
     }
 
     @Override
     public SampleCollector getSampleCollectorByEmail(String email) {
+        logger.debug("Retrieving SampleCollector by email: {}", email);
         SampleCollector sampleCollector;
         try {
             sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);
         } catch (Exception e) {
-            throw new NoSuchElementException("Error while getting sampleCollector with email : " + email);
+            logger.warn("Error occurred while retrieving SampleCollector by email: {}", email, e);
+            throw new NoSuchElementException("Error while getting sampleCollector with email: " + email);
         }
         return sampleCollector;
     }
 
     @Override
-    public List<SampleCollectorDto> getSampleCollectors(){
-        List<SampleCollectorDto> SampleCollectorDtos= new ArrayList<>();
+    public List<SampleCollectorDto> getSampleCollectors() {
+        logger.debug("Retrieving all SampleCollectors which is verified by admin");
+        List<SampleCollectorDto> sampleCollectorDtos = new ArrayList<>();
         try {
             for (SampleCollector sampleCollector : sampleCollectorRepository.getAllSampleCollector()) {
-                SampleCollectorDtos.add(SampleCollectorMapper.convertToSampleCollectorDto(sampleCollector));
+                sampleCollectorDtos.add(SampleCollectorMapper.convertToSampleCollectorDto(sampleCollector));
             }
         } catch (Exception e) {
+            logger.warn("Error occurred while retrieving all SampleCollectors", e);
             throw new NoSuchElementException("There is no Sample Collectors");
         }
-        return SampleCollectorDtos;
+        return sampleCollectorDtos;
     }
 
+    @Override
     public List<SampleCollector> getSampleCollectorByPlace(LocationEnum place) {
-        List<SampleCollector> sampleCollector;
+        logger.debug("Retrieving SampleCollectors by place: {}", place);
+        List<SampleCollector> sampleCollectors;
         try {
-            sampleCollector = sampleCollectorRepository.getSampleCollectorsByPlace(place);
+            sampleCollectors = sampleCollectorRepository.getSampleCollectorsByPlace(place);
         } catch (Exception e) {
-            throw new NoSuchElementException("Error while getting sampleCollector with place : " + place);
+            logger.warn("Error occurred while retrieving SampleCollectors by place: {}", place, e);
+            throw new NoSuchElementException("Error while getting SampleCollector with place: " + place);
         }
-        return sampleCollector;
+        return sampleCollectors;
     }
 
     @Override
     public SampleCollectorDto getSampleCollectorById(Long id) {
+        // Implementation omitted as it's not fully defined in the provided code.
         return null;
-    }
-
-    public List<AppointmentDto> getAppointmentByPlace(AppointmentDto appointmentDto) {
-//        String place = jwtService.getAddress();
-//        List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(LocationEnum.valueOf(place), appointmentDto.getAppointmentDate());
-//
-//        return appointmentSlots.stream()
-//                .map(slot -> AppointmentDto.builder()
-//                        .appointmentDate(slot.getDateSlot())
-//                        .userName(slot.getUser().getUsername())
-//                        .timeSlot(slot.getTimeSlot())
-//                        .appointmentId(slot.getId())
-//                        .build()).toList();
-        return new ArrayList<AppointmentDto>();
     }
 
     @Override
     public void verifySampleCollector(String email) {
+        logger.info("Verifying SampleCollector with email: {}", email);
         SampleCollector sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);
         sampleCollector.setVerified(true);
         sampleCollectorRepository.save(sampleCollector);
+        logger.info("Successfully verified SampleCollector with email: {}", email);
     }
 
     @Override
     public List<SampleCollectorDto> getAllSampleCollectors() {
-        List<SampleCollectorDto> SampleCollectorDtos= new ArrayList<>();
+        logger.debug("Retrieving all SampleCollectors");
+        List<SampleCollectorDto> sampleCollectorDtos = new ArrayList<>();
         try {
             for (SampleCollector sampleCollector : sampleCollectorRepository.findAll()) {
-                SampleCollectorDtos.add(SampleCollectorMapper.convertToSampleCollectorDto(sampleCollector));
+                sampleCollectorDtos.add(SampleCollectorMapper.convertToSampleCollectorDto(sampleCollector));
             }
         } catch (Exception e) {
+            logger.warn("Error occurred while retrieving all SampleCollectors", e);
             throw new NoSuchElementException("There is no Sample Collectors");
         }
-        return SampleCollectorDtos;
+        return sampleCollectorDtos;
     }
-
-    @Override
-    public void assignSampleCollectorToAppointment(Long id) {
-        SampleCollector sampleCollector = getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
-        appointmentSlotService.assignSampleCollectorToAppointment(id, sampleCollector);
-    }
-
 }

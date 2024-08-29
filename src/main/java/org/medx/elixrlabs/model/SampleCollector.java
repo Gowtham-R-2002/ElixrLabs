@@ -5,6 +5,8 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
+import java.util.List;
+
 /**
  * <p>
  * It represents the users who are associated with the role sample collector.
@@ -31,6 +33,10 @@ public class SampleCollector {
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany
+    @JoinColumn(name = "appointment_slots_id")
+    private List<AppointmentSlot> appointmentSlots;
 
     @Column(columnDefinition = "boolean default true")
     private boolean isVerified;

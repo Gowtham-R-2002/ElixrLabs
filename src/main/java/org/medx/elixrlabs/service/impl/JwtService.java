@@ -18,13 +18,24 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import lombok.Getter;
+import lombok.Setter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+
+import org.medx.elixrlabs.exception.LabException;
+import org.medx.elixrlabs.util.LocationEnum;
+
 
 /**
  * <p>
- * Service for managing JwtService-related operations.
- * This class contains business logic for handling JwtService operations. It acts as
- * a bridge between the controller layer and the repository layer, ensuring that
- * business rules are applied before interacting with the database.
+ * Service for managing JWT-related operations.
+ * This class contains business logic for handling JWT operations, including token generation,
+ * extraction, and validation. It acts as a bridge between the controller layer and the security
+ * mechanisms for handling JWTs.
  * </p>
  */
 @Service
@@ -36,6 +47,7 @@ public class JwtService {
     private Dotenv dotenv;
     private static String SECRET;
     private static long VALIDITY;
+    private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
     private String address;
 
     public JwtService() {
@@ -46,20 +58,30 @@ public class JwtService {
 
 
     public String generateToken(UserDetails userDetails, LocationEnum place) {
-        return Jwts.builder()
-                .subject(userDetails.getUsername())
-                .claim("place", place)
-                .issuedAt(Date.from(Instant.now()))
-                .expiration(Date.from(Instant.now().plusMillis(VALIDITY)))
-                .signWith(generateKey())
-                .compact();
+        try {
+            return Jwts.builder()
+                    .subject(userDetails.getUsername())
+                    .claim("place", place)
+                    .issuedAt(Date.from(Instant.now()))
+                    .expiration(Date.from(Instant.now().plusMillis(VALIDITY)))
+                    .signWith(generateKey())
+                    .compact();
+        } catch (Exception e) {
+            logger.warn("Error while generating token: {}", e.getMessage());
+            throw new LabException("Error while generating token");
+        }
     }
 
     public LocationEnum extractAddress(String jwt) {
-        Claims claims = getClaims(jwt);
-        String addressStr = claims.get("address", String.class);
-        setAddress(addressStr);
-        return LocationEnum.valueOf(addressStr);
+        try {
+            Claims claims = getClaims(jwt);
+            String addressStr = claims.get("address", String.class);
+            setAddress(addressStr);
+            return LocationEnum.valueOf(addressStr);
+        } catch (Exception e) {
+            logger.warn("Error while extracting address from token: {}", e.getMessage());
+            throw new LabException("Error while extracting address from token");
+        }
     }
 
     private SecretKey generateKey() {
@@ -68,20 +90,38 @@ public class JwtService {
     }
 
     public String extractUsername(String jwt) {
-        Claims claims = getClaims(jwt);
-        return claims.getSubject();
+        try {
+            Claims claims = getClaims(jwt);
+            return claims.getSubject();
+        } catch (Exception e) {
+            logger.warn("Error while extracting username from token: {}", e.getMessage());
+            throw new LabException("Error while extracting username from token");
+        }
     }
 
-    private Claims getClaims(String jwt) throws ExpiredJwtException{
-        return Jwts.parser()
-                .verifyWith(generateKey())
-                .build()
-                .parseSignedClaims(jwt)
-                .getPayload();
+    private Claims getClaims(String jwt) throws ExpiredJwtException {
+        try {
+            return Jwts.parser()
+                    .verifyWith(generateKey())
+                    .build()
+                    .parseSignedClaims(jwt)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            logger.warn("Token has expired: {}", e.getMessage());
+            throw e;
+        } catch (Exception e) {
+            logger.warn("Error while parsing token: {}", e.getMessage());
+            throw new LabException("Error while parsing token");
+        }
     }
 
     public boolean isTokenValid(String jwt) {
-        Claims claims = getClaims(jwt);
-        return claims.getExpiration().after(Date.from(Instant.now()));
+        try {
+            Claims claims = getClaims(jwt);
+            return claims.getExpiration().after(Date.from(Instant.now()));
+        } catch (Exception e) {
+            logger.warn("Error while validating token: {}", e.getMessage());
+            throw new LabException("Error while validating token");
+        }
     }
 }

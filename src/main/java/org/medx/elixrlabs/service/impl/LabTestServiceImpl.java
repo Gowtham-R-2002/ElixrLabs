@@ -1,15 +1,21 @@
 package org.medx.elixrlabs.service.impl;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import org.medx.elixrlabs.dto.LabTestDto;
+import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.mapper.LabTestMapper;
 import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.repository.LabTestRepository;
 import org.medx.elixrlabs.service.LabTestService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
@@ -26,75 +32,106 @@ import java.util.List;
 @Service
 public class LabTestServiceImpl implements LabTestService {
 
+    private static final Logger logger = LoggerFactory.getLogger(LabTestServiceImpl.class);
+
     @Autowired
-    LabTestRepository labTestRepository;
+    private LabTestRepository labTestRepository;
 
     @Override
     public LabTestDto createOrUpdateTest(LabTestDto labTestDto) {
-        LabTest labTest = LabTestMapper.toLabTest(labTestDto);
-        return LabTestMapper.toRetrieveLabTestDto(labTestRepository.save(labTest));
+        try {
+            LabTest labTest = LabTestMapper.toLabTest(labTestDto);
+            LabTest savedLabTest = labTestRepository.save(labTest);
+            logger.info("Lab test created/updated successfully with id: {}", savedLabTest.getId());
+            return LabTestMapper.toRetrieveLabTestDto(savedLabTest);
+        } catch (Exception e) {
+            logger.warn("Error while creating/updating lab test: {}", labTestDto.getName());
+            throw new LabException("Error while creating/updating lab test: " + labTestDto.getName());
+        }
     }
 
     @Override
     public List<LabTestDto> getAllLabTests() {
-        List<LabTestDto> labTestDtos = new ArrayList<>();
-        List<LabTest> labTests = labTestRepository.findByIsDeletedFalse();
-        if (null == labTests) {
-            return labTestDtos;
+        try {
+            List<LabTest> labTests = labTestRepository.findByIsDeletedFalse();
+            if (labTests.isEmpty()) {
+                logger.info("No lab tests found.");
+            } else {
+                logger.info("Fetched {} lab tests.", labTests.size());
+            }
+            return labTests.stream()
+                    .map(LabTestMapper::toRetrieveLabTestDto)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.warn("Error while fetching all lab tests: {}", e.getMessage());
+            throw new LabException("Error while fetching all lab tests: " + e.getMessage());
         }
-        for (LabTest labTest : labTestRepository.findByIsDeletedFalse()) {
-            labTestDtos.add(LabTestMapper.toRetrieveLabTestDto(labTest));
-        }
-        return labTestDtos;
     }
 
     @Override
     public LabTestDto getLabTestById(long id) {
-        LabTest labTest = labTestRepository.findByIdAndIsDeletedFalse(id);
-        if (null == labTest) {
-            throw new NullPointerException("Lab Test Not Found");
+        try {
+            LabTest labTest = labTestRepository.findByIdAndIsDeletedFalse(id);
+            if (labTest == null) {
+                logger.warn("Lab test not found with id: {}", id);
+                throw new NoSuchElementException("Lab Test Not Found");
+            }
+            logger.info("Lab test retrieved successfully with id: {}", id);
+            return LabTestMapper.toRetrieveLabTestDto(labTest);
+        } catch (Exception e) {
+            logger.warn("Error while retrieving lab test with id: {}", id);
+            throw new LabException("Error while retrieving lab test with id: " + id);
         }
-        return LabTestMapper.toRetrieveLabTestDto(labTest);
     }
 
     @Override
     public boolean removeLabTestById(long id) {
-        LabTest labTest = labTestRepository.findByIdAndIsDeletedFalse(id);
-        if (null == labTest) {
-            throw new NullPointerException("Lab test Not Found");
+        try {
+            LabTest labTest = labTestRepository.findByIdAndIsDeletedFalse(id);
+            if (labTest == null) {
+                logger.warn("Lab test not found while removing with id: {}", id);
+                throw new NoSuchElementException("Lab test Not Found with id: " + id);
+            }
+            labTest.setDeleted(true);
+            labTestRepository.save(labTest);
+            logger.info("Lab test marked as deleted with id: {}", id);
+            return true;
+        } catch (Exception e) {
+            logger.warn("Error while removing lab test with id: {}", id);
+            throw new LabException("Error while removing lab test with id: " + id);
         }
-        labTest.setDeleted(true);
-        labTestRepository.save(labTest);
-        return true;
     }
 
     public void setupInitialData() {
-        LabTest bloodTest = LabTest.builder()
-                .name("Blood test")
-                .description("Simple Blood test")
-                .price(150)
-                .defaultValue("BPC : 1000")
-                .build();
-
-        LabTest HIVTest = LabTest.builder()
-                .name("HIV Test")
-                .description("Test to identify HIV status")
-                .price(500)
-                .defaultValue("Status : negative")
-                .build();
-
-        LabTest cancerTest = LabTest.builder()
-                .name("Cancer Test")
-                .description("Test to detect Cancer presence")
-                .price(1000)
-                .defaultValue("Cell count : 500")
-                .build();
         try {
+            LabTest bloodTest = LabTest.builder()
+                    .name("Blood test")
+                    .description("Simple Blood test")
+                    .price(150)
+                    .defaultValue("BPC : 1000")
+                    .build();
+
+            LabTest HIVTest = LabTest.builder()
+                    .name("HIV Test")
+                    .description("Test to identify HIV status")
+                    .price(500)
+                    .defaultValue("Status : negative")
+                    .build();
+
+            LabTest cancerTest = LabTest.builder()
+                    .name("Cancer Test")
+                    .description("Test to detect Cancer presence")
+                    .price(1000)
+                    .defaultValue("Cell count : 500")
+                    .build();
+
             labTestRepository.save(bloodTest);
             labTestRepository.save(HIVTest);
             labTestRepository.save(cancerTest);
+
+            logger.info("Initial lab test data setup completed.");
         } catch (Exception e) {
-            System.out.println("Already exists..." + e.getMessage());
+            logger.warn("Error during initial data setup: {}", e.getMessage());
         }
     }
 }

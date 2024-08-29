@@ -1,6 +1,8 @@
 package org.medx.elixrlabs.service;
 
+import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.ResponseOrderDto;
+import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestResult;
@@ -68,4 +70,13 @@ public interface PatientService {
      * @throws RuntimeException if the TestResult is not found.
      */
     void deletePatient(String email);
+
+    /**
+     * Fetches the test result of a specific order of a specific patient
+     *
+     * @param patientDto {@link UserDto} patient whose test report has to be fetched
+     * @return all the orders related to the patient
+     */
+
+    List<OrderSuccessDto> getOrdersByPatient(UserDto patientDto);
 }
