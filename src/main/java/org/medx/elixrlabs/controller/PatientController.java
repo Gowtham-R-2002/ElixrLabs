@@ -4,13 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import jakarta.validation.Valid;
-import org.medx.elixrlabs.dto.*;
-import org.medx.elixrlabs.helper.SecurityContextHelper;
-import org.medx.elixrlabs.model.Order;
-import org.medx.elixrlabs.model.TestResult;
-import org.medx.elixrlabs.service.AppointmentSlotService;
-import org.medx.elixrlabs.service.CartService;
-import org.medx.elixrlabs.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +15,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import org.medx.elixrlabs.dto.CartDto;
+import org.medx.elixrlabs.dto.OrderSuccessDto;
+import org.medx.elixrlabs.dto.ResponseCartDto;
+import org.medx.elixrlabs.dto.ResponseOrderDto;
+import org.medx.elixrlabs.dto.SlotBookDto;
+import org.medx.elixrlabs.dto.UserDto;
+import org.medx.elixrlabs.helper.SecurityContextHelper;
+import org.medx.elixrlabs.model.TestResult;
+import org.medx.elixrlabs.service.AppointmentSlotService;
+import org.medx.elixrlabs.service.CartService;
+import org.medx.elixrlabs.service.PatientService;
 
 @RestController
 @RequestMapping("api/v1/patients")

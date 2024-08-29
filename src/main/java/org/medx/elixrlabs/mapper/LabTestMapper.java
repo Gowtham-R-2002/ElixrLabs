@@ -1,9 +1,7 @@
 package org.medx.elixrlabs.mapper;
 
 import org.medx.elixrlabs.dto.LabTestDto;
-import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.model.LabTest;
-import org.medx.elixrlabs.model.SampleCollector;
 import org.springframework.stereotype.Component;
 
 /**

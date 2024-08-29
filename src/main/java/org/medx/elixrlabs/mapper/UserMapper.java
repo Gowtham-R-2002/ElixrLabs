@@ -1,9 +1,6 @@
 package org.medx.elixrlabs.mapper;
 
-import org.medx.elixrlabs.dto.TestPackageDto;
 import org.medx.elixrlabs.dto.UserDto;
-import org.medx.elixrlabs.model.SampleCollector;
-import org.medx.elixrlabs.model.TestPackage;
 import org.medx.elixrlabs.model.User;
 
 /**
