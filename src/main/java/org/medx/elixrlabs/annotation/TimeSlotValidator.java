@@ -1,10 +1,10 @@
 package org.medx.elixrlabs.annotation;
 
+import java.util.Arrays;
+
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.medx.elixrlabs.util.TimeSlotEnum;
-
-import java.util.Arrays;
 
 public class TimeSlotValidator implements ConstraintValidator<TimeSlot, String> {
     @Override

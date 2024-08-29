@@ -1,17 +1,12 @@
 package org.medx.elixrlabs.mapper;
 
+import java.util.List;
+
 import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.dto.TestPackageDto;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
-import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.TestPackage;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Mapper class for mapping between TestPackage and TestPackageDTO.

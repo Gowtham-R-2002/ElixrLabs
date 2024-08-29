@@ -1,14 +1,10 @@
 package org.medx.elixrlabs.controller;
 
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import jakarta.mail.MessagingException;
-import org.medx.elixrlabs.dto.LoginRequestDto;
-import org.medx.elixrlabs.dto.OtpDto;
-import org.medx.elixrlabs.exception.OTPValidationException;
-import org.medx.elixrlabs.model.OTP;
-import org.medx.elixrlabs.service.EmailService;
-import org.medx.elixrlabs.service.impl.JwtService;
-import org.medx.elixrlabs.service.impl.UserService;
-import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,9 +16,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
+
+import org.medx.elixrlabs.dto.LoginRequestDto;
+import org.medx.elixrlabs.dto.OtpDto;
+import org.medx.elixrlabs.exception.OTPValidationException;
+import org.medx.elixrlabs.model.OTP;
+import org.medx.elixrlabs.service.EmailService;
+import org.medx.elixrlabs.service.impl.JwtService;
+import org.medx.elixrlabs.service.impl.UserService;
+import org.medx.elixrlabs.util.LocationEnum;
 
 @RestController
 @RequestMapping("api/v1/auth/login")

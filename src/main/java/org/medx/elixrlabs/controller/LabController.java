@@ -1,5 +1,7 @@
 package org.medx.elixrlabs.controller;
 
+import java.util.List;
+
 import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.service.LabService;
@@ -10,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/labs")
