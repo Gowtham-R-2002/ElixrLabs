@@ -1,9 +1,9 @@
 package org.medx.elixrlabs.model;
 
+import java.util.Calendar;
+
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.Calendar;
 
 @Data
 @Builder

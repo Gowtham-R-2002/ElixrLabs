@@ -1,6 +1,7 @@
 package org.medx.elixrlabs.dto;
 
 import lombok.Builder;
+
 import org.medx.elixrlabs.util.LocationEnum;
 
 @Builder

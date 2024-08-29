@@ -1,9 +1,11 @@
 package org.medx.elixrlabs.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
-import org.springframework.boot.context.properties.bind.DefaultValue;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -30,14 +32,16 @@ public class SampleCollector {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany
-    @JoinColumn(name = "appointment_slots_id")
     private List<AppointmentSlot> appointmentSlots;
 
     @Column(columnDefinition = "boolean default true")
     private boolean isVerified;
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
 }

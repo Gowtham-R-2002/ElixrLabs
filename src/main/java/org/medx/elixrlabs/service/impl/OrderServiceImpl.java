@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,16 +106,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderLocationDto> getOrdersByLocation(LocationEnum location) {
+    public List<ResponseOrderDto> getOrdersByLocation(LocationEnum location) {
         try {
-            List<OrderLocationDto> orderLocationDtos = orderRepository.findByLabLocation(location)
+            List<ResponseOrderDto> orderLocationDtos = orderRepository.findByLabLocation(location)
                     .stream()
-                    .map(order ->
-                            OrderLocationDto.builder()
-                                    .id(order.getId())
-                                    .labLocation(order.getLabLocation())
-                                    .build())
-                    .toList();
+                    .map(OrderMapper::toResponseOrderDto).toList();
             logger.info("Fetched {} orders by location: {}", orderLocationDtos.size(), location);
             return orderLocationDtos;
         } catch (Exception e) {

@@ -1,14 +1,13 @@
 package org.medx.elixrlabs.dto;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.GenderEnum;
+
+import java.time.LocalDate;
 
 /**
  * <p>
@@ -24,9 +23,9 @@ import org.medx.elixrlabs.util.GenderEnum;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class ResponsePatientDto {
+    private long id;
     private String email;
-    private String password;
     private LocalDate dateOfBirth;
     private String phoneNumber;
     private GenderEnum gender;

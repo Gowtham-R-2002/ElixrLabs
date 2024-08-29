@@ -5,12 +5,6 @@ import java.util.Set;
 
 import jakarta.validation.Valid;
 import org.medx.elixrlabs.dto.*;
-import org.medx.elixrlabs.helper.SecurityContextHelper;
-import org.medx.elixrlabs.model.Order;
-import org.medx.elixrlabs.model.TestResult;
-import org.medx.elixrlabs.service.AppointmentSlotService;
-import org.medx.elixrlabs.service.CartService;
-import org.medx.elixrlabs.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +16,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import org.medx.elixrlabs.helper.SecurityContextHelper;
+import org.medx.elixrlabs.model.TestResult;
+import org.medx.elixrlabs.service.AppointmentSlotService;
+import org.medx.elixrlabs.service.CartService;
+import org.medx.elixrlabs.service.PatientService;
 
 @RestController
 @RequestMapping("api/v1/patients")
@@ -36,8 +36,8 @@ public class PatientController {
     private AppointmentSlotService appointmentSlotService;
 
     @PostMapping("register")
-    public ResponseEntity<UserDto> createOrUpdatePatient(@RequestBody UserDto userDto) {
-        UserDto savedUser =  patientService.createOrUpdatePatient(userDto);
+    public ResponseEntity<ResponsePatientDto> createOrUpdatePatient(@RequestBody UserDto userDto) {
+        ResponsePatientDto savedUser =  patientService.createOrUpdatePatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
@@ -54,11 +54,6 @@ public class PatientController {
         return new ResponseEntity<>(appointmentSlotService.bookSlot(slotBookDto), HttpStatus.OK);
     }
 
-    @GetMapping
-    public ResponseEntity<List<UserDto>> getAllPatients() {
-        return new ResponseEntity<>(patientService.getAllPatients(), HttpStatus.OK);
-    }
-
     @GetMapping("orders")
     public ResponseEntity<List<ResponseOrderDto>> getOrders() {
         return new ResponseEntity<>(patientService.getOrders(), HttpStatus.OK);
@@ -70,8 +65,8 @@ public class PatientController {
     }
 
     @PutMapping
-    public ResponseEntity<UserDto> updatePatient(@RequestBody UserDto userDto) {
-        UserDto savedUser =  patientService.createOrUpdatePatient(userDto);
+    public ResponseEntity<ResponsePatientDto> updatePatient(@RequestBody UserDto userDto) {
+        ResponsePatientDto savedUser =  patientService.createOrUpdatePatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.OK);
     }
 

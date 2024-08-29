@@ -1,17 +1,11 @@
 package org.medx.elixrlabs.mapper;
 
+import java.util.List;
+
 import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.dto.TestPackageDto;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
-import org.medx.elixrlabs.model.LabTest;
-import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.TestPackage;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Mapper class for mapping between TestPackage and TestPackageDTO.
@@ -26,7 +20,7 @@ import java.util.stream.Collectors;
 public class TestPackageMapper {
 
     /**
-     * Converts an {@link TestPackageDto} to an {@link SampleCollector} entity.
+     * Converts an {@link TestPackageDto} to an {@link TestPackage} entity.
      *
      * @param testPackageDto {@link TestPackageDto} The TestPackage DTO to be converted.
      * @return {@link TestPackage} The corresponding TestPackage entity.
@@ -41,10 +35,10 @@ public class TestPackageMapper {
     }
 
     /**
-     * Converts an {@link TestPackage} entity to an {@link TestPackageDto}.
+     * Converts an {@link TestPackage} entity to an {@link ResponseTestPackageDto}.
      *
      * @param testPackage {@link TestPackage} The TestPackage entity to be converted.
-     * @return {@link TestPackageDto} The corresponding TestPackage DTO.
+     * @return {@link ResponseTestPackageDto} The corresponding TestPackage DTO.
      */
     public static ResponseTestPackageDto toTestPackageDto(TestPackage testPackage) {
         List<LabTestDto> tests = testPackage.getTests()
@@ -59,6 +53,12 @@ public class TestPackageMapper {
                 .build();
     }
 
+    /**
+     * Converts an {@link ResponseTestPackageDto} to {@link TestPackage} entity.
+     *
+     * @param responseTestPackageDto {@link ResponseTestPackageDto} The test package Dto to be converted.
+     * @return {@link TestPackage} The corresponding test package entity.
+     */
     public static TestPackage toTestPackageFromResponseDto(ResponseTestPackageDto responseTestPackageDto) {
         return TestPackage.builder()
                 .id(responseTestPackageDto.getId())

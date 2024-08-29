@@ -1,26 +1,25 @@
 package org.medx.elixrlabs.service.impl;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.aspectj.weaver.ast.Or;
+import org.medx.elixrlabs.dto.*;
+import org.medx.elixrlabs.mapper.TestResultMapper;
+import org.medx.elixrlabs.model.*;
+import org.medx.elixrlabs.service.*;
+import org.medx.elixrlabs.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.medx.elixrlabs.dto.OrderLocationDto;
-import org.medx.elixrlabs.dto.OrderSuccessDto;
-import org.medx.elixrlabs.dto.TestResultDto;
-import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
-import org.medx.elixrlabs.mapper.OrderMapper;
-import org.medx.elixrlabs.mapper.TestResultMapper;
-import org.medx.elixrlabs.model.TestResult;
-import org.medx.elixrlabs.model.User;
-import org.medx.elixrlabs.service.LabService;
-import org.medx.elixrlabs.service.OrderService;
-import org.medx.elixrlabs.service.PatientService;
 import org.medx.elixrlabs.util.LocationEnum;
 
 
@@ -44,16 +43,27 @@ public class LabServiceImpl implements LabService {
     private OrderService orderService;
 
     @Autowired
-    private UserService userService;
+    private AdminService adminService;
 
     @Autowired
     private PatientService patientService;
 
+    @Autowired
+    private LabTestService labTestService;
+
+    @Autowired
+    private TestResultService testResultService;
+
+    @Autowired
+    private EmailService emailService;
+
     @Override
-    public List<OrderLocationDto> getOrders() {
+    public List<ResponseOrderDto> getOrders() {
         try {
-            User admin = userService.loadUserByUsername(SecurityContextHelper.extractEmailFromContext());
-            LocationEnum location = LocationEnum.valueOf(jwtService.getAddress());
+            Admin admin = adminService.getAdminByEmail(SecurityContextHelper.extractEmailFromContext());
+            System.out.println(admin);
+            LocationEnum location = admin.getUser().getPlace();
+            System.out.println(location);
             return orderService.getOrdersByLocation(location);
         } catch (Exception e) {
             logger.warn("Error while fetching orders: {}", e.getMessage());
@@ -62,10 +72,35 @@ public class LabServiceImpl implements LabService {
     }
 
     @Override
-    public void assignReport(TestResult testResult) {
+    public void assignReport(long orderId, RequestTestResultDto resultDto) {
         try {
-            // To Do
-            logger.info("Test result assigned successfully: {}", testResult);
+            Order order = orderService.getOrder(orderId);
+            Map<LabTestDto, String> parsedResultDto = resultDto.getTestIdWithResult()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            id -> labTestService.getLabTestById(id.getTestId()),
+                            RequestTestIdWithResultDto::getResult));
+            List<IndividualTestReportDto> individualTests = parsedResultDto.keySet().stream().map(parsedResult -> IndividualTestReportDto.builder()
+                    .testName(parsedResult.getName())
+                    .actualValue(parsedResult.getDefaultValue())
+                    .presentValue(parsedResultDto.get(parsedResult))
+                    .build()).toList();
+            List<String> result = individualTests.stream().map(individualTestReportDto -> individualTestReportDto.getTestName() + ", " +
+                    individualTestReportDto.getActualValue() + ", " +
+                    individualTestReportDto.getPresentValue() + ".").toList();
+            TestResult testResult = TestResult.builder()
+                    .name(order.getPatient().getUser().getUsername())
+                    .ageAndGender(DateUtil.getAge(order.getPatient().getUser().getDateOfBirth())
+                            + " " + order.getPatient().getUser().getGender().toString())
+                    .generatedAt(LocalDateTime.now())
+                    .result(result)
+                    .orderDate(order.getSlot().getDateSlot())
+                    .build();
+            TestResult savedTestResult = testResultService.addResult(testResult);
+            emailService.sendTestResult(testResult);
+            order.setTestResult(savedTestResult);
+            orderService.createOrder(order);
+            logger.info("Test result assigned successfully: {}", resultDto);
         } catch (Exception e) {
             logger.warn("Error while assigning test report: {}", e.getMessage());
             throw new LabException("Error while assigning test report: " + e.getMessage());
@@ -84,23 +119,21 @@ public class LabServiceImpl implements LabService {
     }
 
     @Override
-    public TestResultDto getTestResultByUser(UserDto patientDto, Long orderId) {
-        try {
-            User patient = patientService.getPatientByEmail(patientDto.getEmail());
-            OrderSuccessDto order = OrderMapper.toOrderSuccessDto(orderService.getOrder(orderId));
-            List<OrderSuccessDto> patientOrders = patientService.getOrdersByPatient(patientDto);
+    public TestResultDto getTestResultByOrder(long orderId) {
+        Order order = orderService.getOrder(orderId);
+        return TestResultMapper.toTestResultDto(order.getTestResult());
+    }
 
-            for (OrderSuccessDto patientOrder : patientOrders) {
-                if (Objects.equals(order.getId(), patientOrder.getId())) {
-                    TestResult testResult = patientService.getTestReport(orderId);
-                    return TestResultMapper.toTestResultDto(testResult);
-                }
-            }
-            logger.info("Test result not found for user: {} and order id: {}", patientDto.getEmail(), orderId);
-            return null;
+    @Override
+    public TestResultDto getTestResultByUser(Long orderId) {
+        try {
+            Order order = orderService.getOrder(orderId);
+
+
         } catch (Exception e) {
-            logger.warn("Error while retrieving test result for user: {} and order id: {}", patientDto.getEmail(), orderId);
-            throw new LabException("Error while retrieving test result for user: " + patientDto.getEmail() + " and order id: " + orderId);
+//            logger.warn("Error while retrieving test result for user: {} and order id: {}", patientDto.getEmail(), orderId);
+//            throw new LabException("Error while retrieving test result for user: " + patientDto.getEmail() + " and order id: " + orderId);
         }
+        return null;
     }
 }

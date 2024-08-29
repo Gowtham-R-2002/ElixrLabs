@@ -3,7 +3,9 @@ package org.medx.elixrlabs.service.impl;
 import java.util.List;
 
 import org.medx.elixrlabs.dto.SampleCollectorDto;
+import org.medx.elixrlabs.model.Admin;
 import org.medx.elixrlabs.model.User;
+import org.medx.elixrlabs.repository.AdminRepository;
 import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.repository.UserRepository;
 import org.medx.elixrlabs.service.AdminService;
@@ -23,7 +25,7 @@ import org.springframework.stereotype.Service;
 public class AdminServiceImpl implements AdminService {
 
     @Autowired
-    private UserRepository userRepository;
+    private AdminRepository adminRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -39,26 +41,26 @@ public class AdminServiceImpl implements AdminService {
         user.setRoles(roleRepository.findAll());
         String password = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(password);
+        Admin admin = Admin.builder()
+                .user(user)
+                .build();
         try {
-            userRepository.save(user);
+            adminRepository.save(admin);
         } catch (Exception e) {
             System.out.println("Admin already present...Skipping" + e.getMessage());
         }
     }
 
     @Override
-    public boolean verifySampleCollector(long id) {
-        return false;
+    public Admin getAdminByEmail(String email) {
+        Admin admin;
+        try {
+            admin = adminRepository.findByEmail(email);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while fetching admin from the given mail : " + email);
+        }
+        return admin;
     }
 
-    @Override
-    public List<SampleCollectorDto> getAllSampleCollectors() {
-        return List.of();
-    }
-
-    @Override
-    public boolean deleteSampleCollector(String id) {
-        return false;
-    }
 
 }

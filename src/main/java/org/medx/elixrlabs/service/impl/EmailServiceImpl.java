@@ -3,6 +3,7 @@ package org.medx.elixrlabs.service.impl;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.medx.elixrlabs.model.OTP;
+import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -38,7 +39,7 @@ public class EmailServiceImpl implements EmailService {
         helper.setFrom("ElixrLabs");
         helper.setTo(email);
         helper.setSubject("OTP Verification");
-        String htmlContent = loadHtmlTemplate("templates/body.html").replace("{{OTP}}", String.valueOf(otp));
+        String htmlContent = loadHtmlTemplate("templates/otp-template.html").replace("{{OTP}}", String.valueOf(otp));
         helper.setText(htmlContent, true);
         ClassPathResource logoResource = new ClassPathResource("static/logo.png");
         helper.addInline("logoImage", logoResource);
@@ -49,6 +50,30 @@ public class EmailServiceImpl implements EmailService {
                 .otp(String.valueOf(otp))
                 .calendar(calendar)
                 .build();
+    }
+
+    @Override
+    public void sendTestResult(TestResult testResult) throws MessagingException, IOException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom("ElixrLabs");
+        helper.setTo(testResult.getName());
+        helper.setSubject("Test Report Generated");
+        StringBuilder result = new StringBuilder();
+        for(String individualResult : testResult.getResult()){
+            result.append("<br>").append(individualResult).append("<br>");
+        }
+        String htmlContent = loadHtmlTemplate("templates/report-template.html")
+                .replace("{{orderDate}}", testResult.getOrderDate().toString())
+                .replace("{{patientEmail}}", testResult.getName())
+                .replace("{{ageAndGender}}", testResult.getAgeAndGender())
+                .replace("{{result}}", result.toString())
+                .replace("{{generatedAt}}", testResult.getGeneratedAt().toString());
+                ;
+        helper.setText(htmlContent, true);
+        ClassPathResource logoResource = new ClassPathResource("static/logo.png");
+        helper.addInline("logoImage", logoResource);
+        mailSender.send(message);
     }
 
     private String loadHtmlTemplate(String path) throws IOException {

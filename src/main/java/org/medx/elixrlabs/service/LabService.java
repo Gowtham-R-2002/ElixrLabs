@@ -1,10 +1,6 @@
 package org.medx.elixrlabs.service;
 
-import org.medx.elixrlabs.dto.OrderLocationDto;
-import org.medx.elixrlabs.dto.SampleCollectorDto;
-import org.medx.elixrlabs.dto.TestResultDto;
-import org.medx.elixrlabs.dto.UserDto;
-import org.medx.elixrlabs.model.Order;
+import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.model.TestResult;
 import org.springframework.stereotype.Service;
 
@@ -12,11 +8,25 @@ import java.util.List;
 
 @Service
 public interface LabService {
-    List<OrderLocationDto> getOrders();
 
-    void assignReport(TestResult testResult);
+    /**
+     * Fetches all the orders related to the specific lab
+     *
+     * @return list of orders related to the lab
+     */
+
+    List<ResponseOrderDto> getOrders();
+
+    /**
+     *
+     * @param
+     */
+
+    void assignReport(long orderId, RequestTestResultDto resultDto);
 
     void updateStatus(Long id);
 
-    TestResultDto getTestResultByUser(UserDto patientDto, Long orderId);
+    TestResultDto getTestResultByOrder(long orderId);
+
+    TestResultDto getTestResultByUser(Long orderId);
 }
