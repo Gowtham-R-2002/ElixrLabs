@@ -24,4 +24,10 @@ public interface AppointmentSlotService {
     void assignSampleCollectorToAppointment(Long id, SampleCollector sampleCollector);
 
     void markSampleCollected(Long id);
+
+    List<AppointmentSlot> getAppointmentsBySampleCollector(Long id);
+
+    List<AppointmentSlot> getCollectedAppointmentsBySampleCollector(Long id);
+
+    List<AppointmentSlot> getPendingAppointmentsBySampleCollector(Long id);
 }

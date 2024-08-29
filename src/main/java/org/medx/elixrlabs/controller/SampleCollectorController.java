@@ -6,6 +6,7 @@ import org.medx.elixrlabs.dto.AppointmentDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
+import org.medx.elixrlabs.mapper.AppointmentMapper;
 import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.service.AppointmentSlotService;
@@ -98,17 +99,10 @@ public class SampleCollectorController {
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentDto>> getAppointments(AppointmentDto appointmentDto) {
         String place = jwtService.getAddress();
-        System.out.println("Place : " + place);
-        System.out.println("Enum : " + LocationEnum.valueOf(place));
         List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(LocationEnum.valueOf(place), appointmentDto.getAppointmentDate());
 
         List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
-                .map(slot -> AppointmentDto.builder()
-                        .appointmentDate(slot.getDateSlot())
-                        .userName(slot.getUser().getUsername())
-                        .timeSlot(slot.getTimeSlot())
-                        .appointmentId(slot.getId())
-                        .build()).toList();
+                .map(AppointmentMapper :: convertToDto).toList();
         return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
     }
 
@@ -124,4 +118,41 @@ public class SampleCollectorController {
         appointmentSlotService.markSampleCollected(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
+
+    @GetMapping("appointments/assigned")
+    public ResponseEntity<List<AppointmentDto>> getAllAssignedAppointments() {
+        List<AppointmentSlot> appointmentSlots = appointmentSlotService
+                .getAppointmentsBySampleCollector(sampleCollectorService
+                        .getSampleCollectorByEmail(SecurityContextHelper
+                                .extractEmailFromContext())
+                        .getId());
+        List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
+                .map(AppointmentMapper :: convertToDto).toList();
+        return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("appointments/assigned/collected")
+    public ResponseEntity<List<AppointmentDto>> getCollectedAppointments() {
+        List<AppointmentSlot> appointmentSlots = appointmentSlotService
+                .getCollectedAppointmentsBySampleCollector(sampleCollectorService
+                        .getSampleCollectorByEmail(SecurityContextHelper
+                                .extractEmailFromContext())
+                        .getId());
+        List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
+                .map(AppointmentMapper :: convertToDto).toList();
+        return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("appointments/assigned/collected")
+    public ResponseEntity<List<AppointmentDto>> getPendingAppointments() {
+        List<AppointmentSlot> appointmentSlots = appointmentSlotService
+                .getPendingAppointmentsBySampleCollector(sampleCollectorService
+                        .getSampleCollectorByEmail(SecurityContextHelper
+                                .extractEmailFromContext())
+                        .getId());
+        List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
+                .map(AppointmentMapper :: convertToDto).toList();
+        return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
+    }
+
 }

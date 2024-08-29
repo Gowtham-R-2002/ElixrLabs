@@ -9,6 +9,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface AppointmentSlotRepository extends JpaRepository<AppointmentSlot, Long> {
+
+    List<AppointmentSlot> findBySampleCollectorId(Long id);
+
+    List<AppointmentSlot> findBySampleCollectorIdAndIsSampleCollectedFalse(Long id);
+
+    List<AppointmentSlot> findBySampleCollectorIdAndIsSampleCollectedTrue(Long id);
+
     List<AppointmentSlot> findByLocationAndTestCollectionPlaceAndDateSlot(LocationEnum location, TestCollectionPlaceEnum testCollectionPlace, LocalDate date);
 
 }
