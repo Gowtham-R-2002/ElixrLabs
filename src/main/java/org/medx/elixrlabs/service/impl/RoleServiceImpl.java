@@ -1,14 +1,17 @@
 package org.medx.elixrlabs.service.impl;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.util.RoleEnum;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * <p>
@@ -21,37 +24,42 @@ import java.util.List;
  */
 @Service
 public class RoleServiceImpl implements RoleService {
+
+    private static final Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
+
     @Autowired
     private RoleRepository roleRepository;
 
+    @Override
     public void setupInitialData() {
         try {
             roleRepository.save(Role.builder().name(RoleEnum.ROLE_ADMIN).build());
             roleRepository.save(Role.builder().name(RoleEnum.ROLE_PATIENT).build());
             roleRepository.save(Role.builder().name(RoleEnum.ROLE_SAMPLE_COLLECTOR).build());
+            logger.info("Initial roles setup successfully.");
         } catch (Exception e) {
-            System.out.println("Roles already exists.." + e.getMessage());
+            logger.warn("Roles already exist or could not be created: {}", e.getMessage());
         }
     }
 
+    @Override
     public List<Role> getAllRoles() {
-        List<Role> roles;
         try {
-            roles = roleRepository.findAll();
+            return roleRepository.findAll();
         } catch (Exception e) {
-            throw new LabException("Error while getting all roles");
+            logger.warn("Error while getting all roles: {}", e.getMessage());
+            throw new LabException("Error while getting all roles.");
         }
-        return roles;
     }
 
+    @Override
     public Role getRoleByName(RoleEnum name) {
-        Role role;
         try {
-            System.out.println("ROLE : "+ name);
-            role = roleRepository.findByName(name);
+            logger.debug("Fetching role: {}", name);
+            return roleRepository.findByName(name);
         } catch (Exception e) {
-            throw new LabException("Error while getting role with name : " + name + e.getMessage());
+            logger.warn("Error while getting role with name {}: {}", name, e.getMessage());
+            throw new LabException("Error while getting role with name: " + name);
         }
-        return role;
     }
 }

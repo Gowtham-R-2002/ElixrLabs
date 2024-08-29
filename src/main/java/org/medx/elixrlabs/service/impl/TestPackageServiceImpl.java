@@ -1,5 +1,16 @@
 package org.medx.elixrlabs.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import org.medx.elixrlabs.exception.LabException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.medx.elixrlabs.mapper.LabTestMapper;
 import org.medx.elixrlabs.mapper.TestPackageMapper;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
@@ -9,11 +20,6 @@ import org.medx.elixrlabs.model.TestPackage;
 import org.medx.elixrlabs.repository.TestPackageRepository;
 import org.medx.elixrlabs.service.LabTestService;
 import org.medx.elixrlabs.service.TestPackageService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
@@ -27,54 +33,85 @@ import java.util.List;
 @Service
 public class TestPackageServiceImpl implements TestPackageService {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestPackageServiceImpl.class);
 
     @Autowired
-    TestPackageRepository TestPackageRepository;
+    private TestPackageRepository testPackageRepository;
 
     @Autowired
-    LabTestService labTestService;
+    private LabTestService labTestService;
 
     @Override
     public ResponseTestPackageDto createOrUpdateTestPackage(TestPackageDto testPackageDto) {
+        logger.info("Creating or updating TestPackage with name: {}", testPackageDto.getName());
         TestPackage testPackage = TestPackageMapper.toTestPackage(testPackageDto);
         List<LabTest> tests = new ArrayList<>();
-        for(Long testId : testPackageDto.getLabTestIds()) {
-            tests.add(LabTestMapper.toLabTest(labTestService.getLabTestById(testId)));
+        try {
+            for (Long testId : testPackageDto.getLabTestIds()) {
+                tests.add(LabTestMapper.toLabTest(labTestService.getLabTestById(testId)));
+            }
+            testPackage.setTests(tests);
+            TestPackage savedTestPackage = testPackageRepository.save(testPackage);
+            logger.info("Successfully saved TestPackage with name: {}", testPackageDto.getName());
+            return TestPackageMapper.toTestPackageDto(savedTestPackage);
+        } catch (Exception e) {
+            logger.warn("Failed to create or update TestPackage: {}", testPackageDto.getName());
+            throw new LabException("Error occurred while saving TestPackage" + testPackageDto.getName());
         }
-        testPackage.setTests(tests);
-        return TestPackageMapper.toTestPackageDto(TestPackageRepository.save(testPackage));
     }
 
     @Override
     public List<ResponseTestPackageDto> getAllTestPackages() {
+        logger.debug("Retrieving all non-deleted TestPackages");
         List<ResponseTestPackageDto> testPackageDtos = new ArrayList<>();
-        List<TestPackage> testPackages = TestPackageRepository.findByIsDeletedFalse();
-        if (null == testPackages) {
-            return testPackageDtos;
-        }
-        for (TestPackage TestPackage : TestPackageRepository.findByIsDeletedFalse()) {
-            testPackageDtos.add(TestPackageMapper.toTestPackageDto(TestPackage));
+        try {
+            List<TestPackage> testPackages = testPackageRepository.findByIsDeletedFalse();
+            if (testPackages != null) {
+                for (TestPackage testPackage : testPackages) {
+                    testPackageDtos.add(TestPackageMapper.toTestPackageDto(testPackage));
+                }
+            }
+            logger.info("Successfully retrieved {} TestPackages", testPackageDtos.size());
+        } catch (Exception e) {
+            logger.warn("Failed to retrieve TestPackages");
+            throw new LabException("Error occurred while retrieving TestPackages");
         }
         return testPackageDtos;
     }
 
     @Override
     public ResponseTestPackageDto getTestPackageById(long id) {
-        TestPackage testPackage = TestPackageRepository.findByIdAndIsDeletedFalse(id);
-        if (null == testPackage) {
-            throw new NullPointerException("Lab Test Not Found");
+        logger.debug("Retrieving TestPackage by ID: {}", id);
+        try {
+            TestPackage testPackage = testPackageRepository.findByIdAndIsDeletedFalse(id);
+            if (testPackage == null) {
+                logger.warn("TestPackage not found for ID: {}", id);
+                throw new NoSuchElementException("TestPackage not found with ID: " + id);
+            }
+            logger.info("Successfully retrieved TestPackage with ID: {}", id);
+            return TestPackageMapper.toTestPackageDto(testPackage);
+        } catch (Exception e) {
+            logger.warn("Failed to retrieve TestPackage by ID: {}", id);
+            throw new LabException("Error occurred while retrieving TestPackage" + id);
         }
-        return TestPackageMapper.toTestPackageDto(testPackage);
     }
 
     @Override
     public boolean deleteTestPackageById(long id) {
-        TestPackage testPackage = TestPackageRepository.findByIdAndIsDeletedFalse(id);
-        if (null == testPackage) {
-            throw new NullPointerException("Lab test Not Found");
+        logger.info("Deleting TestPackage by ID: {}", id);
+        try {
+            TestPackage testPackage = testPackageRepository.findByIdAndIsDeletedFalse(id);
+            if (testPackage == null) {
+                logger.warn("TestPackage not found for deletion with ID: {}", id);
+                throw new NoSuchElementException("TestPackage not found with ID: " + id);
+            }
+            testPackage.setDeleted(true);
+            testPackageRepository.save(testPackage);
+            logger.info("Successfully marked TestPackage as deleted with ID: {}", id);
+            return true;
+        } catch (Exception e) {
+            logger.warn("Failed to delete TestPackage by ID: {}", id);
+            throw new LabException("Error occurred while deleting TestPackage" + id);
         }
-        testPackage.setDeleted(true);
-        TestPackageRepository.save(testPackage);
-        return true;
     }
 }
