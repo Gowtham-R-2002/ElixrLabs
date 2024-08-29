@@ -14,7 +14,7 @@ import lombok.Setter;
 @Builder
 @Entity
 public class Admin {
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
     @Id

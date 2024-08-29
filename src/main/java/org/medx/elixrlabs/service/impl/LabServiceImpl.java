@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.medx.elixrlabs.dto.*;
+import org.medx.elixrlabs.model.Admin;
 import org.medx.elixrlabs.model.Patient;
+import org.medx.elixrlabs.service.AdminService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +44,7 @@ public class LabServiceImpl implements LabService {
     private OrderService orderService;
 
     @Autowired
-    private UserService userService;
+    private AdminService adminService;
 
     @Autowired
     private PatientService patientService;
@@ -50,9 +52,9 @@ public class LabServiceImpl implements LabService {
     @Override
     public List<ResponseOrderDto> getOrders() {
         try {
-            User admin = userService.loadUserByUsername(SecurityContextHelper.extractEmailFromContext());
+            Admin admin = adminService.getAdminByEmail(SecurityContextHelper.extractEmailFromContext());
             System.out.println(admin);
-            LocationEnum location = admin.getPlace();
+            LocationEnum location = admin.getUser().getPlace();
             System.out.println(location);
             return orderService.getOrdersByLocation(location);
         } catch (Exception e) {
