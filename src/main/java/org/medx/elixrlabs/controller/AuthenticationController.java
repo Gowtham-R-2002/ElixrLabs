@@ -1,10 +1,11 @@
 package org.medx.elixrlabs.controller;
 
+import jakarta.mail.MessagingException;
 import org.medx.elixrlabs.dto.LoginRequestDto;
 import org.medx.elixrlabs.dto.OtpDto;
 import org.medx.elixrlabs.exception.OTPValidationException;
 import org.medx.elixrlabs.model.OTP;
-import org.medx.elixrlabs.service.SmsService;
+import org.medx.elixrlabs.service.EmailService;
 import org.medx.elixrlabs.service.impl.JwtService;
 import org.medx.elixrlabs.service.impl.UserService;
 import org.medx.elixrlabs.util.LocationEnum;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -33,7 +35,7 @@ public class AuthenticationController {
     private JwtService jwtService;
 
     @Autowired
-    private SmsService smsService;
+    private EmailService emailService;
 
     @Autowired
     private UserService userService;
@@ -43,7 +45,7 @@ public class AuthenticationController {
     private OTP otp;
 
     @PostMapping
-    public void login(@RequestBody LoginRequestDto loginRequestDto) {
+    public void login(@RequestBody LoginRequestDto loginRequestDto) throws MessagingException, IOException {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequestDto.getEmail(),
@@ -52,7 +54,7 @@ public class AuthenticationController {
         );
         userAuthentication = authentication;
         if(authentication.isAuthenticated()) {
-            otp = smsService.sendSmsAndGetOtp(userService.loadUserByUsername(loginRequestDto.getEmail()).getPhoneNumber());
+            otp = emailService.sendMailAndGetOtp(loginRequestDto.getEmail());
         } else {
             SecurityContextHolder.getContext().setAuthentication(userAuthentication);
         }
