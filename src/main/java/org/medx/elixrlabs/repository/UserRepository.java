@@ -1,7 +1,5 @@
 package org.medx.elixrlabs.repository;
 
-import org.medx.elixrlabs.dto.TestResultDto;
-import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
