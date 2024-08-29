@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import jakarta.mail.MessagingException;
 import org.medx.elixrlabs.model.OTP;
+import org.medx.elixrlabs.model.TestResult;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,4 +27,6 @@ public interface EmailService {
      */
 
     OTP sendMailAndGetOtp(String email) throws MessagingException, IOException;
+
+    void sendTestResult(TestResult testResult) throws MessagingException, IOException;
 }
