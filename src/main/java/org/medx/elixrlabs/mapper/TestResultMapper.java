@@ -8,16 +8,12 @@ public class TestResultMapper {
     public static TestResultDto toTestResultDto(TestResult testResult) {
         return TestResultDto.builder()
                 .id(testResult.getId())
+                .email(testResult.getName())
+                .ageAndGender(testResult.getAgeAndGender())
                 .result(testResult.getResult())
+                .orderDate(testResult.getOrderDate())
                 .generatedAt(testResult.getGeneratedAt())
                 .build();
     }
 
-    public static TestResult toTestResult(TestResultDto testResultDto) {
-        return TestResult.builder()
-                .id(testResultDto.getId())
-                .result(testResultDto.getResult())
-                .generatedAt(testResultDto.getGeneratedAt())
-                .build();
-    }
 }

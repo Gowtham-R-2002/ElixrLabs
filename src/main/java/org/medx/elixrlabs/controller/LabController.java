@@ -3,7 +3,6 @@ package org.medx.elixrlabs.controller;
 import java.util.List;
 
 import org.medx.elixrlabs.dto.*;
-import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.service.LabService;
 import org.medx.elixrlabs.service.PatientService;
 import org.medx.elixrlabs.service.SampleCollectorService;
@@ -37,8 +36,8 @@ public class LabController {
     }
 
     @PutMapping("orders/{id}/results")
-    public ResponseEntity<HttpStatus.Series> updateReport(TestResult testResult) {
-        labService.assignReport(testResult);
+    public ResponseEntity<HttpStatus.Series> updateReport(@RequestBody RequestTestResultDto resultDto, @PathVariable(name = "id") long id) {
+        labService.assignReport(id, resultDto);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
@@ -58,8 +57,8 @@ public class LabController {
         return new ResponseEntity<>(patientService.getOrdersByPatient(patientDto), HttpStatus.OK);
     }
 
-    @GetMapping("patients/orders/{id}/test-results")
-    public ResponseEntity<TestResultDto> getTestResult(@PathVariable Long orderId, @RequestBody UserDto patientDto) {
-        return null;
+    @GetMapping("orders/{id}/results")
+    public ResponseEntity<TestResultDto> getTestResult(@PathVariable(name = "id") Long orderId) {
+        return new ResponseEntity<>(labService.getTestResultByOrder(orderId), HttpStatus.OK);
     }
 }
