@@ -59,9 +59,28 @@ public interface SampleCollectorService {
      */
     SampleCollector getSampleCollectorByEmail(String email);
 
+    /**
+     * Fetches all the verified sample collectors from a specific place
+     *
+     * @param place location of the sample collectors associated with a specific place
+     * @return list of sample collectors associated with the location
+     */
+
     List<SampleCollector> getSampleCollectorByPlace(LocationEnum place);
 
+    /**
+     * Changes the verification status of a specific sample collector
+     *
+     * @param email - email of the sample collector who has to be verified
+     */
+
     void verifySampleCollector(String email);
+
+    /**
+     * Fetches all the sample collectors
+     *
+     * @return list of all the sample collectors
+     */
 
     List<SampleCollectorDto> getAllSampleCollectors();
 

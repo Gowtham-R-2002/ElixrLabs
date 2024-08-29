@@ -7,6 +7,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+/**
+ * Repository interface for accessing cart data from the database.
+ *
+ * <p>
+ * This interface extends JpaRepository, providing CRUD operations for Role entities.
+ * Custom queries can be defined by adding method signatures that follow the naming
+ * convention understood by Spring Data JPA.
+ * </p>
+ */
+
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
 

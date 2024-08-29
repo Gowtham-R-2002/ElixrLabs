@@ -5,7 +5,24 @@ import org.medx.elixrlabs.dto.ResponsePatientDto;
 import org.medx.elixrlabs.model.Patient;
 import org.medx.elixrlabs.model.User;
 
+/**
+ * Mapper class for mapping DTOs and entity related to patient.
+ *
+ * <p>
+ * This class provides static methods for converting between patient entities
+ * and their corresponding Data Transfer Objects (DTOs). It facilitates the
+ * conversion process needed for interacting with the service and controller layers
+ * while keeping the domain model and DTOs separate.
+ * </p>
+ */
 public class PatientMapper {
+
+    /**
+     * Converts an {@link RequestPatientDto} to an {@link Patient}.
+     *
+     * @param patientDto {@link RequestPatientDto} The patient dto to be converted.
+     * @return {@link Patient} The corresponding Patient.
+     */
     public static Patient toPatient(RequestPatientDto patientDto) {
         User user = User.builder()
                 .dateOfBirth(patientDto.getDateOfBirth())
@@ -19,6 +36,13 @@ public class PatientMapper {
                 .user(user)
                 .build();
     }
+
+    /**
+     * Converts an {@link Patient} entity to an {@link RequestPatientDto}.
+     *
+     * @param patient {@link Patient} The Patient entity to be converted.
+     * @return {@link ResponsePatientDto} The corresponding DTO of patient.
+     */
     public static ResponsePatientDto toPatientDto(Patient patient) {
         return ResponsePatientDto.builder()
                 .dateOfBirth(patient.getUser().getDateOfBirth())

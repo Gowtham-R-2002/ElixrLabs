@@ -9,7 +9,19 @@ import java.util.List;
 
 @Service
 public interface LabService {
+
+    /**
+     * Fetches all the orders related to the specific lab
+     *
+     * @return list of orders related to the lab
+     */
+
     List<ResponseOrderDto> getOrders();
+
+    /**
+     *
+     * @param testResult
+     */
 
     void assignReport(TestResult testResult);
 
