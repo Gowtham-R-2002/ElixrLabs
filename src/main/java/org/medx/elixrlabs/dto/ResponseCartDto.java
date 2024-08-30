@@ -1,11 +1,11 @@
 package org.medx.elixrlabs.dto;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
 
 import org.medx.elixrlabs.model.TestPackage;
-
-import java.util.List;
 
 @Builder
 @Data
@@ -15,5 +15,6 @@ public class ResponseCartDto {
     private boolean isPurchased;
     private List<LabTestDto> tests;
     private TestPackage testPackage;
+    private double price;
 
 }
