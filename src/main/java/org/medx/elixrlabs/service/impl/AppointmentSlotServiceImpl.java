@@ -1,18 +1,12 @@
 package org.medx.elixrlabs.service.impl;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.medx.elixrlabs.model.*;
-import org.medx.elixrlabs.service.AppointmentSlotService;
-import org.medx.elixrlabs.service.CartService;
-import org.medx.elixrlabs.service.OrderService;
-import org.medx.elixrlabs.service.PatientService;
-import org.medx.elixrlabs.service.SampleCollectorService;
+import org.medx.elixrlabs.service.*;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.PaymentStatusEnum;
 import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
@@ -50,6 +44,9 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Set<String> getAvailableSlots(SlotBookDto slotBookDto) {
@@ -110,7 +107,9 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                         .testPackage(cart.getTestPackage())
                         .testStatus(TestStatusEnum.PENDING)
                         .price(cart.getPrice())
+                        .orderDateTime(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("GMT+05:30"))))
                         .build();
+                emailService.sendInvoice(order.getTests(), order.getTestPackage(), order.getPrice(), patient.getUser().getEmail(), order.getOrderDateTime());
                 appointmentSlotRepository.save(appointmentSlot);
                 cartService.deleteCart();
                 logger.info("Slot booked successfully for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());

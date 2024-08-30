@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.medx.elixrlabs.mapper.LabTestMapper;
 import org.medx.elixrlabs.mapper.TestPackageMapper;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
-import org.medx.elixrlabs.dto.TestPackageDto;
+import org.medx.elixrlabs.dto.RequestTestPackageDto;
 import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.TestPackage;
 import org.medx.elixrlabs.repository.TestPackageRepository;
@@ -42,21 +42,21 @@ public class TestPackageServiceImpl implements TestPackageService {
     private LabTestService labTestService;
 
     @Override
-    public ResponseTestPackageDto createOrUpdateTestPackage(TestPackageDto testPackageDto) {
-        logger.info("Creating or updating TestPackage with name: {}", testPackageDto.getName());
-        TestPackage testPackage = TestPackageMapper.toTestPackage(testPackageDto);
+    public ResponseTestPackageDto createOrUpdateTestPackage(RequestTestPackageDto requestTestPackageDto) {
+        logger.info("Creating or updating TestPackage with name: {}", requestTestPackageDto.getName());
+        TestPackage testPackage = TestPackageMapper.toTestPackage(requestTestPackageDto);
         List<LabTest> tests = new ArrayList<>();
         try {
-            for (Long testId : testPackageDto.getLabTestIds()) {
+            for (Long testId : requestTestPackageDto.getLabTestIds()) {
                 tests.add(LabTestMapper.toLabTest(labTestService.getLabTestById(testId)));
             }
             testPackage.setTests(tests);
             TestPackage savedTestPackage = testPackageRepository.save(testPackage);
-            logger.info("Successfully saved TestPackage with name: {}", testPackageDto.getName());
+            logger.info("Successfully saved TestPackage with name: {}", requestTestPackageDto.getName());
             return TestPackageMapper.toTestPackageDto(savedTestPackage);
         } catch (Exception e) {
-            logger.warn("Failed to create or update TestPackage: {}", testPackageDto.getName());
-            throw new LabException("Error occurred while saving TestPackage" + testPackageDto.getName());
+            logger.warn("Failed to create or update TestPackage: {}", requestTestPackageDto.getName());
+            throw new LabException("Error occurred while saving TestPackage" + requestTestPackageDto.getName());
         }
     }
 

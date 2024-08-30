@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
-import org.medx.elixrlabs.dto.TestPackageDto;
+import org.medx.elixrlabs.dto.RequestTestPackageDto;
 import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.TestPackage;
 import org.medx.elixrlabs.repository.TestPackageRepository;
@@ -42,7 +42,7 @@ class TestPackageServiceImplTest {
     @Mock
     private LabTestService labTestService;
 
-    private TestPackageDto testPackageDto;
+    private RequestTestPackageDto requestTestPackageDto;
     private TestPackage testPackage;
     private LabTestDto labTestDto;
     private List<TestPackage> testPackages;
@@ -66,7 +66,7 @@ class TestPackageServiceImplTest {
                 .name("Complete blood count (CBC)")
                 .build();
 
-        testPackageDto = TestPackageDto.builder()
+        requestTestPackageDto = RequestTestPackageDto.builder()
                 .labTestIds(List.of(1L, 2L))
                 .build();
 
@@ -86,7 +86,7 @@ class TestPackageServiceImplTest {
         when(labTestService.getLabTestById(anyLong())).thenReturn(labTestDto);
         when(testPackageRepository.save(any(TestPackage.class))).thenReturn(testPackage);
 
-        ResponseTestPackageDto response = testPackageService.createOrUpdateTestPackage(testPackageDto);
+        ResponseTestPackageDto response = testPackageService.createOrUpdateTestPackage(requestTestPackageDto);
 
         assertNotNull(response);
         verify(testPackageRepository).save(any(TestPackage.class));
@@ -97,7 +97,7 @@ class TestPackageServiceImplTest {
         when(labTestService.getLabTestById(anyLong())).thenReturn(null);
 
         assertThrows(NullPointerException.class,
-                () -> testPackageService.createOrUpdateTestPackage(testPackageDto));
+                () -> testPackageService.createOrUpdateTestPackage(requestTestPackageDto));
         verify(testPackageRepository, never()).save(any(TestPackage.class));
     }
 
@@ -106,7 +106,7 @@ class TestPackageServiceImplTest {
         when(labTestService.getLabTestById(anyLong())).thenThrow(new RuntimeException("Exception occurred"));
 
         Exception exception = assertThrows(RuntimeException.class,
-                () -> testPackageService.createOrUpdateTestPackage(testPackageDto));
+                () -> testPackageService.createOrUpdateTestPackage(requestTestPackageDto));
 
         assertEquals("Exception occurred", exception.getMessage());
         verify(testPackageRepository, never()).save(any(TestPackage.class));

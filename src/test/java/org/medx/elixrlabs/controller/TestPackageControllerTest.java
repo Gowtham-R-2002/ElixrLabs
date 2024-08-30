@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
-import org.medx.elixrlabs.dto.TestPackageDto;
+import org.medx.elixrlabs.dto.RequestTestPackageDto;
 import org.medx.elixrlabs.service.TestPackageService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,7 +30,7 @@ class TestPackageControllerTest {
     @Mock
     private TestPackageService testPackageService;
 
-    private TestPackageDto testPackageDto;
+    private RequestTestPackageDto requestTestPackageDto;
     private ResponseTestPackageDto responseTestPackageDto;
 
     private List<ResponseTestPackageDto> responseTestPackageDtos;
@@ -39,7 +39,7 @@ class TestPackageControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        testPackageDto = TestPackageDto.builder()
+        requestTestPackageDto = RequestTestPackageDto.builder()
                 .labTestIds(List.of(1L, 2L))
                 .build();
 
@@ -67,40 +67,40 @@ class TestPackageControllerTest {
     @Test
     void testCreateTestPackage_positive() {
 
-        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class)))
+        when(testPackageService.createOrUpdateTestPackage(any(RequestTestPackageDto.class)))
                 .thenReturn(responseTestPackageDto);
 
         ResponseEntity<ResponseTestPackageDto> response = testPackageController
-                .createTestPackage(testPackageDto);
+                .createTestPackage(requestTestPackageDto);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(responseTestPackageDto, response.getBody());
-        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(requestTestPackageDto);
     }
 
     @Test
     void testCreateTestPackage_negative() {
 
-        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class))).thenReturn(null);
+        when(testPackageService.createOrUpdateTestPackage(any(RequestTestPackageDto.class))).thenReturn(null);
 
         ResponseEntity<ResponseTestPackageDto> response = testPackageController
-                .createTestPackage(testPackageDto);
+                .createTestPackage(requestTestPackageDto);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNull(response.getBody());
-        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(requestTestPackageDto);
     }
 
     @Test
     void testCreateTestPackage_exception() {
 
-        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class)))
+        when(testPackageService.createOrUpdateTestPackage(any(RequestTestPackageDto.class)))
                 .thenThrow(new RuntimeException("Exception occurred"));
 
         assertThrows(RuntimeException.class,
-                () -> testPackageController.createTestPackage(testPackageDto));
+                () -> testPackageController.createTestPackage(requestTestPackageDto));
 
-        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(requestTestPackageDto);
     }
 
     @Test
@@ -179,40 +179,40 @@ class TestPackageControllerTest {
     @Test
     void testUpdateTestPackageById_positive() {
 
-        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class)))
+        when(testPackageService.createOrUpdateTestPackage(any(RequestTestPackageDto.class)))
                 .thenReturn(responseTestPackageDto);
 
         ResponseEntity<ResponseTestPackageDto> response = testPackageController
-                .updateTestPackageById(testPackageDto);
+                .updateTestPackageById(requestTestPackageDto);
 
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         assertEquals(responseTestPackageDto, response.getBody());
-        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(requestTestPackageDto);
     }
 
     @Test
     void testUpdateTestPackageById_negative() {
 
-        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class))).thenReturn(null);
+        when(testPackageService.createOrUpdateTestPackage(any(RequestTestPackageDto.class))).thenReturn(null);
 
         ResponseEntity<ResponseTestPackageDto> response = testPackageController
-                .updateTestPackageById(testPackageDto);
+                .updateTestPackageById(requestTestPackageDto);
 
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         assertNull(response.getBody());
-        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(requestTestPackageDto);
     }
 
     @Test
     void testUpdateTestPackageById_exception() {
 
-        when(testPackageService.createOrUpdateTestPackage(any(TestPackageDto.class)))
+        when(testPackageService.createOrUpdateTestPackage(any(RequestTestPackageDto.class)))
                 .thenThrow(new RuntimeException("Exception occurred"));
 
         assertThrows(RuntimeException.class,
-                () -> testPackageController.updateTestPackageById(testPackageDto));
+                () -> testPackageController.updateTestPackageById(requestTestPackageDto));
 
-        verify(testPackageService, times(1)).createOrUpdateTestPackage(testPackageDto);
+        verify(testPackageService, times(1)).createOrUpdateTestPackage(requestTestPackageDto);
     }
 
     @Test

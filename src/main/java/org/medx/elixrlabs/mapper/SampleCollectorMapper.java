@@ -22,25 +22,14 @@ public class SampleCollectorMapper {
      * @return {@link SampleCollectorDto} The corresponding SampleCollector DTO.
      */
     public static SampleCollectorDto convertToSampleCollectorDto(SampleCollector sampleCollector) {
-        SampleCollectorDto sampleCollectorDto = SampleCollectorDto.builder()
+        return SampleCollectorDto.builder()
                 .id(sampleCollector.getId())
-                .user(sampleCollector.getUser())
+                .email(sampleCollector.getUser().getEmail())
+                .dateOfBirth(sampleCollector.getUser().getDateOfBirth())
+                .gender(sampleCollector.getUser().getGender())
+                .phoneNumber(sampleCollector.getUser().getPhoneNumber())
+                .place(sampleCollector.getUser().getPlace())
                 .isVerified(sampleCollector.isVerified())
                 .build();
-        return sampleCollectorDto;
-    }
-
-    /**
-     * Converts an {@link SampleCollectorDto} to an {@link SampleCollector} entity.
-     *
-     * @param sampleCollectorDto {@link SampleCollectorDto} The SampleCollector DTO to be converted.
-     * @return {@link SampleCollector} The corresponding SampleCollector entity.
-     */
-    public static SampleCollector convertToSampleCollectorEntity(SampleCollectorDto sampleCollectorDto) {
-        SampleCollector sampleCollector = SampleCollector.builder()
-                .user(sampleCollectorDto.getUser())
-                .isVerified(false)
-                .build();
-        return sampleCollector;
     }
 }

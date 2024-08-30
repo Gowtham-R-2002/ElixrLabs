@@ -3,7 +3,7 @@ package org.medx.elixrlabs.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.medx.elixrlabs.dto.TestPackageDto;
+import org.medx.elixrlabs.dto.RequestTestPackageDto;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +20,10 @@ public interface TestPackageService {
     /**
      * Creates or updates a TestPackage.
      *
-     * @param testPackageDto {@link TestPackageDto} The DTO containing testPackage data.
+     * @param requestTestPackageDto {@link RequestTestPackageDto} The DTO containing testPackage data.
      * @return The created testPackage Dto.
      */
-    ResponseTestPackageDto createOrUpdateTestPackage(TestPackageDto testPackageDto);
+    ResponseTestPackageDto createOrUpdateTestPackage(RequestTestPackageDto requestTestPackageDto);
 
     /**
      * Retrieves all TestPackages.

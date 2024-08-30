@@ -1,19 +1,16 @@
 package org.medx.elixrlabs.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class LabTestDto {
-    @NotNull
-    private Long id;
+public class RequestTestPackageDto {
+    private long id;
     @NotNull
     @NotBlank
     private String name;
@@ -23,6 +20,5 @@ public class LabTestDto {
     @NotNull
     private double price;
     @NotNull
-    @NotBlank
-    private String defaultValue;
+    List<Long> labTestIds;
 }

@@ -1,0 +1,28 @@
+<html lang="en">
+<body>
+<h4>Invoice from ElixrLabs</h4>
+<p>Thank you for your order. Your order will be processed on or before time.</p>
+<p>Here is the invoice for your last order for your kind reference</p>
+<div style="border: 1px solid #232424; padding : 10px 25px 25px 25px; margin : 0 30px;">
+    <div style="text-align:center; font-weight : 800; font-size : xx-large; ">Invoice</div>
+    <p>Email : {{email}}</p>
+    <p>Order Date/Time : {{orderDateTime}}</p>
+    <table width="100%">
+        <tr style="text-align : left">
+            <th width="70%">Test / Package Name</th>
+            <th width="30%">Price</th>
+        </tr>
+        {{testBody}}
+        <tr>
+            <td><strong>Total</strong></td>
+            <td>{{totalPrice}}</td>
+        </tr>
+    </table>
+</div>
+<br>
+<p>Regards,</p>
+<p>Elixr Labs Inc.</p>
+<br>
+<img src="cid:logoImage" alt="Company Logo"/>
+</body>
+</html>

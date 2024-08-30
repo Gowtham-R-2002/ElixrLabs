@@ -26,6 +26,7 @@ import org.medx.elixrlabs.util.PaymentStatusEnum;
 import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.medx.elixrlabs.util.TestStatusEnum;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -91,4 +92,6 @@ public class Order {
     private TestResult testResult;
 
     private double price;
+
+    private Calendar orderDateTime;
 }

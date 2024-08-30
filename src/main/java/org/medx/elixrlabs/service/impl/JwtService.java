@@ -66,18 +66,6 @@ public class JwtService {
         }
     }
 
-    public LocationEnum extractAddress(String jwt) {
-        try {
-            Claims claims = getClaims(jwt);
-            String addressStr = claims.get("address", String.class);
-            setAddress(addressStr);
-            return LocationEnum.valueOf(addressStr);
-        } catch (Exception e) {
-            logger.warn("Error while extracting address from token: {}", e.getMessage());
-            throw new LabException("Error while extracting address from token");
-        }
-    }
-
     private SecretKey generateKey() {
         byte[] decodedKey = Base64.getDecoder().decode(SECRET);
         return Keys.hmacShaKeyFor(decodedKey);

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
-import org.medx.elixrlabs.dto.TestPackageDto;
+import org.medx.elixrlabs.dto.RequestTestPackageDto;
 import org.medx.elixrlabs.service.TestPackageService;
 
 @RestController
@@ -26,8 +26,8 @@ public class TestPackageController {
     private TestPackageService testPackageService;
 
     @PostMapping
-    public ResponseEntity<ResponseTestPackageDto> createTestPackage(@RequestBody TestPackageDto testPackageDto) {
-        return new ResponseEntity<>(testPackageService.createOrUpdateTestPackage(testPackageDto), HttpStatus.CREATED);
+    public ResponseEntity<ResponseTestPackageDto> createTestPackage(@RequestBody RequestTestPackageDto requestTestPackageDto) {
+        return new ResponseEntity<>(testPackageService.createOrUpdateTestPackage(requestTestPackageDto), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -41,8 +41,8 @@ public class TestPackageController {
     }
 
     @PutMapping
-    public ResponseEntity<ResponseTestPackageDto> updateTestPackageById(@RequestBody TestPackageDto testPackageDto) {
-        return new ResponseEntity<>(testPackageService.createOrUpdateTestPackage(testPackageDto), HttpStatus.ACCEPTED);
+    public ResponseEntity<ResponseTestPackageDto> updateTestPackageById(@RequestBody RequestTestPackageDto requestTestPackageDto) {
+        return new ResponseEntity<>(testPackageService.createOrUpdateTestPackage(requestTestPackageDto), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
