@@ -91,7 +91,7 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         try {
             sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);
         } catch (Exception e) {
-            logger.warn("Error occurred while retrieving SampleCollector by email: {}", email, e);
+            logger.warn("Error occurred while retrieving SampleCollector by email: {}", email);
             throw new NoSuchElementException("Error while getting sampleCollector with email: " + email);
         }
         return sampleCollector;
@@ -103,7 +103,8 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         List<SampleCollectorDto> sampleCollectorDtos = new ArrayList<>();
         try {
             for (SampleCollector sampleCollector : sampleCollectorRepository.getAllSampleCollector()) {
-                sampleCollectorDtos.add(SampleCollectorMapper.convertToSampleCollectorDto(sampleCollector));
+                sampleCollectorDtos.add(SampleCollectorMapper
+                        .convertToSampleCollectorDto(sampleCollector));
             }
         } catch (Exception e) {
             logger.warn("Error occurred while retrieving all SampleCollectors", e);
@@ -119,7 +120,7 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         try {
             sampleCollectors = sampleCollectorRepository.getSampleCollectorsByPlace(place);
         } catch (Exception e) {
-            logger.warn("Error occurred while retrieving SampleCollectors by place: {}", place, e);
+            logger.warn("Error occurred while retrieving SampleCollectors by place: {}", place);
             throw new NoSuchElementException("Error while getting SampleCollector with place: " + place);
         }
         return sampleCollectors;

@@ -30,7 +30,8 @@ public class CartMapper {
     public static ResponseCartDto toCartDto(Cart cart) {
         List<LabTestDto> tests = cart.getTests()
                 .stream()
-                .map(LabTestMapper::toRetrieveLabTestDto).toList();
+                .map(LabTestMapper::toRetrieveLabTestDto)
+                .toList();
         double price = cart.getTests().stream()
                 .mapToDouble(LabTest::getPrice)
                 .sum();
@@ -40,6 +41,5 @@ public class CartMapper {
                 .testPackage(cart.getTestPackage())
                 .price(price+cart.getTestPackage().getPrice())
                 .build();
-
     }
 }

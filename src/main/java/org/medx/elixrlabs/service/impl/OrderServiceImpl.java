@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.medx.elixrlabs.dto.ResponseOrderDto;
+import org.medx.elixrlabs.model.AppointmentSlot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Override
-    public OrderSuccessDto createOrder(Order order) {
+    public OrderSuccessDto createOrUpdateOrder(Order order) {
         try {
             Order savedOrder = orderRepository.save(order);
             logger.info("Order created successfully with id: {}", savedOrder.getId());
@@ -117,5 +118,10 @@ public class OrderServiceImpl implements OrderService {
             logger.warn("Error while fetching orders by location: {}", location);
             throw new LabException("Error while fetching orders by location: " + location);
         }
+    }
+
+    @Override
+    public Order getOrderByAppointment(AppointmentSlot appointmentSlot) {
+        return orderRepository.findByAppointmentSlot(appointmentSlot);
     }
 }

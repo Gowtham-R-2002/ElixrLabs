@@ -66,7 +66,9 @@ public class CartServiceImpl implements CartService {
             if (cartDto.getTestIds() != null) {
                 List<LabTest> tests = cartDto.getTestIds()
                         .stream()
-                        .map(testId -> LabTestMapper.toLabTest(labTestService.getLabTestById(testId)))
+                        .map(testId -> LabTestMapper
+                                .toLabTest(labTestService
+                                        .getLabTestById(testId)))
                         .collect(Collectors.toList());
                 userCart.setTests(tests);
             }

@@ -1,10 +1,7 @@
 package org.medx.elixrlabs.service.impl;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.medx.elixrlabs.model.*;
@@ -113,7 +110,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                 appointmentSlotRepository.save(appointmentSlot);
                 cartService.deleteCart();
                 logger.info("Slot booked successfully for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
-                return orderService.createOrder(order);
+                return orderService.createOrUpdateOrder(order);
             } else {
                 logger.warn("Slot booking failed for date: {}, time slot: {} - Slot filled", slotBookDto.getDate(), slotBookDto.getTimeSlot());
                 throw new LabException("Slot filled!");
@@ -168,11 +165,14 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     @Override
     public void markSampleCollected(Long id) {
-        try {
             logger.debug("Marking sample as collected for appointment with id: {}", id);
             AppointmentSlot appointmentSlot = appointmentSlotRepository.findById(id)
-                    .orElseThrow(() -> new LabException("No appointment slot found with id: " + id));
+                    .orElseThrow(() -> new NoSuchElementException("No appointment slot found with id: " + id));
             appointmentSlot.setSampleCollected(true);
+            Order order = orderService.getOrderByAppointment(appointmentSlot);
+            order.setTestStatus(TestStatusEnum.IN_PROGRESS);
+            orderService.createOrUpdateOrder(order);
+        try {
             appointmentSlotRepository.save(appointmentSlot);
             logger.info("Sample marked as collected successfully for appointment with id: {}", id);
         } catch (Exception e) {
@@ -194,6 +194,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                 return appointmentSlots;
             }
         } catch (Exception e) {
+
             logger.warn("Exception occurred while fetching all appointments for SampleCollector Id: {}", id);
             throw new LabException("Exception occurred while fetching all appointments for SampleCollector Id: " + id);
         }
