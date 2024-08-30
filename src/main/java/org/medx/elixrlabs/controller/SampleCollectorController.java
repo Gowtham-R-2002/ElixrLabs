@@ -122,7 +122,7 @@ public class SampleCollectorController {
         return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
     }
 
-    @GetMapping("appointments/assigned/collected")
+    @GetMapping("appointments/assigned/pending")
     public ResponseEntity<List<AppointmentDto>> getPendingAppointments() {
         List<AppointmentSlot> appointmentSlots = appointmentSlotService
                 .getPendingAppointmentsBySampleCollector(sampleCollectorService
