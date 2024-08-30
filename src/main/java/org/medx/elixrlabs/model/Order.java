@@ -89,4 +89,6 @@ public class Order {
 
     @OneToOne
     private TestResult testResult;
+
+    private double price;
 }

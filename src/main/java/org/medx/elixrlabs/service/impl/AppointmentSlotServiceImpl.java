@@ -56,7 +56,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         try {
             logger.debug("Fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
             List<AppointmentSlot> appointments = appointmentSlotRepository
-                    .findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate());
+                    .findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate());
             List<String> bookedTimeSlots = appointments.stream()
                     .map(AppointmentSlot::getTimeSlot).toList();
             Set<TimeSlotEnum> availableSlots = Arrays.stream(TimeSlotEnum.values())
@@ -109,6 +109,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                         .labLocation(slotBookDto.getLocation())
                         .testPackage(cart.getTestPackage())
                         .testStatus(TestStatusEnum.PENDING)
+                        .price(cart.getPrice())
                         .build();
                 appointmentSlotRepository.save(appointmentSlot);
                 cartService.deleteCart();
@@ -129,7 +130,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         try {
             logger.debug("Fetching appointments for location: {}, date: {}", location, date);
             List<AppointmentSlot> appointments = appointmentSlotRepository
-                    .findByLocationAndTestCollectionPlaceAndDateSlot(location, TestCollectionPlaceEnum.HOME, date);
+                    .findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(location, TestCollectionPlaceEnum.HOME, date);
             logger.info("Appointments fetched successfully for location: {}, date: {}", location, date);
             return appointments;
         } catch (Exception e) {
@@ -221,7 +222,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     public List<AppointmentSlot> getPendingAppointmentsBySampleCollector(Long id) {
         try {
             logger.debug("Fetching all appointments for which the sample is not collected by the sample collector with ID: {}", id);
-            List<AppointmentSlot> appointmentSlots = appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedTrue(id);
+            List<AppointmentSlot> appointmentSlots = appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedFalse(id);
             if(appointmentSlots == null) {
                 logger.warn("There is no appointments for sample is not collected by the SampleCollector with Id: {}", id);
                 return null;

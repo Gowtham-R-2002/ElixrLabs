@@ -77,7 +77,7 @@ public class CartServiceImpl implements CartService {
             return CartMapper.toCartDto(cartRepository.save(userCart));
         } catch (Exception e) {
             logger.warn("Error while adding tests or packages to cart for patient: {}", patient.getUser().getUsername());
-            throw new LabException("Error while adding tests or packages to cart");
+            throw new LabException("Error while adding tests or packages to cart" + e.getMessage());
         }
     }
 
