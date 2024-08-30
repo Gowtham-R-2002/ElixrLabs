@@ -5,6 +5,7 @@ import java.util.List;
 import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
 import org.medx.elixrlabs.model.Cart;
+import org.medx.elixrlabs.model.LabTest;
 
 /**
  * Mapper class for mapping DTOs and entity related to cart.
@@ -30,10 +31,15 @@ public class CartMapper {
         List<LabTestDto> tests = cart.getTests()
                 .stream()
                 .map(LabTestMapper::toRetrieveLabTestDto).toList();
+        double price = cart.getTests().stream()
+                .mapToDouble(LabTest::getPrice)
+                .sum();
         return ResponseCartDto.builder()
                 .id(cart.getId())
                 .tests(tests)
                 .testPackage(cart.getTestPackage())
+                .price(price+cart.getTestPackage().getPrice())
                 .build();
+
     }
 }
