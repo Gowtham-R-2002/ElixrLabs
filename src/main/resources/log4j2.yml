@@ -21,7 +21,7 @@ Configuration:
 
   Loggers:
     logger:
-      - name: com.ideas2it
+      - name: org.medx
         level: debug
         additivity: false
         AppenderRef:
