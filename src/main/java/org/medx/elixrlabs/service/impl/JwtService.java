@@ -4,7 +4,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,16 +17,11 @@ import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import lombok.Getter;
-import lombok.Setter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
 import org.medx.elixrlabs.exception.LabException;
-import org.medx.elixrlabs.util.LocationEnum;
 
 
 /**

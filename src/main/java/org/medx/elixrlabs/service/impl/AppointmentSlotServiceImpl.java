@@ -68,7 +68,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             logger.info("Available slots fetched successfully for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
             return availableSlots.stream().map(TimeSlotEnum::getTime).collect(Collectors.toSet());
         } catch (Exception e) {
-            logger.warn("Exception occurred while fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate(), e);
+            logger.warn("Exception occurred while fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
             throw new LabException("Unable to fetch available slots");
         }
     }
@@ -119,7 +119,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                 throw new LabException("Slot filled!");
             }
         } catch (Exception e) {
-            logger.warn("Exception occurred while booking slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot(), e);
+            logger.warn("Exception occurred while booking slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
             throw new LabException("Unable to book slot");
         }
     }
@@ -133,7 +133,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             logger.info("Appointments fetched successfully for location: {}, date: {}", location, date);
             return appointments;
         } catch (Exception e) {
-            logger.warn("Exception occurred while fetching appointments for location: {}, date: {}", location, date, e);
+            logger.warn("Exception occurred while fetching appointments for location: {}, date: {}", location, date);
             throw new LabException("Unable to fetch appointments");
         }
     }
@@ -146,7 +146,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             logger.info("Appointment created or updated successfully for date: {}, time slot: {}", appointmentSlot.getDateSlot(), appointmentSlot.getTimeSlot());
             return savedAppointmentSlot;
         } catch (Exception e) {
-            logger.warn("Exception occurred while creating or updating appointment for date: {}, time slot: {}", appointmentSlot.getDateSlot(), appointmentSlot.getTimeSlot(), e);
+            logger.warn("Exception occurred while creating or updating appointment for date: {}, time slot: {}", appointmentSlot.getDateSlot(), appointmentSlot.getTimeSlot());
             throw new LabException("Unable to create or update appointment");
         }
     }
@@ -161,7 +161,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             appointmentSlotRepository.save(appointmentSlot);
             logger.info("Sample collector assigned successfully to appointment with id: {}", id);
         } catch (Exception e) {
-            logger.warn("Exception occurred while assigning sample collector to appointment with id: {}", id, e);
+            logger.warn("Exception occurred while assigning sample collector to appointment with id: {}", id);
             throw new LabException("Unable to assign sample collector");
         }
     }
@@ -176,8 +176,62 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             appointmentSlotRepository.save(appointmentSlot);
             logger.info("Sample marked as collected successfully for appointment with id: {}", id);
         } catch (Exception e) {
-            logger.warn("Exception occurred while marking sample as collected for appointment with id: {}", id, e);
+            logger.warn("Exception occurred while marking sample as collected for appointment with id: {}", id);
             throw new LabException("Unable to mark sample as collected");
+        }
+    }
+
+    @Override
+    public List<AppointmentSlot> getAppointmentsBySampleCollector(Long id) {
+        try {
+            logger.debug("Fetching all appointments for SampleCollector Id: {}", id);
+            List<AppointmentSlot> appointmentSlots = appointmentSlotRepository.findBySampleCollectorId(id);
+            if(appointmentSlots == null) {
+                logger.warn("There is no appointments for SampleCollector Id: {}", id);
+                return null;
+            } else {
+                logger.info("Appointments fetched successfully for SampleCollector Id: {}", id);
+                return appointmentSlots;
+            }
+        } catch (Exception e) {
+            logger.warn("Exception occurred while fetching all appointments for SampleCollector Id: {}", id);
+            throw new LabException("Exception occurred while fetching all appointments for SampleCollector Id: " + id);
+        }
+    }
+
+    @Override
+    public List<AppointmentSlot> getCollectedAppointmentsBySampleCollector(Long id) {
+        try {
+            logger.debug("Fetching all appointments for which the sample is collected by the sampleCollector with ID: {}", id);
+            List<AppointmentSlot> appointmentSlots = appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedTrue(id);
+            if(appointmentSlots == null) {
+                logger.warn("There is no appointments for sample collected by the SampleCollector with Id: {}", id);
+                return null;
+            } else {
+                logger.info("Fetching all appointments for which the sample is collected by the sample collector with ID: {}", id);
+                return appointmentSlots;
+            }
+        } catch (Exception e) {
+            logger.warn("Exception occurred while fetching all appointments for which the sample is collected by the sampleCollector ID: {}", id);
+            throw new LabException("Exception occurred while fetching all appointments for which the sample is collected by the SampleCollector ID: " + id);
+        }
+    }
+
+    @Override
+    public List<AppointmentSlot> getPendingAppointmentsBySampleCollector(Long id) {
+        try {
+            logger.debug("Fetching all appointments for which the sample is not collected by the sample collector with ID: {}", id);
+            List<AppointmentSlot> appointmentSlots = appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedTrue(id);
+            if(appointmentSlots == null) {
+                logger.warn("There is no appointments for sample is not collected by the SampleCollector with Id: {}", id);
+                return null;
+            } else {
+                logger.info("Fetching all appointments for which the sample is not collected by the sample collector with ID: {}", id);
+                return appointmentSlots;
+            }
+        } catch (Exception e) {
+            logger.warn("Exception occurred while fetching all appointments for which the sample is not collected by the SampleCollector ID: {}", id);
+            throw new LabException("Exception occurred while fetching all appointments for which the sample is collected by the SampleCollector ID: " + id);
         }
     }
 

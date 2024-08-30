@@ -10,7 +10,18 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Interface for AppointmentSlotService, manages all the operations that are related to the
+ * slot allocations. This interface is implemented by AppointmentServiceImpl
+ */
 public interface AppointmentSlotService {
+
+    /**
+     * Fetches all the available slots
+     *
+     * @param slotBookDto
+     * @return
+     */
     Set<String> getAvailableSlots(SlotBookDto slotBookDto);
 
     boolean isSlotAvailable(SlotBookDto slotBookDto);
@@ -24,4 +35,10 @@ public interface AppointmentSlotService {
     void assignSampleCollectorToAppointment(Long id, SampleCollector sampleCollector);
 
     void markSampleCollected(Long id);
+
+    List<AppointmentSlot> getAppointmentsBySampleCollector(Long id);
+
+    List<AppointmentSlot> getCollectedAppointmentsBySampleCollector(Long id);
+
+    List<AppointmentSlot> getPendingAppointmentsBySampleCollector(Long id);
 }

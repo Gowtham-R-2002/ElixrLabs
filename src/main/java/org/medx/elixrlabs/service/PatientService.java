@@ -19,6 +19,13 @@ import java.util.NoSuchElementException;
 public interface PatientService {
 
 
+    /**
+     * Adds a new patient or updates the details associated with a specific patient
+     *
+     * @param userDto - patient details which has to be added or updated for a
+     *                patient
+     * @return patient details that has been added or updated
+     */
     ResponsePatientDto createOrUpdatePatient(UserDto userDto);
 
     /**

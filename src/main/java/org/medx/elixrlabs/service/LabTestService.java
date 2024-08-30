@@ -1,7 +1,6 @@
 package org.medx.elixrlabs.service;
 
 import org.medx.elixrlabs.dto.LabTestDto;
-import org.medx.elixrlabs.dto.UserDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +13,7 @@ import java.util.NoSuchElementException;
  * managing LabTest entities.
  * </p>
  */
+
 @Service
 public interface LabTestService {
 

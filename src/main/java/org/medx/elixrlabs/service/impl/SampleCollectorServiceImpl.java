@@ -127,7 +127,6 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
 
     @Override
     public SampleCollectorDto getSampleCollectorById(Long id) {
-        // Implementation omitted as it's not fully defined in the provided code.
         return null;
     }
 
