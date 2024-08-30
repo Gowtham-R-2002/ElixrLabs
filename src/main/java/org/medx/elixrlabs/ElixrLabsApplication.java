@@ -8,6 +8,7 @@ public class ElixrLabsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ElixrLabsApplication.class, args);
+		System.out.println("App started");
 	}
 
 }
