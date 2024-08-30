@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
 
@@ -43,5 +44,6 @@ public class SampleCollector {
     private boolean isVerified;
 
     @Column(name = "is_deleted")
+    @ColumnDefault("false")
     private boolean isDeleted;
 }
