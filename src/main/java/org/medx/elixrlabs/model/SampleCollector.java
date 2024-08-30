@@ -37,9 +37,6 @@ public class SampleCollector {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany
-    private List<AppointmentSlot> appointmentSlots;
-
     @Column(columnDefinition = "boolean default true")
     private boolean isVerified;
 

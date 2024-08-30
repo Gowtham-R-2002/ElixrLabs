@@ -2,6 +2,11 @@ package org.medx.elixrlabs.dto;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,10 +30,22 @@ import org.medx.elixrlabs.util.GenderEnum;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
+    @NotNull
+    @NotBlank
+    @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$")
     private String email;
+    @NotNull
+    @NotBlank
     private String password;
+    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
+    @NotBlank
+    @NotNull
+    @Size(max = 10, min = 10)
     private String phoneNumber;
+    @NotNull
     private GenderEnum gender;
+    @NotNull
     private LocationEnum place;
 }

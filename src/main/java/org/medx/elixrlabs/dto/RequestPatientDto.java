@@ -1,5 +1,9 @@
 package org.medx.elixrlabs.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,10 +28,22 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestPatientDto {
+    @NotBlank
+    @NotNull
+    @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$")
     private String email;
+    @NotNull
+    @NotBlank
     private String password;
+    @NotNull
     private LocalDate dateOfBirth;
+    @NotNull
+    @NotBlank
+    @Pattern(regexp = "^[0-9]+$")
+    @Size(min = 10, max = 10)
     private String phoneNumber;
+    @NotNull
     private GenderEnum gender;
+    @NotNull
     private LocationEnum place;
 }

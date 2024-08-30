@@ -3,7 +3,9 @@ package org.medx.elixrlabs.service.impl;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.OTP;
+import org.medx.elixrlabs.model.TestPackage;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
@@ -71,6 +74,49 @@ public class EmailServiceImpl implements EmailService {
                 .replace("{{result}}", result.toString())
                 .replace("{{generatedAt}}", testResult.getGeneratedAt().toString());
                 ;
+        helper.setText(htmlContent, true);
+        ClassPathResource logoResource = new ClassPathResource("static/logo.gif");
+        helper.addInline("logoImage", logoResource);
+        mailSender.send(message);
+    }
+
+    @Override
+    public void sendInvoice(List<LabTest> labTests, TestPackage testPackage, double totalPrice, String email, Calendar orderDateTime) throws MessagingException, IOException {
+        StringBuilder invoiceBody = new StringBuilder();
+        if (null != labTests || !labTests.isEmpty()) {
+            for (LabTest labTest : labTests) {
+                invoiceBody.append("<tr>")
+                        .append("<td>")
+                        .append(labTest.getName())
+                        .append("</td>")
+                        .append("<td>")
+                        .append("₹ ")
+                        .append(labTest.getPrice())
+                        .append("</td>")
+                        .append("</tr>");
+            }
+        }
+        if (null != testPackage) {
+            invoiceBody.append("<tr>")
+                    .append("<td>")
+                    .append(testPackage.getName())
+                    .append("</td>")
+                    .append("<td>")
+                    .append(testPackage.getPrice())
+                    .append("</td>")
+                    .append("</tr>");
+        }
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom(new InternetAddress("Elixr Labs <gowtham080802@gmail.com>"));
+        helper.setTo(email);
+        helper.setSubject("Invoice for your order");
+        String htmlContent = loadHtmlTemplate("templates/invoice-template.html")
+                .replace("{{email}}", email)
+                .replace("{{orderDateTime}}", orderDateTime.getTime().toString())
+                .replace("{{testBody}}", invoiceBody.toString())
+                .replace("{{totalPrice}}", ("₹ " + String.valueOf(totalPrice)))
+        ;
         helper.setText(htmlContent, true);
         ClassPathResource logoResource = new ClassPathResource("static/logo.gif");
         helper.addInline("logoImage", logoResource);

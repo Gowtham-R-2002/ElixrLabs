@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import org.medx.elixrlabs.dto.OrderLocationDto;
 import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.mapper.OrderMapper;

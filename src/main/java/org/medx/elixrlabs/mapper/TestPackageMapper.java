@@ -3,7 +3,7 @@ package org.medx.elixrlabs.mapper;
 import java.util.List;
 
 import org.medx.elixrlabs.dto.LabTestDto;
-import org.medx.elixrlabs.dto.TestPackageDto;
+import org.medx.elixrlabs.dto.RequestTestPackageDto;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
 import org.medx.elixrlabs.model.TestPackage;
 
@@ -20,17 +20,17 @@ import org.medx.elixrlabs.model.TestPackage;
 public class TestPackageMapper {
 
     /**
-     * Converts an {@link TestPackageDto} to an {@link TestPackage} entity.
+     * Converts an {@link RequestTestPackageDto} to an {@link TestPackage} entity.
      *
-     * @param testPackageDto {@link TestPackageDto} The TestPackage DTO to be converted.
+     * @param requestTestPackageDto {@link RequestTestPackageDto} The TestPackage DTO to be converted.
      * @return {@link TestPackage} The corresponding TestPackage entity.
      */
-    public static TestPackage toTestPackage(TestPackageDto testPackageDto) {
+    public static TestPackage toTestPackage(RequestTestPackageDto requestTestPackageDto) {
         return TestPackage.builder()
-                .id(testPackageDto.getId())
-                .name(testPackageDto.getName())
-                .description(testPackageDto.getDescription())
-                .price(testPackageDto.getPrice())
+                .id(requestTestPackageDto.getId())
+                .name(requestTestPackageDto.getName())
+                .description(requestTestPackageDto.getDescription())
+                .price(requestTestPackageDto.getPrice())
                 .build();
     }
 

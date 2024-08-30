@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,5 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestTestResultDto {
+    @NotNull
     List<RequestTestIdWithResultDto> testIdWithResult;
 }
