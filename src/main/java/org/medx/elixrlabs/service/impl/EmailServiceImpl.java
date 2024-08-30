@@ -1,6 +1,7 @@
 package org.medx.elixrlabs.service.impl;
 
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.medx.elixrlabs.model.OTP;
 import org.medx.elixrlabs.model.TestResult;
@@ -36,12 +37,12 @@ public class EmailServiceImpl implements EmailService {
         MimeMessage message = mailSender.createMimeMessage();
         int otp = new Random().nextInt(900000) + 100000;
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom("ElixrLabs");
+        helper.setFrom(new InternetAddress("Elixr Labs <gowtham080802@gmail.com>"));
         helper.setTo(email);
         helper.setSubject("OTP Verification");
         String htmlContent = loadHtmlTemplate("templates/otp-template.html").replace("{{OTP}}", String.valueOf(otp));
         helper.setText(htmlContent, true);
-        ClassPathResource logoResource = new ClassPathResource("static/logo.png");
+        ClassPathResource logoResource = new ClassPathResource("static/logo.gif");
         helper.addInline("logoImage", logoResource);
         mailSender.send(message);
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+05:30"));
@@ -56,7 +57,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendTestResult(TestResult testResult) throws MessagingException, IOException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom("ElixrLabs");
+        helper.setFrom(new InternetAddress("Elixr Labs <gowtham080802@gmail.com>"));
         helper.setTo(testResult.getName());
         helper.setSubject("Test Report Generated");
         StringBuilder result = new StringBuilder();
@@ -71,7 +72,7 @@ public class EmailServiceImpl implements EmailService {
                 .replace("{{generatedAt}}", testResult.getGeneratedAt().toString());
                 ;
         helper.setText(htmlContent, true);
-        ClassPathResource logoResource = new ClassPathResource("static/logo.png");
+        ClassPathResource logoResource = new ClassPathResource("static/logo.gif");
         helper.addInline("logoImage", logoResource);
         mailSender.send(message);
     }

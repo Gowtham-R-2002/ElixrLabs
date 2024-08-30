@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.repository;
 
+import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +12,7 @@ import java.util.List;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     String getAllPatientsQuery = "FROM Patient p LEFT JOIN FETCH p.user WHERE p.isDeleted = false";
-    String getPatientWithOrders = "FROM Patient p LEFT JOIN FETCH p.orders o JOIN FETCH p.user u WHERE u.email = email AND p.isDeleted = false";
+    String getPatientWithOrders = "FROM Patient p LEFT JOIN FETCH p.orders o JOIN FETCH p.user u WHERE u.email = :email AND p.isDeleted = false";
     String getTestResultOfPatient = "FROM Patient p LEFT JOIN FETCH p.orders o JOIN FETCH o.testResult JOIN FETCH p.user u WHERE u.email = :email AND p.isDeleted = false";
     String getPatientQuery = "FROM Patient p LEFT JOIN FETCH p.user u WHERE u.email = :email AND p.isDeleted = false";
 

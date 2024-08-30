@@ -53,7 +53,7 @@ public class LabController {
     }
 
     @GetMapping("patients/orders")
-    public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(UserDto patientDto) {
+    public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(@RequestBody UserDto patientDto) {
         return new ResponseEntity<>(patientService.getOrdersByPatient(patientDto), HttpStatus.OK);
     }
 
