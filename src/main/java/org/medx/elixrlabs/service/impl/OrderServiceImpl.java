@@ -121,6 +121,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order getOrderByAppointment(AppointmentSlot appointmentSlot) {
-        return orderRepository.findByAppointmentSlot(appointmentSlot);
+        return orderRepository.findBySlot(appointmentSlot);
     }
 }

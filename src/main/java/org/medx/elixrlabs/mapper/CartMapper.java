@@ -7,7 +7,6 @@ import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
 import org.medx.elixrlabs.model.Cart;
 import org.medx.elixrlabs.model.LabTest;
-import org.medx.elixrlabs.model.TestPackage;
 
 /**
  * Mapper class for mapping DTOs and entity related to cart.
