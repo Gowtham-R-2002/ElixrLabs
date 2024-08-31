@@ -1,6 +1,8 @@
 package org.medx.elixrlabs.mapper;
 
 import org.medx.elixrlabs.dto.LabTestDto;
+import org.medx.elixrlabs.dto.ResponseTestInCartDto;
+import org.medx.elixrlabs.dto.ResponseTestPackageDto;
 import org.medx.elixrlabs.model.LabTest;
 import org.springframework.stereotype.Component;
 
@@ -46,6 +48,15 @@ public class LabTestMapper {
                 .price(createLabTestDto.getPrice())
                 .description(createLabTestDto.getDescription())
                 .defaultValue(createLabTestDto.getDefaultValue())
+                .build();
+    }
+
+    public static ResponseTestInCartDto toResponseTestPackageDto(LabTest labTest) {
+        return ResponseTestInCartDto.builder()
+                .id(labTest.getId())
+                .name(labTest.getName())
+                .price(labTest.getPrice())
+                .description(labTest.getDescription())
                 .build();
     }
 }

@@ -25,9 +25,6 @@ import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.dto.UserDto;
-import org.medx.elixrlabs.service.LabService;
-import org.medx.elixrlabs.service.PatientService;
-import org.medx.elixrlabs.service.SampleCollectorService;
 import org.medx.elixrlabs.service.impl.SampleCollectorServiceImpl;
 
 /**
@@ -79,7 +76,7 @@ public class LabController {
     }
 
     @PatchMapping("sample-collectors")
-    public ResponseEntity<HttpStatus.Series> verifySampleCollector(@Valid @RequestBody SampleCollectorVerifyDto sampleCollector){
+    public ResponseEntity<HttpStatus.Series> verifySampleCollector(@Valid @RequestBody RequestUserNameDto sampleCollector){
         sampleCollectorService.verifySampleCollector(sampleCollector.getEmail());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

@@ -3,8 +3,8 @@ package org.medx.elixrlabs.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
+import org.medx.elixrlabs.dto.ResponseTestInCartDto;
 import org.medx.elixrlabs.model.Cart;
 import org.medx.elixrlabs.model.LabTest;
 
@@ -30,11 +30,11 @@ public class CartMapper {
 
     public static ResponseCartDto toCartDto(Cart cart) {
         double price = 0;
-        List<LabTestDto> tests = new ArrayList<>();
+        List<ResponseTestInCartDto> tests = new ArrayList<>();
         if(cart.getTests() != null) {
             tests = cart.getTests()
                     .stream()
-                    .map(LabTestMapper::toRetrieveLabTestDto).toList();
+                    .map(LabTestMapper::toResponseTestPackageDto).toList();
             price = cart.getTests().stream()
                     .mapToDouble(LabTest::getPrice)
                     .sum();

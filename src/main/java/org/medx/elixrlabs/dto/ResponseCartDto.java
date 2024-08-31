@@ -13,7 +13,7 @@ import org.medx.elixrlabs.model.TestPackage;
 public class ResponseCartDto {
     @NotNull
     private long id;
-    private List<LabTestDto> tests;
+    private List<ResponseTestInCartDto> tests;
     private TestPackage testPackage;
     @NotNull
     private double price;
