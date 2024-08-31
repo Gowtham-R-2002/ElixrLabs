@@ -48,7 +48,7 @@ public class RoleServiceImpl implements RoleService {
             return roleRepository.findAll();
         } catch (Exception e) {
             logger.warn("Error while getting all roles: {}", e.getMessage());
-            throw new LabException("Error while getting all roles.");
+            throw new LabException("Error while getting all roles.", e);
         }
     }
 
@@ -59,7 +59,7 @@ public class RoleServiceImpl implements RoleService {
             return roleRepository.findByName(name);
         } catch (Exception e) {
             logger.warn("Error while getting role with name {}: {}", name, e.getMessage());
-            throw new LabException("Error while getting role with name: " + name);
+            throw new LabException("Error while getting role with name: " + name, e);
         }
     }
 }

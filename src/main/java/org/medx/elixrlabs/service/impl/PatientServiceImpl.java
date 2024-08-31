@@ -74,7 +74,7 @@ public class PatientServiceImpl implements PatientService {
             System.out.println("inside try");
             savedPatient = patientRepository.save(newPatient);
         } catch (Exception e) {
-            throw new LabException("Error while saving Patient with email: " + userDto.getEmail() + e.getMessage());
+            throw new LabException("Error while saving Patient with email: " + userDto.getEmail() , e);
         }
         return PatientMapper.toPatientDto(savedPatient);
     }
@@ -123,7 +123,7 @@ public class PatientServiceImpl implements PatientService {
         try {
             return patientRepository.findByEmailAndIsDeletedFalse(email);
         } catch (Exception e) {
-            throw new LabException("Error while getting patient with email: " + email);
+            throw new LabException("Error while getting patient with email: " + email, e);
         }
     }
 

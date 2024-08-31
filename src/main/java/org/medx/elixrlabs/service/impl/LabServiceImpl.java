@@ -64,7 +64,7 @@ public class LabServiceImpl implements LabService {
             return orderService.getOrdersByLocation(location);
         } catch (Exception e) {
             logger.warn("Error while fetching orders: {}", e.getMessage());
-            throw new LabException("Error while fetching orders: " + e.getMessage());
+            throw new LabException("Error while fetching orders: " , e);
         }
     }
 
@@ -100,7 +100,7 @@ public class LabServiceImpl implements LabService {
             logger.info("Test result assigned successfully: {}", resultDto);
         } catch (Exception e) {
             logger.warn("Error while assigning test report: {}", e.getMessage());
-            throw new LabException("Error while assigning test report: " + e.getMessage());
+            throw new LabException("Error while assigning test report: ", e);
         }
     }
 
@@ -111,7 +111,7 @@ public class LabServiceImpl implements LabService {
             logger.info("Order status updated successfully for order id: {}", id);
         } catch (Exception e) {
             logger.warn("Error while updating order status for order id: {}", id);
-            throw new LabException("Error while updating order status for order id: " + id );
+            throw new LabException("Error while updating order status for order id: " + id, e );
         }
     }
 

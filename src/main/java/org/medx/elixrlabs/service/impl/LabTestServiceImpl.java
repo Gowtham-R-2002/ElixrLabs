@@ -46,7 +46,7 @@ public class LabTestServiceImpl implements LabTestService {
             return LabTestMapper.toRetrieveLabTestDto(savedLabTest);
         } catch (Exception e) {
             logger.warn("Error while creating/updating lab test: {}", labTestDto.getName());
-            throw new LabException("Error while creating/updating lab test: " + labTestDto.getName());
+            throw new LabException("Error while creating/updating lab test: " + labTestDto.getName(), e);
         }
     }
 
@@ -64,7 +64,7 @@ public class LabTestServiceImpl implements LabTestService {
                     .collect(Collectors.toList());
         } catch (Exception e) {
             logger.warn("Error while fetching all lab tests: {}", e.getMessage());
-            throw new LabException("Error while fetching all lab tests: " + e.getMessage());
+            throw new LabException("Error while fetching all lab tests: ", e);
         }
     }
 
@@ -80,7 +80,7 @@ public class LabTestServiceImpl implements LabTestService {
             return LabTestMapper.toRetrieveLabTestDto(labTest);
         } catch (Exception e) {
             logger.warn("Error while retrieving lab test with id: {}", id);
-            throw new LabException("Error while retrieving lab test with id: " + id);
+            throw new LabException("Error while retrieving lab test with id: " + id, e);
         }
     }
 
@@ -98,7 +98,7 @@ public class LabTestServiceImpl implements LabTestService {
             return true;
         } catch (Exception e) {
             logger.warn("Error while removing lab test with id: {}", id);
-            throw new LabException("Error while removing lab test with id: " + id);
+            throw new LabException("Error while removing lab test with id: " + id, e);
         }
     }
 
