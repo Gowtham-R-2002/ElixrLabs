@@ -48,9 +48,9 @@ public class AdminServiceImpl implements AdminService {
                 .email("deomuja@gmail.com")
                 .password("admin@123")
                 .build();
-        user.setRoles(roleRepository.findAll());
+        anotherUser.setRoles(roleRepository.findAll());
         String anotherPassword = bCryptPasswordEncoder.encode(anotherUser.getPassword());
-        anotherUser.setPassword(password);
+        anotherUser.setPassword(anotherPassword);
         Admin anotherAdmin = Admin.builder()
                 .user(anotherUser)
                 .build();

@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import org.medx.elixrlabs.dto.ResponsePatientDto;
-import org.medx.elixrlabs.dto.TestResultDto;
+import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.mapper.PatientMapper;
 import org.medx.elixrlabs.mapper.TestResultMapper;
 import org.medx.elixrlabs.model.Patient;
@@ -18,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import org.medx.elixrlabs.dto.ResponseOrderDto;
-import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.OrderMapper;
@@ -114,9 +111,9 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<ResponseOrderDto> getOrdersByPatient(UserDto patientDto) {
-        Patient patient = patientRepository.getPatientOrders(patientDto.getEmail());
-        return patient.getOrders().stream()
+    public List<ResponseOrderDto> getOrdersByPatient(RequestUserNameDto patient) {
+        Patient existingPatient = patientRepository.getPatientOrders(patient.getEmail());
+        return existingPatient.getOrders().stream()
                 .map(OrderMapper::toResponseOrderDto)
                 .collect(Collectors.toList());
     }

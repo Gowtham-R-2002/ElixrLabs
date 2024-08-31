@@ -32,7 +32,7 @@ class UserServiceTest {
         user = User.builder()
                 .email("sabari@gmail.com")
                 .password("sabari@123")
-                .isDeleted(false)
+                .isBlocked(false)
                 .UUID("1234-5678")
                 .phoneNumber("1234567890")
                 .build();

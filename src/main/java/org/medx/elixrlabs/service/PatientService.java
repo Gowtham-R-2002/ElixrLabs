@@ -69,11 +69,11 @@ public interface PatientService {
     /**
      * Fetches orders of a specific patient
      *
-     * @param patientDto {@link UserDto} patient whose test report has to be fetched
+     * @param patient {@link UserDto} patient whose test report has to be fetched
      * @return all the orders related to the patient
      */
 
-    List<ResponseOrderDto> getOrdersByPatient(UserDto patientDto);
+    List<ResponseOrderDto> getOrdersByPatient(RequestUserNameDto patient);
 
     void setupInitialData();
 }
