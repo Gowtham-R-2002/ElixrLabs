@@ -21,5 +21,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByLabLocation(LocationEnum place);
 
-    Order findByAppointmentSlot(AppointmentSlot appointmentSlot);
+    Order findBySlot(AppointmentSlot appointmentSlot);
 }
