@@ -67,7 +67,7 @@ public class JwtService {
                     .compact();
         } catch (Exception e) {
             logger.warn("Error while generating token: {}", e.getMessage());
-            throw new LabException("Error while generating token");
+            throw new LabException("Error while generating token", e);
         }
     }
 
@@ -82,7 +82,7 @@ public class JwtService {
             return claims.getSubject();
         } catch (Exception e) {
             logger.warn("Error while extracting username from token: {}", e.getMessage());
-            throw new LabException("Error while extracting username from token");
+            throw new LabException("Error while extracting username from token", e);
         }
     }
 
@@ -98,7 +98,7 @@ public class JwtService {
             throw e;
         } catch (Exception e) {
             logger.warn("Error while parsing token: {}", e.getMessage());
-            throw new LabException("Error while parsing token");
+            throw new LabException("Error while parsing token", e);
         }
     }
 
@@ -108,7 +108,7 @@ public class JwtService {
             return claims.getExpiration().after(Date.from(Instant.now()));
         } catch (Exception e) {
             logger.warn("Error while validating token: {}", e.getMessage());
-            throw new LabException("Error while validating token");
+            throw new LabException("Error while validating token", e);
         }
     }
 

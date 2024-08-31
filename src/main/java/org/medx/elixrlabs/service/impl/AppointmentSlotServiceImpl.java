@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.medx.elixrlabs.dto.RequestSlotBookDto;
+import org.medx.elixrlabs.exception.SlotException;
 import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.Patient;
@@ -81,7 +82,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             return availableSlots.stream().map(TimeSlotEnum::getTime).collect(Collectors.toSet());
         } catch (Exception e) {
             logger.warn("Exception occurred while fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
-            throw new LabException("Unable to fetch available slots");
+            throw new LabException("Unable to fetch available slots", e);
         }
     }
 
@@ -97,7 +98,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             return isAvailable;
         } catch (Exception e) {
             logger.warn("Exception occurred while checking slot availability for time slot: {}", slotBookDto.getTimeSlot());
-            throw new LabException("Unable to check slot availability");
+            throw new LabException("Unable to check slot availability",e );
         }
     }
 
@@ -134,11 +135,11 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                 return orderService.createOrUpdateOrder(order);
             } else {
                 logger.warn("Slot booking failed for date: {}, time slot: {} - Slot filled", slotBookDto.getDate(), slotBookDto.getTimeSlot());
-                throw new LabException("Slot filled!");
+                throw new SlotException("Slot filled!");
             }
         } catch (Exception e) {
             logger.warn("Exception occurred while booking slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
-            throw new LabException("Unable to book slot");
+            throw new SlotException("Unable to book slot", e);
         }
     }
 
@@ -152,7 +153,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             return appointments;
         } catch (Exception e) {
             logger.warn("Exception occurred while fetching appointments for location: {}, date: {}", location, date);
-            throw new LabException("Unable to fetch appointments");
+            throw new LabException("Unable to fetch appointments", e);
         }
     }
 
@@ -165,7 +166,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             return savedAppointmentSlot;
         } catch (Exception e) {
             logger.warn("Exception occurred while creating or updating appointment for date: {}, time slot: {}", appointmentSlot.getDateSlot(), appointmentSlot.getTimeSlot());
-            throw new LabException("Unable to create or update appointment");
+            throw new LabException("Unable to create or update appointment", e);
         }
     }
 
@@ -180,7 +181,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             logger.info("Sample collector assigned successfully to appointment with id: {}", id);
         } catch (Exception e) {
             logger.warn("Exception occurred while assigning sample collector to appointment with id: {}", id);
-            throw new LabException("Unable to assign sample collector");
+            throw new LabException("Unable to assign sample collector", e);
         }
     }
 
@@ -198,7 +199,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             logger.info("Sample marked as collected successfully for appointment with id: {}", id);
         } catch (Exception e) {
             logger.warn("Exception occurred while marking sample as collected for appointment with id: {}", id);
-            throw new LabException("Unable to mark sample as collected");
+            throw new LabException("Unable to mark sample as collected", e);
         }
     }
 
@@ -216,7 +217,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             }
         } catch (Exception e) {
             logger.warn("Exception occurred while fetching all appointments for SampleCollector Id: {}", id);
-            throw new LabException("Exception occurred while fetching all appointments for SampleCollector Id: " + id);
+            throw new LabException("Exception occurred while fetching all appointments for SampleCollector Id: " + id, e);
         }
     }
 
@@ -234,7 +235,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             }
         } catch (Exception e) {
             logger.warn("Exception occurred while fetching all appointments for which the sample is collected by the sampleCollector ID: {}", id);
-            throw new LabException("Exception occurred while fetching all appointments for which the sample is collected by the SampleCollector ID: " + id);
+            throw new LabException("Exception occurred while fetching all appointments for which the sample is collected by the SampleCollector ID: " + id, e);
         }
     }
 
@@ -252,7 +253,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             }
         } catch (Exception e) {
             logger.warn("Exception occurred while fetching all appointments for which the sample is not collected by the SampleCollector ID: {}", id);
-            throw new LabException("Exception occurred while fetching all appointments for which the sample is collected by the SampleCollector ID: " + id);
+            throw new LabException("Exception occurred while fetching all appointments for which the sample is collected by the SampleCollector ID: " + id, e);
         }
     }
 

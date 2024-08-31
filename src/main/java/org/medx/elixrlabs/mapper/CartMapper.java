@@ -25,9 +25,8 @@ public class CartMapper {
      * Converts an {@link Cart} entity to an {@link ResponseCartDto}.
      *
      * @param cart {@link Cart} The cart entity to be converted.
-     * @return {@link ResponseCartDto} The corresponding DTO of cart..
+     * @return {@link ResponseCartDto} The corresponding DTO of cart.
      */
-
     public static ResponseCartDto toCartDto(Cart cart) {
         double price = 0;
         List<ResponseTestInCartDto> tests = new ArrayList<>();

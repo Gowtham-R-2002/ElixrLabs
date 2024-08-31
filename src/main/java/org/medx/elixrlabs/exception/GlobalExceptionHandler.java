@@ -21,6 +21,28 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
+    @ExceptionHandler(LabException.class)
+    public ResponseEntity<ErrorResponse> handleLabException(LabException labException) {
+        String initialMessage = labException.getMessage();
+        String cause = labException.getCause() == null ? "" : labException.getCause().getMessage();
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .message(initialMessage + (cause.isEmpty() ? "" : ("  Cause : " + cause)))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(SlotException.class)
+    public ResponseEntity<ErrorResponse> handleSlotException(SlotException slotException) {
+        String initialMessage = slotException.getMessage();
+        String cause = slotException.getCause() == null ? "" : slotException.getCause().getMessage();
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .message(initialMessage + (cause.isEmpty() ? "" : ("  Cause : " + cause)))
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
         ErrorResponse errorResponse = ErrorResponse.builder()

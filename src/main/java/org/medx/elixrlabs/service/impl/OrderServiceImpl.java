@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
             return OrderMapper.toOrderSuccessDto(savedOrder);
         } catch (Exception e) {
             logger.warn("Error while creating order: {}", order.getId());
-            throw new LabException("Error while creating order: " + e.getMessage());
+            throw new LabException("Error while creating order: " , e);
         }
     }
 
@@ -57,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
             return orders;
         } catch (Exception e) {
             logger.warn("Error while fetching orders: {}", e.getMessage());
-            throw new LabException("Error while fetching orders!");
+            throw new LabException("Error while fetching orders!", e);
         }
     }
 
@@ -74,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
             }
         } catch (Exception e) {
             logger.warn("Error while getting order with id: {}", id);
-            throw new LabException("Error while fetching order with id: " + id);
+            throw new LabException("Error while fetching order with id: " + id, e);
         }
     }
 
@@ -92,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
             }
         } catch (Exception e) {
             logger.warn("Error while updating order status with id: {}", id);
-            throw new LabException("Error while updating order status with id: " + id);
+            throw new LabException("Error while updating order status with id: " + id, e);
         }
     }
 
@@ -101,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
             return orderRepository.findById(id).orElse(null);
         } catch (Exception e) {
             logger.warn("Error while fetching order with id: {}", id);
-            throw new LabException("Error while fetching order with id: " + id);
+            throw new LabException("Error while fetching order with id: " + id, e);
         }
     }
 
@@ -115,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
             return orderLocationDtos;
         } catch (Exception e) {
             logger.warn("Error while fetching orders by location: {}", location);
-            throw new LabException("Error while fetching orders by location: " + location);
+            throw new LabException("Error while fetching orders by location: " + location, e);
         }
     }
 

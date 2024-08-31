@@ -56,7 +56,7 @@ public class TestPackageServiceImpl implements TestPackageService {
             return TestPackageMapper.toTestPackageDto(savedTestPackage);
         } catch (Exception e) {
             logger.warn("Failed to create or update TestPackage: {}", requestTestPackageDto.getName());
-            throw new LabException("Error occurred while saving TestPackage" + requestTestPackageDto.getName());
+            throw new LabException("Error occurred while saving TestPackage" + requestTestPackageDto.getName(), e);
         }
     }
 
@@ -74,7 +74,7 @@ public class TestPackageServiceImpl implements TestPackageService {
             logger.info("Successfully retrieved {} TestPackages", testPackageDtos.size());
         } catch (Exception e) {
             logger.warn("Failed to retrieve TestPackages");
-            throw new LabException("Error occurred while retrieving TestPackages");
+            throw new LabException("Error occurred while retrieving TestPackages", e);
         }
         return testPackageDtos;
     }
@@ -92,7 +92,7 @@ public class TestPackageServiceImpl implements TestPackageService {
             return TestPackageMapper.toTestPackageDto(testPackage);
         } catch (Exception e) {
             logger.warn("Failed to retrieve TestPackage by ID: {}", id);
-            throw new LabException("Error occurred while retrieving TestPackage" + id);
+            throw new LabException("Error occurred while retrieving TestPackage" + id , e);
         }
     }
 
@@ -111,7 +111,7 @@ public class TestPackageServiceImpl implements TestPackageService {
             return true;
         } catch (Exception e) {
             logger.warn("Failed to delete TestPackage by ID: {}", id);
-            throw new LabException("Error occurred while deleting TestPackage" + id);
+            throw new LabException("Error occurred while deleting TestPackage" + id, e);
         }
     }
 }

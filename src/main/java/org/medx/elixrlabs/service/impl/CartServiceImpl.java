@@ -79,7 +79,7 @@ public class CartServiceImpl implements CartService {
             return CartMapper.toCartDto(cartRepository.save(userCart));
         } catch (Exception e) {
             logger.warn("Error while adding tests or packages to cart for patient: {}", patient.getUser().getUsername());
-            throw new LabException("Error while adding tests or packages to cart" + e.getMessage());
+            throw new LabException("Error while adding tests or packages to cart", e);
         }
     }
 
@@ -97,7 +97,7 @@ public class CartServiceImpl implements CartService {
             return CartMapper.toCartDto(userCart);
         } catch (Exception e) {
             logger.warn("Error while retrieving cart for patient: {}", patient.getUser().getEmail());
-            throw new LabException("Error while retrieving cart");
+            throw new LabException("Error while retrieving cart" , e);
         }
     }
 
@@ -110,7 +110,7 @@ public class CartServiceImpl implements CartService {
                 cartRepository.delete(userCart);
             } catch (Exception e) {
                 logger.warn("Error while deleting cart for patient: {}", patient.getUser().getUsername());
-                throw new LabException("Error while deleting cart");
+                throw new LabException("Error while deleting cart", e);
             }
         } else {
             logger.warn("Attempted to delete cart for patient with no existing cart: {}", patient.getUser().getUsername());
