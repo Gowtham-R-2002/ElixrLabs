@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,11 @@ import org.medx.elixrlabs.repository.AppointmentSlotRepository;
 public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     private static final Logger logger = LoggerFactory.getLogger(AppointmentSlotServiceImpl.class);
+    private static Dotenv dotenv;
+
+    public AppointmentSlotServiceImpl() {
+        dotenv = Dotenv.load();
+    }
 
     @Autowired
     private AppointmentSlotRepository appointmentSlotRepository;
@@ -77,7 +83,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                             Collections.frequency(bookedTimeSlots, timeSlotEnum.getTime())
                                     < (slotBookDto.getTestCollectionPlace().equals(TestCollectionPlaceEnum.HOME)
                                     ? sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation()).size()
-                                    : 5)).collect(Collectors.toSet());
+                                    : Integer.parseInt(dotenv.get("${LAB_SLOT_COUNT}")))).collect(Collectors.toSet());
             logger.info("Available slots fetched successfully for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
             return availableSlots.stream().map(TimeSlotEnum::getTime).collect(Collectors.toSet());
         } catch (Exception e) {
