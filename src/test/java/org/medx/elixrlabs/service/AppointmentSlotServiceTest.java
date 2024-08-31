@@ -45,11 +45,11 @@ public class AppointmentSlotServiceTest {
 
     }
 
-    @Test
-    void testGetAvailableSlots_success() {
-       when(appointmentSlotRepository
-               .findByLocationAndTestCollectionPlaceAndDateSlot(slo))
-    }
+//    @Test
+//    void testGetAvailableSlots_success() {
+//       when(appointmentSlotRepository
+//               .findByLocationAndTestCollectionPlaceAndDateSlot(slo))
+//    }
 
     @Test
     void testIsSlotAvailable() {
