@@ -2,8 +2,19 @@ package org.medx.elixrlabs.service.impl;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import org.medx.elixrlabs.dto.RequestSlotBookDto;
 import org.medx.elixrlabs.exception.SlotException;
@@ -22,11 +33,6 @@ import org.medx.elixrlabs.util.PaymentStatusEnum;
 import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.medx.elixrlabs.util.TestStatusEnum;
 import org.medx.elixrlabs.util.TimeSlotEnum;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
 import org.medx.elixrlabs.dto.SlotBookDto;
