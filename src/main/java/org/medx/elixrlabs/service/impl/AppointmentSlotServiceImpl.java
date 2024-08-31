@@ -103,6 +103,9 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             if (isSlotAvailable(slotBookDto)) {
                 Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
                 ResponseCartDto cart = cartService.getCartByPatient();
+                if(cart.getId() == 0 && cart.getTests().isEmpty() && cart.getTestPackage() == null) {
+                    throw new NoSuchElementException("Cart is empty!");
+                }
                 AppointmentSlot appointmentSlot = AppointmentSlot.builder()
                         .dateSlot(slotBookDto.getDate())
                         .patient(patient)

@@ -10,6 +10,8 @@ import org.medx.elixrlabs.mapper.TestResultMapper;
 import org.medx.elixrlabs.model.*;
 import org.medx.elixrlabs.service.*;
 import org.medx.elixrlabs.util.DateUtil;
+import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
+import org.medx.elixrlabs.util.TestStatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +74,9 @@ public class LabServiceImpl implements LabService {
     public void assignReport(long orderId, RequestTestResultDto resultDto) {
         try {
             Order order = orderService.getOrder(orderId);
+            if (order.getTestStatus().equals(TestStatusEnum.PENDING) && order.getSampleCollectionPlace().equals(TestCollectionPlaceEnum.HOME)) {
+                throw new LabException("Cannot update report for patient whose sample is not collected!");
+            }
             Map<LabTestDto, String> parsedResultDto = resultDto.getTestIdWithResult()
                     .stream()
                     .collect(Collectors.toMap(
