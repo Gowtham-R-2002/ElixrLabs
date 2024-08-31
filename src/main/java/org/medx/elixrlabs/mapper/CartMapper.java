@@ -30,15 +30,6 @@ public class CartMapper {
      */
 
     public static ResponseCartDto toCartDto(Cart cart) {
-<<<<<<< HEAD
-        List<LabTestDto> tests = cart.getTests()
-                .stream()
-                .map(LabTestMapper::toRetrieveLabTestDto)
-                .toList();
-        double price = cart.getTests().stream()
-                .mapToDouble(LabTest::getPrice)
-                .sum();
-=======
         double price = 0;
         List<LabTestDto> tests = new ArrayList<>();
         if(cart.getTests() != null) {
@@ -50,12 +41,12 @@ public class CartMapper {
                     .sum();
         }
         price += (cart.getTestPackage() != null) ?  cart.getTestPackage().getPrice() : 0;
->>>>>>> 1cd39feb31211a51f7027b816fbba601d85c7b49
         return ResponseCartDto.builder()
                 .id(cart.getId())
                 .tests(tests)
                 .testPackage(cart.getTestPackage())
                 .price(price)
                 .build();
+
     }
 }
