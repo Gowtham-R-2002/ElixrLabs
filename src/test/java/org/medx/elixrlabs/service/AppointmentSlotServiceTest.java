@@ -48,7 +48,7 @@ public class AppointmentSlotServiceTest {
 //    @Test
 //    void testGetAvailableSlots_success() {
 //       when(appointmentSlotRepository
-//               .findByLocationAndTestCollectionPlaceAndDateSlot(slo))
+//               .findByLocationAndTestCollectionPlaceAndDateSlot(slot));
 //    }
 
     @Test
