@@ -17,6 +17,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.medx.elixrlabs.dto.LabTestDto;
+import org.medx.elixrlabs.service.LabTestService;
+
+/**
+ * REST controller for managing LabTest-related operations.
+ *
+ * <p>
+ * This controller handles HTTP requests and provides endpoints for
+ * creating, retrieving, updating, and deleting LabTest entities. The
+ * controller maps client requests to the appropriate service methods
+ * and returns responses in the form of JSON or other supported media types.
+ * It is annotated with Spring MVC annotations to define the URL mappings
+ * and request handling logic.
+ * All responses are returned in a standardized format to ensure consistency across
+ * the API.
+ * </p>
+ */
 @RestController
 @RequestMapping("api/v1/lab-tests")
 public class LabTestController {

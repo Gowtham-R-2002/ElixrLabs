@@ -2,12 +2,7 @@ package org.medx.elixrlabs.service.impl;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.medx.elixrlabs.dto.RequestSlotBookDto;
@@ -130,7 +125,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                 appointmentSlotRepository.save(appointmentSlot);
                 cartService.deleteCart();
                 logger.info("Slot booked successfully for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
-                return orderService.createOrder(order);
+                return orderService.createOrUpdateOrder(order);
             } else {
                 logger.warn("Slot booking failed for date: {}, time slot: {} - Slot filled", slotBookDto.getDate(), slotBookDto.getTimeSlot());
                 throw new LabException("Slot filled!");
@@ -185,12 +180,14 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     @Override
     public void markSampleCollected(Long id) {
+        logger.debug("Marking sample as collected for appointment with id: {}", id);
+        AppointmentSlot appointmentSlot = appointmentSlotRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No appointment slot found with id: " + id));
+        appointmentSlot.setSampleCollected(true);
+        Order order = orderService.getOrderByAppointment(appointmentSlot);
+        order.setTestStatus(TestStatusEnum.IN_PROGRESS);
+        orderService.createOrUpdateOrder(order);
         try {
-            logger.debug("Marking sample as collected for appointment with id: {}", id);
-            AppointmentSlot appointmentSlot = appointmentSlotRepository.findById(id)
-                    .orElseThrow(() -> new LabException("No appointment slot found with id: " + id));
-            appointmentSlot.setSampleCollected(true);
-
             appointmentSlotRepository.save(appointmentSlot);
             logger.info("Sample marked as collected successfully for appointment with id: {}", id);
         } catch (Exception e) {
@@ -204,9 +201,9 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         try {
             logger.debug("Fetching all appointments for SampleCollector Id: {}", id);
             List<AppointmentSlot> appointmentSlots = appointmentSlotRepository.findBySampleCollectorId(id);
-            if(appointmentSlots == null) {
+            if (appointmentSlots == null) {
                 logger.warn("There is no appointments for SampleCollector Id: {}", id);
-                return null;
+                throw new NoSuchElementException("No AppointmentSlot Found for ID: " + id);
             } else {
                 logger.info("Appointments fetched successfully for SampleCollector Id: {}", id);
                 return appointmentSlots;
@@ -222,9 +219,9 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         try {
             logger.debug("Fetching all appointments for which the sample is collected by the sampleCollector with ID: {}", id);
             List<AppointmentSlot> appointmentSlots = appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedTrue(id);
-            if(appointmentSlots == null) {
+            if (appointmentSlots == null) {
                 logger.warn("There is no appointments for sample collected by the SampleCollector with Id: {}", id);
-                return null;
+                throw new NoSuchElementException("No AppointmentSlot Found for ID: " + id);
             } else {
                 logger.info("Fetching all appointments for which the sample is collected by the sample collector with ID: {}", id);
                 return appointmentSlots;
@@ -240,9 +237,9 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         try {
             logger.debug("Fetching all appointments for which the sample is not collected by the sample collector with ID: {}", id);
             List<AppointmentSlot> appointmentSlots = appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedFalse(id);
-            if(appointmentSlots == null) {
+            if (appointmentSlots == null) {
                 logger.warn("There is no appointments for sample is not collected by the SampleCollector with Id: {}", id);
-                return null;
+                throw new NoSuchElementException("No AppointmentSlot Found for ID: " + id);
             } else {
                 logger.info("Fetching all appointments for which the sample is not collected by the sample collector with ID: {}", id);
                 return appointmentSlots;

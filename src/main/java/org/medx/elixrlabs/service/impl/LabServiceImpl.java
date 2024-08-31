@@ -1,13 +1,10 @@
 package org.medx.elixrlabs.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.aspectj.weaver.ast.Or;
 import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.mapper.TestResultMapper;
 import org.medx.elixrlabs.model.*;
@@ -99,7 +96,7 @@ public class LabServiceImpl implements LabService {
             TestResult savedTestResult = testResultService.addResult(testResult);
             emailService.sendTestResult(testResult);
             order.setTestResult(savedTestResult);
-            orderService.createOrder(order);
+            orderService.createOrUpdateOrder(order);
             logger.info("Test result assigned successfully: {}", resultDto);
         } catch (Exception e) {
             logger.warn("Error while assigning test report: {}", e.getMessage());

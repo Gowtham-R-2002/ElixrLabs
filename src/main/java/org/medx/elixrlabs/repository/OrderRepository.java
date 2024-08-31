@@ -2,6 +2,7 @@ package org.medx.elixrlabs.repository;
 
 import java.util.List;
 
+import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,6 +21,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     List<Order> findByLabLocation(LocationEnum place);
 
-
-  //  List<Order> findByEmail(String email);
+    Order findByAppointmentSlot(AppointmentSlot appointmentSlot);
 }

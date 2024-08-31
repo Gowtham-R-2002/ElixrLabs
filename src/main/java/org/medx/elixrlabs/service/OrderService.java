@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.ResponseOrderDto;
+import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public interface OrderService {
      * @return order that has been placed
      */
 
-    OrderSuccessDto createOrder(Order order);
+    OrderSuccessDto createOrUpdateOrder(Order order);
 
     /**
      * Fetches all the orders
@@ -55,9 +56,11 @@ public interface OrderService {
     /**
      * Fetches all the orders from a specific location
      *
-     * @param location location from which orders has to fetched
+     * @param location location from which orders has to be fetched
      * @return list of all orders from the specific location
      */
 
     List<ResponseOrderDto> getOrdersByLocation(LocationEnum location);
+
+    Order getOrderByAppointment(AppointmentSlot appointmentSlot);
 }
