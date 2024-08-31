@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,7 +47,7 @@ public class AuthenticationController {
     private OTP otp;
 
     @PostMapping
-    public void login(@RequestBody LoginRequestDto loginRequestDto) throws MessagingException, IOException {
+    public void login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws MessagingException, IOException {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequestDto.getEmail(),
@@ -62,7 +63,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("verify")
-    public String verifyAndGenerateToken(@RequestBody OtpDto otpDto) {
+    public String verifyAndGenerateToken(@Valid @RequestBody OtpDto otpDto) {
         if (otpDto.getOtp().equals(otp.getOtp()) &&
                 ((Calendar.getInstance(TimeZone.getTimeZone("GMT+05:30"))).compareTo(otp.getCalendar()) < 0)) {
             SecurityContextHolder.getContext().setAuthentication(userAuthentication);

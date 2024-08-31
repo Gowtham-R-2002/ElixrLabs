@@ -36,15 +36,13 @@ public class PatientController {
     private AppointmentSlotService appointmentSlotService;
 
     @PostMapping("register")
-    public ResponseEntity<ResponsePatientDto> createOrUpdatePatient(@RequestBody UserDto userDto) {
+    public ResponseEntity<ResponsePatientDto> createOrUpdatePatient(@Valid @RequestBody UserDto userDto) {
         ResponsePatientDto savedUser =  patientService.createOrUpdatePatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
     @GetMapping("slots")
-    public ResponseEntity<Set<String>> getAvailableSlots(@RequestBody SlotBookDto slotBookDto) {
-        System.out.println(appointmentSlotService
-                .getAvailableSlots(slotBookDto));
+    public ResponseEntity<Set<String>> getAvailableSlots(@Valid @RequestBody RequestSlotBookDto slotBookDto) {
         return new ResponseEntity<>(appointmentSlotService
                 .getAvailableSlots(slotBookDto), HttpStatus.OK);
     }
@@ -60,12 +58,12 @@ public class PatientController {
     }
 
     @GetMapping("orders/{id}/report")
-    public ResponseEntity<TestResult> getTestReport(@PathVariable(name = "id") Long orderId) {
+    public ResponseEntity<TestResultDto> getTestReport(@PathVariable(name = "id") Long orderId) {
         return new ResponseEntity<>(patientService.getTestReport(orderId), HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<ResponsePatientDto> updatePatient(@RequestBody UserDto userDto) {
+    public ResponseEntity<ResponsePatientDto> updatePatient(@Valid @RequestBody UserDto userDto) {
         ResponsePatientDto savedUser =  patientService.createOrUpdatePatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.OK);
     }
@@ -77,7 +75,7 @@ public class PatientController {
     }
 
     @PutMapping("carts")
-    public ResponseEntity<ResponseCartDto> addTestOrPackagesToCart(@RequestBody CartDto cartDto) {
+    public ResponseEntity<ResponseCartDto> addTestOrPackagesToCart(@Valid @RequestBody CartDto cartDto) {
         return new ResponseEntity<>(cartService.addTestsOrPackagesToCart(cartDto), HttpStatus.ACCEPTED);
     }
 

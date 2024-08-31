@@ -2,7 +2,9 @@ package org.medx.elixrlabs.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.medx.elixrlabs.dto.AppointmentDto;
+import org.medx.elixrlabs.dto.AppointmentsQueryDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
@@ -50,7 +52,7 @@ public class SampleCollectorController {
      * @return The created sample collector DTO with HTTP status 201 CREATED.
      */
     @PostMapping("register")
-    public ResponseEntity<SampleCollectorDto> createSampleCollector(@RequestBody UserDto userDto) {
+    public ResponseEntity<SampleCollectorDto> createSampleCollector(@Valid @RequestBody UserDto userDto) {
         return new ResponseEntity<>(sampleCollectorService.createOrUpdateSampleCollector(userDto), HttpStatus.CREATED);
     }
 
@@ -61,7 +63,7 @@ public class SampleCollectorController {
      * @return the updated sample collector DTO with HTTP status 202 ACCEPTED.
      */
     @PutMapping
-    public ResponseEntity<SampleCollectorDto> updateSampleCollector(@RequestBody UserDto userDto) {
+    public ResponseEntity<SampleCollectorDto> updateSampleCollector(@Valid @RequestBody UserDto userDto) {
         return new ResponseEntity<>(sampleCollectorService.createOrUpdateSampleCollector(userDto), HttpStatus.ACCEPTED);
     }
 
@@ -76,9 +78,9 @@ public class SampleCollectorController {
     }
 
     @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentDto>> getAppointments(@RequestBody AppointmentDto appointmentDto) {
+    public ResponseEntity<List<AppointmentDto>> getAppointments(@Valid @RequestBody AppointmentsQueryDto appointmentDto) {
         LocationEnum place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
-        List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(place, appointmentDto.getAppointmentDate());
+        List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(place, appointmentDto.getDate());
 
         List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
                 .map(AppointmentMapper :: convertToDto).toList();
@@ -86,14 +88,14 @@ public class SampleCollectorController {
     }
 
     @PatchMapping("/appointments/{id}")
-    public ResponseEntity<Void> assignAppointment(@PathVariable Long id) {
+    public ResponseEntity<Void> assignAppointment(@Valid @PathVariable Long id) {
         SampleCollector sampleCollector = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
         appointmentSlotService.assignSampleCollectorToAppointment(id, sampleCollector);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @PatchMapping("/appointments/{id}/status")
-    public ResponseEntity<Void> markSampleCollected(@PathVariable Long id) {
+    public ResponseEntity<Void> markSampleCollected(@Valid @PathVariable Long id) {
         appointmentSlotService.markSampleCollected(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

@@ -32,7 +32,6 @@ public class ResponsePatientDto {
     private long id;
     @NotBlank
     @NotNull
-    @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$")
     private String email;
     @NotNull
     private LocalDate dateOfBirth;

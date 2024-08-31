@@ -2,6 +2,7 @@ package org.medx.elixrlabs.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,7 @@ public class TestPackageController {
     }
 
     @PutMapping
-    public ResponseEntity<ResponseTestPackageDto> updateTestPackageById(@RequestBody RequestTestPackageDto requestTestPackageDto) {
+    public ResponseEntity<ResponseTestPackageDto> updateTestPackageById(@Valid @RequestBody RequestTestPackageDto requestTestPackageDto) {
         return new ResponseEntity<>(testPackageService.createOrUpdateTestPackage(requestTestPackageDto), HttpStatus.ACCEPTED);
     }
 

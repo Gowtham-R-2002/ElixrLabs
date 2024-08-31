@@ -2,6 +2,7 @@ package org.medx.elixrlabs.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.service.LabService;
 import org.medx.elixrlabs.service.PatientService;
@@ -36,13 +37,13 @@ public class LabController {
     }
 
     @PutMapping("orders/{id}/results")
-    public ResponseEntity<HttpStatus.Series> updateReport(@RequestBody RequestTestResultDto resultDto, @PathVariable(name = "id") long id) {
+    public ResponseEntity<HttpStatus.Series> updateReport(@Valid @RequestBody RequestTestResultDto resultDto, @PathVariable(name = "id") long id) {
         labService.assignReport(id, resultDto);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @PatchMapping("sample-collectors")
-    public ResponseEntity<HttpStatus.Series> verifySampleCollector(@RequestBody UserDto sampleCollector){
+    public ResponseEntity<HttpStatus.Series> verifySampleCollector(@Valid @RequestBody SampleCollectorVerifyDto sampleCollector){
         sampleCollectorService.verifySampleCollector(sampleCollector.getEmail());
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
@@ -53,7 +54,7 @@ public class LabController {
     }
 
     @GetMapping("patients/orders")
-    public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(@RequestBody UserDto patientDto) {
+    public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(@Valid @RequestBody UserDto patientDto) {
         return new ResponseEntity<>(patientService.getOrdersByPatient(patientDto), HttpStatus.OK);
     }
 

@@ -2,6 +2,7 @@ package org.medx.elixrlabs.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.service.LabTestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class LabTestController {
     private LabTestService labTestService;
 
     @PostMapping
-    public ResponseEntity<LabTestDto> createLabTest(@RequestBody LabTestDto labTestDto) {
+    public ResponseEntity<LabTestDto> createLabTest(@Valid @RequestBody LabTestDto labTestDto) {
         return new ResponseEntity<>(labTestService.createOrUpdateTest(labTestDto),HttpStatus.CREATED);
     }
 
@@ -39,7 +40,7 @@ public class LabTestController {
     }
 
     @PutMapping
-    public ResponseEntity<LabTestDto> updateLabTestById(@RequestBody LabTestDto labTestDto) {
+    public ResponseEntity<LabTestDto> updateLabTestById(@Valid @RequestBody LabTestDto labTestDto) {
         return new ResponseEntity<>(labTestService.createOrUpdateTest(labTestDto), HttpStatus.ACCEPTED);
     }
 

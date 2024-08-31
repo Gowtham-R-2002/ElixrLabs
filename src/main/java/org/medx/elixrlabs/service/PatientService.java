@@ -2,7 +2,6 @@ package org.medx.elixrlabs.service;
 
 import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.model.Patient;
-import org.medx.elixrlabs.model.TestResult;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,13 +43,6 @@ public interface PatientService {
     Patient getPatientByEmail(String email);
 
     /**
-     * Books a slot according to the patients booking time and returns a status.
-     *
-     * @return A boolean value based on the booking slots.
-     */
-    boolean bookSlotAndReturnStatus();
-
-    /**
      * Retrieves all orders.
      *
      * @return A list of orders.
@@ -64,10 +56,10 @@ public interface PatientService {
      * @return The TestResult DTO.
      * @throws NoSuchElementException if the TestResult is not found.
      */
-    TestResult getTestReport(Long orderId);
+    TestResultDto getTestReport(Long orderId);
 
     /**
-     * Deletes an TestResult by user emailId (soft deletion).
+     * Deletes an patient by user emailId (soft deletion).
      *
      * @param email {@link UserDto} The ID of the TestResult to delete.
      * @throws RuntimeException if the TestResult is not found.
@@ -75,11 +67,13 @@ public interface PatientService {
     void deletePatient(String email);
 
     /**
-     * Fetches the test result of a specific order of a specific patient
+     * Fetches orders of a specific patient
      *
      * @param patientDto {@link UserDto} patient whose test report has to be fetched
      * @return all the orders related to the patient
      */
 
     List<ResponseOrderDto> getOrdersByPatient(UserDto patientDto);
+
+    void setupInitialData();
 }

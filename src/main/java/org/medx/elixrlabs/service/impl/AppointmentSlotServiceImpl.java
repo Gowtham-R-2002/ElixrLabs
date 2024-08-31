@@ -2,11 +2,25 @@ package org.medx.elixrlabs.service.impl;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-import org.medx.elixrlabs.model.*;
-import org.medx.elixrlabs.service.*;
+import org.medx.elixrlabs.dto.RequestSlotBookDto;
+import org.medx.elixrlabs.model.AppointmentSlot;
+import org.medx.elixrlabs.model.Order;
+import org.medx.elixrlabs.model.Patient;
+import org.medx.elixrlabs.model.SampleCollector;
+import org.medx.elixrlabs.service.AppointmentSlotService;
+import org.medx.elixrlabs.service.CartService;
+import org.medx.elixrlabs.service.EmailService;
+import org.medx.elixrlabs.service.OrderService;
+import org.medx.elixrlabs.service.PatientService;
+import org.medx.elixrlabs.service.SampleCollectorService;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.PaymentStatusEnum;
 import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
@@ -49,7 +63,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     private EmailService emailService;
 
     @Override
-    public Set<String> getAvailableSlots(SlotBookDto slotBookDto) {
+    public Set<String> getAvailableSlots(RequestSlotBookDto slotBookDto) {
         try {
             logger.debug("Fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
             List<AppointmentSlot> appointments = appointmentSlotRepository
@@ -70,11 +84,14 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         }
     }
 
-    @Override
-    public boolean isSlotAvailable(SlotBookDto slotBookDto) {
+    private boolean isSlotAvailable(SlotBookDto slotBookDto) {
         try {
             logger.debug("Checking slot availability for time slot: {}", slotBookDto.getTimeSlot());
-            boolean isAvailable = getAvailableSlots(slotBookDto).contains(slotBookDto.getTimeSlot());
+            boolean isAvailable = getAvailableSlots(RequestSlotBookDto.builder()
+                    .date(slotBookDto.getDate())
+                    .location(slotBookDto.getLocation())
+                    .testCollectionPlace(slotBookDto.getTestCollectionPlace())
+                    .build()).contains(slotBookDto.getTimeSlot());
             logger.info("Slot availability checked for time slot: {} - Available: {}", slotBookDto.getTimeSlot(), isAvailable);
             return isAvailable;
         } catch (Exception e) {
@@ -173,6 +190,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             AppointmentSlot appointmentSlot = appointmentSlotRepository.findById(id)
                     .orElseThrow(() -> new LabException("No appointment slot found with id: " + id));
             appointmentSlot.setSampleCollected(true);
+
             appointmentSlotRepository.save(appointmentSlot);
             logger.info("Sample marked as collected successfully for appointment with id: {}", id);
         } catch (Exception e) {

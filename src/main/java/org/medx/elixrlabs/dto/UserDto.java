@@ -32,7 +32,6 @@ import org.medx.elixrlabs.util.GenderEnum;
 public class UserDto {
     @NotNull
     @NotBlank
-    @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$")
     private String email;
     @NotNull
     @NotBlank

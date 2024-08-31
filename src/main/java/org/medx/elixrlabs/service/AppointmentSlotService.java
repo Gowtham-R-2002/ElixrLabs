@@ -1,6 +1,7 @@
 package org.medx.elixrlabs.service;
 
 import org.medx.elixrlabs.dto.OrderSuccessDto;
+import org.medx.elixrlabs.dto.RequestSlotBookDto;
 import org.medx.elixrlabs.dto.SlotBookDto;
 import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.SampleCollector;
@@ -22,9 +23,7 @@ public interface AppointmentSlotService {
      * @param slotBookDto
      * @return
      */
-    Set<String> getAvailableSlots(SlotBookDto slotBookDto);
-
-    boolean isSlotAvailable(SlotBookDto slotBookDto);
+    Set<String> getAvailableSlots(RequestSlotBookDto slotBookDto);
 
     OrderSuccessDto bookSlot(SlotBookDto slotBookDto);
 

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,9 @@ import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +45,6 @@ public class JwtService {
     private static String SECRET;
     private static long VALIDITY;
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
-    private String address;
 
     public JwtService() {
         dotenv = Dotenv.load();
@@ -52,10 +54,13 @@ public class JwtService {
 
 
     public String generateToken(UserDetails userDetails, LocationEnum place) {
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
         try {
             return Jwts.builder()
                     .subject(userDetails.getUsername())
-                    .claim("place", place)
+                    .claim("roles", roles)
                     .issuedAt(Date.from(Instant.now()))
                     .expiration(Date.from(Instant.now().plusMillis(VALIDITY)))
                     .signWith(generateKey())
@@ -105,5 +110,10 @@ public class JwtService {
             logger.warn("Error while validating token: {}", e.getMessage());
             throw new LabException("Error while validating token");
         }
+    }
+
+    public List<String> extractRoles(String jwt) {
+        Claims claims = getClaims(jwt);
+        return claims.get("roles", List.class);
     }
 }

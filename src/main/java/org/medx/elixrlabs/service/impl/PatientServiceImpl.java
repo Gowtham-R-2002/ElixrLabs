@@ -5,9 +5,14 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.medx.elixrlabs.dto.ResponsePatientDto;
+import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.mapper.PatientMapper;
+import org.medx.elixrlabs.mapper.TestResultMapper;
 import org.medx.elixrlabs.model.Patient;
 import org.medx.elixrlabs.repository.PatientRepository;
+import org.medx.elixrlabs.service.TestResultService;
+import org.medx.elixrlabs.util.GenderEnum;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +24,6 @@ import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.OrderMapper;
 import org.medx.elixrlabs.mapper.UserMapper;
-import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.service.OrderService;
 import org.medx.elixrlabs.service.PatientService;
@@ -45,6 +49,9 @@ public class PatientServiceImpl implements PatientService {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private TestResultService testResultService;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -82,10 +89,6 @@ public class PatientServiceImpl implements PatientService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public boolean bookSlotAndReturnStatus() {
-        return false;
-    }
 
     @Override
     public List<ResponseOrderDto> getOrders() {
@@ -96,8 +99,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public TestResult getTestReport(Long orderId) {
-        return null;
+    public TestResultDto getTestReport(Long orderId) {
+        return TestResultMapper.toTestResultDto(orderService.getOrder(orderId).getTestResult());
     }
 
     @Override
@@ -124,6 +127,26 @@ public class PatientServiceImpl implements PatientService {
             return patientRepository.findByEmailAndIsDeletedFalse(email);
         } catch (Exception e) {
             throw new LabException("Error while getting patient with email: " + email);
+        }
+    }
+
+    @Override
+    public void setupInitialData() {
+        User user = User.builder()
+                .gender(GenderEnum.M)
+                .place(LocationEnum.MARINA)
+                .password("gow@123")
+                .email("ergowthamramesh@gmail.com")
+                .roles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)))
+                .phoneNumber("8531911113")
+                .build();
+        Patient patient = Patient.builder()
+                .user(user)
+                .build();
+        try {
+            patientRepository.save(patient);
+        } catch (Exception e) {
+            throw new RuntimeException("Error in initializing patient data" + e.getMessage());
         }
     }
 }
