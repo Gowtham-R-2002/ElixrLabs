@@ -59,4 +59,13 @@ public class LabTestMapper {
                 .description(labTest.getDescription())
                 .build();
     }
+
+    public static LabTest toLabTest(ResponseTestInCartDto createLabTestDto) {
+        return LabTest.builder()
+                .id(createLabTestDto.getId())
+                .name(createLabTestDto.getName())
+                .price(createLabTestDto.getPrice())
+                .description(createLabTestDto.getDescription())
+                .build();
+    }
 }
