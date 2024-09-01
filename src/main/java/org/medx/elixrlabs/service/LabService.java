@@ -28,5 +28,4 @@ public interface LabService {
 
     TestResultDto getTestResultByOrder(long orderId);
 
-    TestResultDto getTestResultByUser(Long orderId);
 }

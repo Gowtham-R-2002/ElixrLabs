@@ -15,7 +15,6 @@ public class SecurityContextHelper {
      *
      * @return email address of the authenticated user
      */
-
     public static String extractEmailFromContext() {
         Object currentUser = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (currentUser != null) {

@@ -83,12 +83,12 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                             Collections.frequency(bookedTimeSlots, timeSlotEnum.getTime())
                                     < (slotBookDto.getTestCollectionPlace().equals(TestCollectionPlaceEnum.HOME)
                                     ? sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation()).size()
-                                    : Integer.parseInt(dotenv.get("${LAB_SLOT_COUNT}")))).collect(Collectors.toSet());
+                                    : Integer.parseInt(dotenv.get("LAB_SLOT_COUNT")))).collect(Collectors.toSet());
             logger.info("Available slots fetched successfully for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
             return availableSlots.stream().map(TimeSlotEnum::getTime).collect(Collectors.toSet());
         } catch (Exception e) {
             logger.warn("Exception occurred while fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
-            throw new LabException("Unable to fetch available slots", e);
+            throw new LabException("Unable to fetch available slots.", e);
         }
     }
 
@@ -104,7 +104,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             return isAvailable;
         } catch (Exception e) {
             logger.warn("Exception occurred while checking slot availability for time slot: {}", slotBookDto.getTimeSlot());
-            throw new LabException("Unable to check slot availability",e );
+            throw new LabException("Unable to check slot availability.",e );
         }
     }
 
@@ -115,7 +115,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             if (isSlotAvailable(slotBookDto)) {
                 Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
                 ResponseCartDto cart = cartService.getCartByPatient();
-                if(cart.getId() == 0 && cart.getTests().isEmpty() && cart.getTestPackage() == null) {
+                if(cart.getTests().isEmpty() && cart.getTestPackage() == null && cart.getPrice() == 0.0) {
                     throw new NoSuchElementException("Cart is empty!");
                 }
                 AppointmentSlot appointmentSlot = AppointmentSlot.builder()
@@ -148,7 +148,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             }
         } catch (Exception e) {
             logger.warn("Exception occurred while booking slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
-            throw new SlotException("Unable to book slot", e);
+            throw new SlotException("Unable to book slot.", e);
         }
     }
 

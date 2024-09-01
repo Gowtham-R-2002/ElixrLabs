@@ -9,6 +9,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * <p>Data transfer object for managing user name requests.</p>
+ *
+ * <p>This class encapsulates the email required for user name requests.</p>
+ *
+ * @author Gowtham R
+ */
 @Data
 @Builder
 @NoArgsConstructor

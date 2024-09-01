@@ -5,25 +5,21 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.GenderEnum;
+import org.medx.elixrlabs.util.LocationEnum;
 
 /**
- * <p>
- * This class is responsible for transferring user data as Data Transfer Object (DTO)
- * between layers.
- * This class is used to encapsulate the data related to an user and
- * transfer it between the client and the server. DTOs are typically used to
- * decouple the internal representation of data (employee entity class) from
- * the API, providing a simpler and more controlled way to expose data.
- * </p>
+ * <p>Represents user details required for account creation or update.</p>
+ *
+ * <p>Includes email, password, date of birth, phone number, gender, and location.</p>
+ *
+ * @author Gowtham R
  */
 @Builder
 @Data
@@ -33,18 +29,23 @@ public class UserDto {
     @NotNull
     @NotBlank
     private String email;
+
     @NotNull
     @NotBlank
     private String password;
+
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
+
     @NotBlank
     @NotNull
     @Size(max = 10, min = 10)
     private String phoneNumber;
+
     @NotNull
     private GenderEnum gender;
+
     @NotNull
     private LocationEnum place;
 }
