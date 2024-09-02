@@ -81,7 +81,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                             Collections.frequency(bookedTimeSlots, timeSlotEnum.getTime())
                                     < (slotBookDto.getTestCollectionPlace().equals(TestCollectionPlaceEnum.HOME)
                                     ? sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation()).size()
-                                    : Integer.parseInt(dotenv.get("${LAB_SLOT_COUNT}")))).collect(Collectors.toSet());
+                                    : Integer.parseInt(dotenv.get("LAB_SLOT_COUNT")))).collect(Collectors.toSet());
             logger.info("Available slots fetched successfully for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
             return availableSlots.stream().map(TimeSlotEnum::getTime).collect(Collectors.toSet());
         } catch (Exception e) {
@@ -102,7 +102,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             return isAvailable;
         } catch (Exception e) {
             logger.warn("Exception occurred while checking slot availability for time slot: {}", slotBookDto.getTimeSlot());
-            throw new LabException("Unable to check slot availability",e );
+            throw new LabException("Unable to check slot availability", e);
         }
     }
 

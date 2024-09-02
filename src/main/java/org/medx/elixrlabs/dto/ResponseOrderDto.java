@@ -25,7 +25,7 @@ import java.util.List;
 public class ResponseOrderDto {
     @NotNull
     private long id;
-    private List<LabTestDto> tests;
+    private List<ResponseTestInCartDto> tests;
     private ResponseTestPackageDto testPackageDto;
     @NotNull
     private TestStatusEnum testStatus;

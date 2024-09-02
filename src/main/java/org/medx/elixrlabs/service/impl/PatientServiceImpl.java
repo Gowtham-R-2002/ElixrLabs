@@ -4,27 +4,31 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import org.medx.elixrlabs.dto.*;
-import org.medx.elixrlabs.mapper.PatientMapper;
-import org.medx.elixrlabs.mapper.TestResultMapper;
-import org.medx.elixrlabs.model.Patient;
-import org.medx.elixrlabs.repository.PatientRepository;
-import org.medx.elixrlabs.service.TestResultService;
-import org.medx.elixrlabs.util.GenderEnum;
-import org.medx.elixrlabs.util.LocationEnum;
-import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.medx.elixrlabs.dto.RequestUserNameDto;
+import org.medx.elixrlabs.dto.ResponseOrderDto;
+import org.medx.elixrlabs.dto.ResponsePatientDto;
+import org.medx.elixrlabs.dto.TestResultDto;
+import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.OrderMapper;
+import org.medx.elixrlabs.mapper.PatientMapper;
+import org.medx.elixrlabs.mapper.TestResultMapper;
 import org.medx.elixrlabs.mapper.UserMapper;
+import org.medx.elixrlabs.model.Patient;
 import org.medx.elixrlabs.model.User;
+import org.medx.elixrlabs.repository.PatientRepository;
 import org.medx.elixrlabs.service.OrderService;
 import org.medx.elixrlabs.service.PatientService;
 import org.medx.elixrlabs.service.RoleService;
+import org.medx.elixrlabs.service.TestResultService;
+import org.medx.elixrlabs.util.GenderEnum;
+import org.medx.elixrlabs.util.LocationEnum;
+import org.medx.elixrlabs.util.RoleEnum;
 
 /**
  * <p>
@@ -71,7 +75,7 @@ public class PatientServiceImpl implements PatientService {
         try {
             savedPatient = patientRepository.save(newPatient);
         } catch (Exception e) {
-            throw new LabException("Error while saving Patient with email: " + userDto.getEmail() , e);
+            throw new LabException("Error while saving Patient with email: " + userDto.getEmail(), e);
         }
         return PatientMapper.toPatientDto(savedPatient);
     }
