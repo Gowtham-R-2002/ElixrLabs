@@ -34,18 +34,11 @@ import org.medx.elixrlabs.util.LocationEnum;
 public class LabServiceImpl implements LabService {
 
     private static final Logger logger = LoggerFactory.getLogger(LabServiceImpl.class);
-
-    @Autowired
-    private JwtService jwtService;
-
     @Autowired
     private OrderService orderService;
 
     @Autowired
     private AdminService adminService;
-
-    @Autowired
-    private PatientService patientService;
 
     @Autowired
     private LabTestService labTestService;
