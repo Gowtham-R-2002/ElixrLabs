@@ -1,13 +1,18 @@
 package org.medx.elixrlabs.dto;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
+/**
+ * <p>Represents the query parameters for retrieving appointments based on a specific date.</p>
+ *
+ * @author Gowtham R
+ */
 @Data
 @Builder
 @NoArgsConstructor

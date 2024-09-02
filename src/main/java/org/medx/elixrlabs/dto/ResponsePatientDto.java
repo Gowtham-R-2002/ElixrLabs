@@ -23,6 +23,8 @@ import java.util.UUID;
  * decouple the internal representation of data (employee entity class) from
  * the API, providing a simpler and more controlled way to expose data.
  * </p>
+ *
+ * @author Gowtham R
  */
 @Builder
 @Data

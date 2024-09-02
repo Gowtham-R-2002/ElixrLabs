@@ -31,6 +31,8 @@ import static java.util.Arrays.stream;
  * All responses are returned in a standardized format to ensure consistency across
  * the API.
  * </p>
+ *
+ * @author Sabarinathan K
  */
 @RestController
 @RequestMapping("api/v1/sample-collectors")

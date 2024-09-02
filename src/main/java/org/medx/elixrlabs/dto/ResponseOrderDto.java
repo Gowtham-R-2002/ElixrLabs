@@ -10,6 +10,14 @@ import org.medx.elixrlabs.util.TestStatusEnum;
 
 import java.util.List;
 
+/**
+ * <p>Contains details about an order, including its identifier, associated tests, test package,
+ * and status.</p>
+ *
+ * <p>Used to provide information about the order and its components in the response.</p>
+ *
+ * @author Gowtham R
+ */
 @Data
 @Builder
 @NoArgsConstructor

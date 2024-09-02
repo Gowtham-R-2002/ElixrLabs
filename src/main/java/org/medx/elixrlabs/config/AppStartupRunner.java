@@ -8,6 +8,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * <p>This class handles tasks that should be executed
+ * when the application starts. It initializes essential
+ * services and sets up initial data required for the application.</p>
+ *
+ * @author Gowtham R
+ */
 @Configuration
 public class AppStartupRunner {
 

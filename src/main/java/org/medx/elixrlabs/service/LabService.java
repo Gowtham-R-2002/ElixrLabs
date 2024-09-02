@@ -53,12 +53,4 @@ public interface LabService {
 
     TestResultDto getTestResultByOrder(long orderId);
 
-    /**
-     * Fetches the test result of a specific order of a specific patient
-     *
-     * @param orderId id of the order for which test result has to be fetched
-     * @return test result of the specific order
-     */
-
-    TestResultDto getTestResultByUser(Long orderId);
 }

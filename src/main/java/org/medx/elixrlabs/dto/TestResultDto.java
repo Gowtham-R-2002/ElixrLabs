@@ -11,6 +11,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
+/**
+ * <p>Encapsulates details of a test result.</p>
+ *
+ * <p>Contains information about the order date, ID, age and gender, email, test results, and the generation timestamp.</p>
+ *
+ * @author Gowtham R
+ */
 @Data
 @Builder
 public class TestResultDto {
@@ -23,7 +30,7 @@ public class TestResultDto {
     private String ageAndGender;
     @NotNull
     @NotBlank
-    @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$")
+    @Pattern(regexp = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$", flags = Pattern.Flag.CASE_INSENSITIVE)
     private String email;
     @NotNull
     private List<String> result;
