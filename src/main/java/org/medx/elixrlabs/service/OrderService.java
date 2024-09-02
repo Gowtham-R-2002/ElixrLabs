@@ -32,13 +32,6 @@ public interface OrderService {
     OrderSuccessDto createOrUpdateOrder(Order order);
 
     /**
-     * Fetches all the orders
-     *
-     * @return list of all orders
-     */
-    List<Order> getOrders();
-
-    /**
      * Fetches a specific order
      *
      * @param id id of the order to be fetched

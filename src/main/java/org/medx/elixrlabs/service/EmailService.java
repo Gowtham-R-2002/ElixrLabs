@@ -30,7 +30,8 @@ public interface EmailService {
      * @return OTP that has been generated
      * @throws MessagingException Exception thrown when there is an issue while
      *                            sending email
-     * @throws IOException
+     * @throws IOException        Exception thrown when there is an issue in
+     *                            getting resources
      */
 
     OTP sendMailAndGetOtp(String email) throws MessagingException, IOException;
@@ -41,7 +42,8 @@ public interface EmailService {
      * @param testResult {@link TestResult} test result that has to be sent
      * @throws MessagingException Exception thrown when there is an issue while
      *                            sending email
-     * @throws IOException
+     * @throws IOException        Exception thrown when there is an issue in
+     *                            getting resources
      */
 
     void sendTestResult(TestResult testResult) throws MessagingException, IOException;
@@ -49,14 +51,15 @@ public interface EmailService {
     /**
      * Sends an email which contains the invoice for the patient's order
      *
-     * @param labTests {@link LabTest} lab tests that the patient has ordered
-     * @param testPackage {@link TestPackage} test package that the patient has ordered
-     * @param totalPrice the total price of the lab tests and package
-     * @param email email of the patient to whom the invoice has to be sent
+     * @param labTests      {@link LabTest} lab tests that the patient has ordered
+     * @param testPackage   {@link TestPackage} test package that the patient has ordered
+     * @param totalPrice    the total price of the lab tests and package
+     * @param email         email of the patient to whom the invoice has to be sent
      * @param orderDateTime date and time of the order
      * @throws MessagingException Exception thrown when there is an issue while
      *                            sending email
-     * @throws IOException
+     * @throws IOException        Exception thrown when there is an issue in
+     *                            getting resources
      */
 
     void sendInvoice(List<LabTest> labTests, TestPackage testPackage, double totalPrice, String email, Calendar orderDateTime) throws MessagingException, IOException;

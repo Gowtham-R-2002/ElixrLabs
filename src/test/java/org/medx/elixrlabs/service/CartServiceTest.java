@@ -1,10 +1,10 @@
 package org.medx.elixrlabs.service;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.dto.CartDto;
-import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
 import org.medx.elixrlabs.dto.ResponseTestInCartDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
@@ -13,22 +13,18 @@ import org.medx.elixrlabs.repository.CartRepository;
 import org.medx.elixrlabs.service.impl.CartServiceImpl;
 import org.medx.elixrlabs.util.GenderEnum;
 import org.medx.elixrlabs.util.LocationEnum;
-import org.medx.elixrlabs.util.RoleEnum;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.medx.elixrlabs.util.LocationEnum.VELACHERY;
 import static org.medx.elixrlabs.util.RoleEnum.ROLE_PATIENT;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,29 +45,31 @@ public class CartServiceTest {
     @InjectMocks
     CartServiceImpl cartService;
 
-    private User user;
-    private Role role;
     private Patient patient;
-    private LabTest test;
     private Cart cart;
     private Cart responseCart;
     private CartDto requestCartDto;
     private ResponseCartDto responseCartDto;
 
+    @BeforeAll
+    static void beforeAll(){
+        mockStatic(SecurityContextHelper.class);
+    }
+
     @BeforeEach
     void setUp() {
-        test = LabTest.builder()
+        LabTest test = LabTest.builder()
                 .name("Blood Test")
                 .price(150.00)
                 .description("Simple Blood Test")
                 .defaultValue("BPC : 1000")
                 .id(1L)
                 .build();
-        role = Role.builder()
+        Role role = Role.builder()
                 .id(1)
                 .name(ROLE_PATIENT)
                 .build();
-        user = User.builder()
+        User user = User.builder()
                 .UUID("23456")
                 .email("test@gmail.com")
                 .place(LocationEnum.VELACHERY)
@@ -107,7 +105,7 @@ public class CartServiceTest {
     @Test
     void testAddTestOrTestPackagesToCart() {
         when(SecurityContextHelper.extractEmailFromContext()).thenReturn(patient.getUser().getEmail());
-//        when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
+        when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
         when(cartRepository.findCartByUser(patient)).thenReturn(cart);
         when(cartRepository.save(cart)).thenReturn(responseCart);
         ResponseCartDto result = cartService.addTestsOrPackagesToCart(requestCartDto);
