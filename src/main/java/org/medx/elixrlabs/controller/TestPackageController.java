@@ -27,7 +27,7 @@ public class TestPackageController {
     private TestPackageService testPackageService;
 
     @PostMapping
-    public ResponseEntity<ResponseTestPackageDto> createTestPackage(@RequestBody RequestTestPackageDto requestTestPackageDto) {
+    public ResponseEntity<ResponseTestPackageDto> createTestPackage(@Valid @RequestBody RequestTestPackageDto requestTestPackageDto) {
         return new ResponseEntity<>(testPackageService.createOrUpdateTestPackage(requestTestPackageDto), HttpStatus.CREATED);
     }
 

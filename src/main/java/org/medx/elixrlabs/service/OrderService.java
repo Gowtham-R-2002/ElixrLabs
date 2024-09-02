@@ -2,12 +2,13 @@ package org.medx.elixrlabs.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.util.LocationEnum;
-import org.springframework.stereotype.Service;
 
 /**
  * <p>
@@ -21,9 +22,9 @@ import org.springframework.stereotype.Service;
 public interface OrderService {
 
     /**
-     * Creates a new order that has been requested by the patient
+     * Creates or updates an order that has been requested by the patient
      *
-     * @param order {@link Order} order details that has
+     * @param order {@link Order} order details that has to be created or updated
      * @return order that has been placed
      */
 
@@ -34,6 +35,7 @@ public interface OrderService {
      *
      * @return list of all orders
      */
+
     List<Order> getOrders();
 
     /**
@@ -46,7 +48,7 @@ public interface OrderService {
     Order getOrder(Long id);
 
     /**
-     * Updates the current status of an order to completed
+     * Updates the current status of an order to TestStatusEnum_COMPLETED
      *
      * @param id id of the order whose status has to be updated
      */
@@ -61,6 +63,13 @@ public interface OrderService {
      */
 
     List<ResponseOrderDto> getOrdersByLocation(LocationEnum location);
+
+    /**
+     * fetches the order of the specific appointment slot
+     *
+     * @param appointmentSlot appointment slot for which order has to be fetched
+     * @return order of the specific appointment slot
+     */
 
     Order getOrderByAppointment(AppointmentSlot appointmentSlot);
 }

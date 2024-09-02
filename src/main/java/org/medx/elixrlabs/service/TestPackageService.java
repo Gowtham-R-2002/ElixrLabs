@@ -3,9 +3,10 @@ package org.medx.elixrlabs.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.stereotype.Service;
+
 import org.medx.elixrlabs.dto.RequestTestPackageDto;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
-import org.springframework.stereotype.Service;
 
 /**
  * <p>
@@ -28,14 +29,14 @@ public interface TestPackageService {
     /**
      * Retrieves all TestPackages.
      *
-     * @return A list of testPackage DTOs.
+     * @return list of all testPackages.
      */
     List<ResponseTestPackageDto> getAllTestPackages();
 
     /**
      * Retrieves an testPackage by ID.
      *
-     * @param id {@link Long} The ID of the testPackage.
+     * @param id {@link Long} ID of the testPackage.
      * @return The testPackage DTO.
      * @throws NoSuchElementException if the testPackage is not found.
      */

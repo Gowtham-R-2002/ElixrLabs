@@ -12,6 +12,7 @@ import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.GenderEnum;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * <p>
@@ -30,6 +31,7 @@ import java.time.LocalDate;
 public class ResponsePatientDto {
     @NotNull
     private long id;
+    private String uuid;
     @NotBlank
     @NotNull
     private String email;

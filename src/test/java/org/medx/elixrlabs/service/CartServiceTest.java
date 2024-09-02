@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.dto.CartDto;
 import org.medx.elixrlabs.dto.LabTestDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
+import org.medx.elixrlabs.dto.ResponseTestInCartDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.model.*;
 import org.medx.elixrlabs.repository.CartRepository;
@@ -97,7 +98,7 @@ public class CartServiceTest {
                 .build();
         responseCartDto = ResponseCartDto.builder()
                 .id(1)
-                .tests(Collections.singletonList(LabTestDto.builder().id(1L)
+                .tests(Collections.singletonList(ResponseTestInCartDto.builder().id(1L)
                         .name("Blood Test")
                         .build()))
                 .build();
@@ -106,7 +107,7 @@ public class CartServiceTest {
     @Test
     void testAddTestOrTestPackagesToCart() {
         when(SecurityContextHelper.extractEmailFromContext()).thenReturn(patient.getUser().getEmail());
-        when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
+//        when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
         when(cartRepository.findCartByUser(patient)).thenReturn(cart);
         when(cartRepository.save(cart)).thenReturn(responseCart);
         ResponseCartDto result = cartService.addTestsOrPackagesToCart(requestCartDto);

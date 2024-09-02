@@ -80,17 +80,13 @@ public class SampleCollectorController {
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentDto>> getAppointments(@Valid @RequestBody AppointmentsQueryDto appointmentDto) {
         LocationEnum place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
-        List<AppointmentSlot> appointmentSlots = appointmentSlotService.getAppointmentsByPlace(place, appointmentDto.getDate());
-
-        List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
-                .map(AppointmentMapper :: convertToDto).toList();
-        return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
+        List<AppointmentDto> appointments = appointmentSlotService.getAppointmentsByPlace(place, appointmentDto.getDate());
+        return new ResponseEntity<>(appointments, HttpStatus.OK);
     }
 
     @PatchMapping("/appointments/{id}")
-    public ResponseEntity<Void> assignAppointment(@Valid @PathVariable Long id) {
-        SampleCollector sampleCollector = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
-        appointmentSlotService.assignSampleCollectorToAppointment(id, sampleCollector);
+    public ResponseEntity<Void> assignAppointment(@PathVariable Long id) {
+        appointmentSlotService.assignSampleCollectorToAppointment(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 

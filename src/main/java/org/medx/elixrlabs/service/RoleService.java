@@ -1,10 +1,10 @@
 package org.medx.elixrlabs.service;
 
+import java.util.List;
+
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.util.RoleEnum;
-
-import java.util.List;
 
 /**
  * <p>
@@ -15,9 +15,6 @@ import java.util.List;
  */
 public interface RoleService {
 
-    /**
-     *
-     */
     void setupInitialData();
 
     /**
