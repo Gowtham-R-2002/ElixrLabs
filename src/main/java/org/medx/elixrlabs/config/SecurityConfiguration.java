@@ -24,6 +24,13 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * <p>This class configures security settings for the application,
+ * including authentication and authorization mechanisms.
+ * It manages how users access different parts of the system.</p>
+ *
+ * @author Gowtham R
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration{

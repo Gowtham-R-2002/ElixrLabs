@@ -60,10 +60,12 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public ResponsePatientDto createOrUpdatePatient(UserDto userDto) {
         Patient patient = getPatientByEmail(userDto.getEmail());
+        System.out.println(patient);
         User user = UserMapper.toUser(userDto);
+        System.out.println(user);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)));
-        if (patient != null) {
+        if(patient != null) {
             user.setUUID(patient.getUser().getUUID());
             patient.setUser(user);
             return PatientMapper.toPatientDto(patientRepository.save(patient));
@@ -96,7 +98,13 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public TestResultDto getTestReport(Long orderId) {
-        return TestResultMapper.toTestResultDto(orderService.getOrder(orderId).getTestResult());
+        TestResultDto testResultDto;
+        if (isOrderOwnedByPatient(orderId)) {
+            testResultDto = TestResultMapper.toTestResultDto(orderService.getOrder(orderId).getTestResult());
+        } else {
+            throw new LabException("Invalid order ID entered!");
+        }
+        return testResultDto;
     }
 
     @Override
@@ -144,5 +152,9 @@ public class PatientServiceImpl implements PatientService {
         } catch (Exception e) {
             throw new RuntimeException("Error in initializing patient data" + e.getMessage());
         }
+    }
+
+    private boolean isOrderOwnedByPatient(Long orderId) {
+        return orderService.getOrder(orderId).getPatient().getUser().getUsername().equals(SecurityContextHelper.extractEmailFromContext());
     }
 }

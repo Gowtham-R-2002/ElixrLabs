@@ -50,18 +50,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> getOrders() {
-        try {
-            List<Order> orders = orderRepository.findAll();
-            logger.info("Fetched {} orders successfully", orders.size());
-            return orders;
-        } catch (Exception e) {
-            logger.warn("Error while fetching orders: {}", e.getMessage());
-            throw new LabException("Error while fetching orders!", e);
-        }
-    }
-
-    @Override
     public Order getOrder(Long id) {
         try {
             Optional<Order> orderOptional = orderRepository.findById(id);

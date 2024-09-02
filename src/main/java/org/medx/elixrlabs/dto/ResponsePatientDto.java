@@ -12,6 +12,7 @@ import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.GenderEnum;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * <p>
@@ -22,6 +23,8 @@ import java.time.LocalDate;
  * decouple the internal representation of data (employee entity class) from
  * the API, providing a simpler and more controlled way to expose data.
  * </p>
+ *
+ * @author Gowtham R
  */
 @Builder
 @Data
@@ -30,6 +33,7 @@ import java.time.LocalDate;
 public class ResponsePatientDto {
     @NotNull
     private long id;
+    private String uuid;
     @NotBlank
     @NotNull
     private String email;

@@ -1,10 +1,7 @@
 package org.medx.elixrlabs.service;
 
-import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.model.Admin;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * <p>
@@ -23,6 +20,13 @@ public interface AdminService {
      */
 
     void setupInitialData();
+
+    /**
+     *Fetches admin with the help of email
+     *
+     * @param email email of the admin
+     * @return admin
+     */
 
     Admin getAdminByEmail(String email);
 }

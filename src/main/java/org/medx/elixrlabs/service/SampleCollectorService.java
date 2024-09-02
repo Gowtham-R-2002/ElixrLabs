@@ -1,13 +1,14 @@
 package org.medx.elixrlabs.service;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
+import org.springframework.stereotype.Service;
+
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.util.LocationEnum;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * <p>
@@ -28,7 +29,7 @@ public interface SampleCollectorService {
     SampleCollectorDto createOrUpdateSampleCollector(UserDto userDto);
 
     /**
-     * Retrieves all SampleCollector.
+     * Retrieves all the verified SampleCollector.
      *
      * @return A list of SampleCollector DTOs.
      */

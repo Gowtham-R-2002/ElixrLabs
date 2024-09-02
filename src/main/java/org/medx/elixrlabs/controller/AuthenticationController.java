@@ -31,20 +31,18 @@ import org.medx.elixrlabs.service.impl.UserService;
 import org.medx.elixrlabs.util.LocationEnum;
 
 /**
- * REST controller for managing Authentication-related operations.
+ * <p>Handles user authentication, login processes, and OTP management.
+ * Manages authentication attempts, OTP validation, and token generation
+ * for users upon successful authentication.</p>
  *
- * <p>
- * This controller handles HTTP requests and provides endpoints for
- * login, verifies OTP and returns generated token.
- * It is annotated with Spring MVC annotations to define the URL mappings
- * and request handling logic.
- * </p>
+ * @author Gowtham R
  */
+
 @RestController
 @RequestMapping("api/v1/auth/login")
 public class AuthenticationController {
 
-    private static final Logger logger = LoggerFactory.getLogger(SampleCollectorServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -60,6 +58,15 @@ public class AuthenticationController {
 
     private Authentication userAuthentication;
     private OTP otp;
+
+    /**
+     * <p>Authenticates user credentials and initiates OTP sending process
+     * if authentication is successful.</p>
+     *
+     * @param loginRequestDto Contains email and password for authentication.
+     * @throws MessagingException If an error occurs while sending the email.
+     * @throws IOException If an I/O error occurs during email sending.
+     */
 
     @PostMapping
     public void login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws MessagingException, IOException {
@@ -79,6 +86,15 @@ public class AuthenticationController {
             SecurityContextHolder.getContext().setAuthentication(userAuthentication);
         }
     }
+
+    /**
+     * <p>Validates the provided OTP and generates a JWT token if the OTP
+     * is correct and has not expired. Updates the security context for the user.</p>
+     *
+     * @param otpDto Contains the OTP for verification.
+     * @return A JWT token if the OTP is valid.
+     * @throws OTPValidationException If the OTP is invalid or expired.
+     */
 
     @PostMapping("verify")
     public String verifyAndGenerateToken(@Valid @RequestBody OtpDto otpDto) {

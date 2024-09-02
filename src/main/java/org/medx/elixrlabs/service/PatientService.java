@@ -1,11 +1,16 @@
 package org.medx.elixrlabs.service;
 
-import org.medx.elixrlabs.dto.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.medx.elixrlabs.model.Patient;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.NoSuchElementException;
+import org.medx.elixrlabs.dto.RequestUserNameDto;
+import org.medx.elixrlabs.dto.ResponseOrderDto;
+import org.medx.elixrlabs.dto.ResponsePatientDto;
+import org.medx.elixrlabs.dto.TestResultDto;
+import org.medx.elixrlabs.dto.UserDto;
 
 /**
  * <p>
@@ -28,31 +33,31 @@ public interface PatientService {
     ResponsePatientDto createOrUpdatePatient(UserDto userDto);
 
     /**
-     * Retrieves all patients.
+     * Fetches all the patients.
      *
-     * @return A list of User DTOs.
+     * @return list of patients.
      */
     List<ResponsePatientDto> getAllPatients();
 
     /**
      * Fetches a patient with the help of their email
      *
-     * @param email email of the specific patient
+     * @param email email of the patient to be fetched
      * @return the dto of the specific patient
      */
     Patient getPatientByEmail(String email);
 
     /**
-     * Retrieves all orders.
+     * Fetches all the orders of a specific patient.
      *
-     * @return A list of orders.
+     * @return list of orders.
      */
     List<ResponseOrderDto> getOrders();
 
     /**
-     * Retrieves an TestResult by orderID.
+     * Fetches the TestResult of the patient by orderID.
      *
-     * @param orderId {@link Long} The ID of the SampleCollector.
+     * @param orderId ID of the SampleCollector.
      * @return The TestResult DTO.
      * @throws NoSuchElementException if the TestResult is not found.
      */
@@ -61,15 +66,15 @@ public interface PatientService {
     /**
      * Deletes an patient by user emailId (soft deletion).
      *
-     * @param email {@link UserDto} The ID of the TestResult to delete.
-     * @throws RuntimeException if the TestResult is not found.
+     * @param email The ID of patient to be deleted.
+     * @throws RuntimeException if the patient is not found.
      */
     void deletePatient(String email);
 
     /**
      * Fetches orders of a specific patient
      *
-     * @param patient {@link UserDto} patient whose test report has to be fetched
+     * @param patient {@link RequestUserNameDto} patient whose orders has to be fetched
      * @return all the orders related to the patient
      */
 
