@@ -258,7 +258,7 @@ public class PatientServiceTest {
                 patientService.getOrders();
             });
 
-            assertTrue(exception.getMessage().contains("Error while fetching orders by location"));
+            assertEquals(true, exception.getMessage().contains("Error while fetching orders by location"));
             verify(patientRepository, times(1)).getPatientOrders(email);
         }
     }

@@ -126,16 +126,4 @@ public class LabServiceImpl implements LabService {
         return TestResultMapper.toTestResultDto(order.getTestResult());
     }
 
-    @Override
-    public TestResultDto getTestResultByUser(Long orderId) {
-        try {
-            Order order = orderService.getOrder(orderId);
-
-
-        } catch (Exception e) {
-//            logger.warn("Error while retrieving test result for user: {} and order id: {}", patientDto.getEmail(), orderId);
-//            throw new LabException("Error while retrieving test result for user: " + patientDto.getEmail() + " and order id: " + orderId);
-        }
-        return null;
-    }
 }

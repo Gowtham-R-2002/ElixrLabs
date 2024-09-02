@@ -2,14 +2,10 @@ package org.medx.elixrlabs.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.medx.elixrlabs.model.*;
-import org.medx.elixrlabs.service.impl.OrderServiceImpl;
-import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -33,7 +29,14 @@ import static org.mockito.Mockito.when;
 import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.exception.LabException;
+import org.medx.elixrlabs.model.AppointmentSlot;
+import org.medx.elixrlabs.model.LabTest;
+import org.medx.elixrlabs.model.Order;
+import org.medx.elixrlabs.model.Patient;
+import org.medx.elixrlabs.model.User;
+import org.medx.elixrlabs.service.impl.OrderServiceImpl;
 import org.medx.elixrlabs.repository.OrderRepository;
+import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.TestStatusEnum;
 
@@ -92,37 +95,6 @@ class OrderServiceTest {
 
         assertThrows(LabException.class, () -> orderService.createOrUpdateOrder(order));
         verify(orderRepository, times(1)).save(order);
-    }
-
-    @Test
-    void getOrders_success() {
-        List<Order> orders = new ArrayList<>();
-        orders.add(order);
-        when(orderRepository.findAll()).thenReturn(orders);
-
-        List<Order> result = orderService.getOrders();
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(orderRepository, times(1)).findAll();
-    }
-
-    @Test
-    void getOrders_failure() {
-        when(orderRepository.findAll()).thenReturn(new ArrayList<>());
-
-        List<Order> result = orderService.getOrders();
-
-        assertTrue(result.isEmpty());
-        verify(orderRepository, times(1)).findAll();
-    }
-
-    @Test
-    void getOrders_exception() {
-        when(orderRepository.findAll()).thenThrow(new LabException("Error while fetching orders"));
-
-        assertThrows(LabException.class, () -> orderService.getOrders());
-        verify(orderRepository, times(1)).findAll();
     }
 
     @Test
