@@ -66,10 +66,9 @@ public interface PatientService {
     /**
      * Deletes an patient by user emailId (soft deletion).
      *
-     * @param email The ID of patient to be deleted.
      * @throws RuntimeException if the patient is not found.
      */
-    void deletePatient(String email);
+    void deletePatient();
 
     /**
      * Fetches orders of a specific patient

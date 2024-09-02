@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.medx.elixrlabs.exception.LabException;
+import org.medx.elixrlabs.mapper.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -62,15 +64,28 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         if (existingSampleCollector != null) {
             user.setUUID(existingSampleCollector.getUser().getUUID());
             existingSampleCollector.setUser(user);
-            logger.debug("Updating existing SampleCollector with email: {}", userDto.getEmail());
-            return SampleCollectorMapper.convertToSampleCollectorDto(sampleCollectorRepository.save(existingSampleCollector));
+            SampleCollector result;
+            try {
+                result = sampleCollectorRepository.save(existingSampleCollector);
+                logger.info("Successfully Updated existing SampleCollector with email: {}", userDto.getEmail());
+            } catch (Exception e) {
+                logger.warn("Error while updating SampleCollector with email: {}", userDto.getEmail());
+                throw new LabException("Error while updating SampleCollector with email: " + userDto.getEmail(), e);
+            }
+            return SampleCollectorMapper.convertToSampleCollectorDto(result);
         }
         SampleCollector sampleCollector = SampleCollector.builder()
                 .user(user)
                 .isVerified(false)
                 .build();
-        SampleCollector savedSampleCollector = sampleCollectorRepository.save(sampleCollector);
-        logger.info("Successfully created new SampleCollector for email: {}", userDto.getEmail());
+        SampleCollector savedSampleCollector;
+        try {
+            savedSampleCollector = sampleCollectorRepository.save(sampleCollector);
+            logger.info("Successfully Created SampleCollector with email: {}", userDto.getEmail());
+        } catch (Exception e) {
+            logger.warn("Error while creating SampleCollector with email: {}", userDto.getEmail());
+            throw new LabException("Error while saving SampleCollector with email: " + userDto.getEmail(), e);
+        }
         return SampleCollectorMapper.convertToSampleCollectorDto(savedSampleCollector);
     }
 
@@ -79,8 +94,13 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         logger.info("Attempting to delete SampleCollector for current user");
         SampleCollector sampleCollector = getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
         sampleCollector.setDeleted(true);
-        sampleCollectorRepository.save(sampleCollector);
-        logger.info("Successfully marked SampleCollector as deleted for user email: {}", SecurityContextHelper.extractEmailFromContext());
+        try {
+            sampleCollectorRepository.save(sampleCollector);
+            logger.info("Successfully marked SampleCollector as deleted for user email: {}", SecurityContextHelper.extractEmailFromContext());
+        } catch (Exception e) {
+            logger.warn("Error while deleting SampleCollector with email: {}", SecurityContextHelper.extractEmailFromContext());
+            throw new LabException("Error while deleting SampleCollector with email: " + SecurityContextHelper.extractEmailFromContext());
+        }
         return true;
     }
 
