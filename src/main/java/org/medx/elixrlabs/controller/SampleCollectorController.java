@@ -93,44 +93,29 @@ public class SampleCollectorController {
     }
 
     @PatchMapping("/appointments/{id}/status")
-    public ResponseEntity<Void> markSampleCollected(@Valid @PathVariable Long id) {
+    public ResponseEntity<Void> markSampleCollected(@PathVariable Long id) {
         appointmentSlotService.markSampleCollected(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @GetMapping("appointments/assigned")
     public ResponseEntity<List<AppointmentDto>> getAllAssignedAppointments() {
-        List<AppointmentSlot> appointmentSlots = appointmentSlotService
-                .getAppointmentsBySampleCollector(sampleCollectorService
-                        .getSampleCollectorByEmail(SecurityContextHelper
-                                .extractEmailFromContext())
-                        .getId());
-        List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
-                .map(AppointmentMapper :: convertToDto).toList();
+        List<AppointmentDto> appointmentDtos = appointmentSlotService
+                .getAppointmentsBySampleCollector();
         return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
     }
 
     @GetMapping("appointments/assigned/collected")
     public ResponseEntity<List<AppointmentDto>> getCollectedAppointments() {
-        List<AppointmentSlot> appointmentSlots = appointmentSlotService
-                .getCollectedAppointmentsBySampleCollector(sampleCollectorService
-                        .getSampleCollectorByEmail(SecurityContextHelper
-                                .extractEmailFromContext())
-                        .getId());
-        List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
-                .map(AppointmentMapper :: convertToDto).toList();
+        List<AppointmentDto> appointmentDtos = appointmentSlotService
+                .getCollectedAppointmentsBySampleCollector();
         return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
     }
 
     @GetMapping("appointments/assigned/pending")
     public ResponseEntity<List<AppointmentDto>> getPendingAppointments() {
-        List<AppointmentSlot> appointmentSlots = appointmentSlotService
-                .getPendingAppointmentsBySampleCollector(sampleCollectorService
-                        .getSampleCollectorByEmail(SecurityContextHelper
-                                .extractEmailFromContext())
-                        .getId());
-        List<AppointmentDto> appointmentDtos = appointmentSlots.stream()
-                .map(AppointmentMapper :: convertToDto).toList();
+        List<AppointmentDto> appointmentDtos = appointmentSlotService
+                .getPendingAppointmentsBySampleCollector();
         return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
     }
 

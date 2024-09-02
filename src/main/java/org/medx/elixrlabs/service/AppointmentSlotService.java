@@ -42,7 +42,7 @@ public interface AppointmentSlotService {
      * Fetches all the appointment slots for a specific location
      *
      * @param location location from which the slots have to be fetched
-     * @param date date from which slots has to be fetched
+     * @param date     date from which slots has to be fetched
      * @return Appointments in a specific location
      */
 
@@ -71,7 +71,7 @@ public interface AppointmentSlotService {
      * @return All the appointments of a specific sample collector
      */
 
-    List<AppointmentSlot> getAppointmentsBySampleCollector(Long id);
+    List<AppointmentDto> getAppointmentsBySampleCollector();
 
     /**
      * Fetches all the appointments that has to be completed by the sample collector
@@ -81,7 +81,7 @@ public interface AppointmentSlotService {
      * @return list of appointments that the sample collector has collected
      */
 
-    List<AppointmentSlot> getCollectedAppointmentsBySampleCollector(Long id);
+    List<AppointmentDto> getCollectedAppointmentsBySampleCollector();
 
     /**
      * Fetches all the pending appointments of the sample collector
@@ -91,5 +91,5 @@ public interface AppointmentSlotService {
      * @return list of appointments that the sample collector has not collected
      */
 
-    List<AppointmentSlot> getPendingAppointmentsBySampleCollector(Long id);
+    List<AppointmentDto> getPendingAppointmentsBySampleCollector();
 }
