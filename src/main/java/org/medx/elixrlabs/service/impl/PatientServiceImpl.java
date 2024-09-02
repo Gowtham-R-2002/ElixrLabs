@@ -2,8 +2,9 @@ package org.medx.elixrlabs.service.impl;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,8 @@ import org.medx.elixrlabs.util.RoleEnum;
 @Service
 public class PatientServiceImpl implements PatientService {
 
+    private static final Logger logger = LoggerFactory.getLogger(PatientServiceImpl.class);
+
     @Autowired
     private PatientRepository patientRepository;
 
@@ -59,22 +62,31 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public ResponsePatientDto createOrUpdatePatient(UserDto userDto) {
+        logger.debug("Attempting to create or update Patient for email: {}", userDto.getEmail());
         Patient patient = getPatientByEmail(userDto.getEmail());
-        System.out.println(patient);
         User user = UserMapper.toUser(userDto);
-        System.out.println(user);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)));
-        if(patient != null) {
+        if (patient != null) {
             user.setUUID(patient.getUser().getUUID());
             patient.setUser(user);
-            return PatientMapper.toPatientDto(patientRepository.save(patient));
+            Patient resultPatient;
+            try {
+                resultPatient = patientRepository.save(patient);
+                logger.info("Successfully updated Patient for email: {}", userDto.getEmail());
+            } catch (Exception e) {
+                logger.warn("Error while updating Patient with email:{}", userDto.getEmail());
+                throw new LabException("Error while saving Patient with email: " + userDto.getEmail(), e);
+            }
+            return PatientMapper.toPatientDto(resultPatient);
         }
         Patient newPatient = Patient.builder().user(user).build();
         Patient savedPatient;
         try {
             savedPatient = patientRepository.save(newPatient);
+            logger.info("Successfully created new Patient for email: {}", userDto.getEmail());
         } catch (Exception e) {
+            logger.warn("Error while creating Patient with email:{}", userDto.getEmail());
             throw new LabException("Error while saving Patient with email: " + userDto.getEmail(), e);
         }
         return PatientMapper.toPatientDto(savedPatient);
@@ -82,56 +94,106 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<ResponsePatientDto> getAllPatients() {
-        return patientRepository.fetchAllPatients().stream()
-                .map(PatientMapper::toPatientDto)
-                .collect(Collectors.toList());
+        List<ResponsePatientDto> patientDtos;
+        logger.debug("Attempting to fetch all patients");
+        try {
+            patientDtos = patientRepository.fetchAllPatients().stream()
+                    .map(PatientMapper::toPatientDto)
+                    .toList();
+            logger.info("Successfully fetched all patients");
+        } catch (Exception e) {
+            logger.warn("Error while fetching all patients");
+            throw new LabException("Error while fetching all patients", e);
+        }
+        return patientDtos;
     }
 
 
     @Override
     public List<ResponseOrderDto> getOrders() {
-        return patientRepository.getPatientOrders(SecurityContextHelper.extractEmailFromContext())
-                .getOrders().stream()
-                .map(OrderMapper::toResponseOrderDto)
-                .collect(Collectors.toList());
+        List<ResponseOrderDto> orderDtos;
+        logger.debug("Attempting to fetch all orders");
+        try {
+            orderDtos = patientRepository.getPatientOrders(SecurityContextHelper.extractEmailFromContext())
+                    .getOrders().stream()
+                    .map(OrderMapper::toResponseOrderDto)
+                    .toList();
+            logger.info("Successfully fetched all orders");
+        } catch (Exception e) {
+            logger.warn("Error while fetching all orders");
+            throw new LabException("Error while fetching all orders", e);
+        }
+        return orderDtos;
     }
 
     @Override
     public TestResultDto getTestReport(Long orderId) {
+        logger.debug("Attempting to fetch Test report with order Id: {}", orderId);
         TestResultDto testResultDto;
         if (isOrderOwnedByPatient(orderId)) {
             testResultDto = TestResultMapper.toTestResultDto(orderService.getOrder(orderId).getTestResult());
+            logger.info("Successfully fetched Test report with order Id: {}", orderId);
         } else {
+            logger.warn("Invalid order ID entered: {}", orderId);
             throw new LabException("Invalid order ID entered!");
         }
         return testResultDto;
     }
 
     @Override
-    public void deletePatient(String email) {
+    public void deletePatient() {
+        String email = SecurityContextHelper.extractEmailFromContext();
         Patient patient = getPatientByEmail(email);
+        logger.debug("Attempting to delete patient with Id: {}", email);
         if (patient == null) {
+            logger.warn("Patient not found with email: {}", email);
             throw new NoSuchElementException("Patient not found with email: " + email);
         }
         patient.setDeleted(true);
-        patientRepository.save(patient);
+        try {
+            patientRepository.save(patient);
+            logger.info("Successfully deleted the patient with Id: {}", email);
+        } catch (Exception e) {
+            logger.warn("Error while deleting Patient with email: {}", email);
+            throw new LabException("Error while deleting Patient with email: " + email);
+        }
     }
 
     @Override
     public List<ResponseOrderDto> getOrdersByPatient(RequestUserNameDto patient) {
-        Patient existingPatient = patientRepository.getPatientOrders(patient.getEmail());
-        return existingPatient.getOrders().stream()
-                .map(OrderMapper::toResponseOrderDto)
-                .collect(Collectors.toList());
+        String email = patient.getEmail();
+        List<ResponseOrderDto> orderDtos;
+        logger.debug("Attempting to get orders by patient with email: {}", email);
+        try {
+            orderDtos = patientRepository.getPatientOrders(email).getOrders().stream()
+                    .map(OrderMapper::toResponseOrderDto)
+                    .toList();
+            logger.info("Successfully fetched orders of patient with email: {}", email);
+        } catch (Exception e) {
+            logger.warn("Error while getting orders of patient with email: {}", email);
+            throw new LabException("Error while getting orders of patient with email: " + email, e);
+        }
+        return orderDtos;
     }
 
     @Override
     public Patient getPatientByEmail(String email) {
+        logger.debug("Attempting to get patient with email: {}", email);
+        Patient patient;
         try {
-            return patientRepository.findByEmailAndIsDeletedFalse(email);
+            patient = patientRepository.findByEmailAndIsDeletedFalse(email);
+            logger.info("Successfully fetched patient with email: {}", email);
         } catch (Exception e) {
+            logger.warn("Error while getting patient with email: {}", email);
             throw new LabException("Error while getting patient with email: " + email, e);
         }
+        return patient;
+    }
+
+    private boolean isOrderOwnedByPatient(Long orderId) {
+        String email = SecurityContextHelper.extractEmailFromContext();
+        logger.debug("Checking that order is owned by patient using order Id {} and patient email {}", orderId, email);
+        return orderService.getOrder(orderId).getPatient().getUser().getUsername().equals(email);
     }
 
     @Override
@@ -154,7 +216,4 @@ public class PatientServiceImpl implements PatientService {
         }
     }
 
-    private boolean isOrderOwnedByPatient(Long orderId) {
-        return orderService.getOrder(orderId).getPatient().getUser().getUsername().equals(SecurityContextHelper.extractEmailFromContext());
-    }
 }

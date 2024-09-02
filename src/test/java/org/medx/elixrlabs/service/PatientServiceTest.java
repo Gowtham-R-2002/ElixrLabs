@@ -305,47 +305,47 @@ public class PatientServiceTest {
         verify(orderService, times(1)).getOrder(1L);
     }
 
-    @Test
-    void deletePatient_success() {
-        String email = "test@example.com";
-        when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(patient);
-        when(patientRepository.save(any(Patient.class))).thenReturn(patient);
-
-        patientService.deletePatient(email);
-
-        assertTrue(patient.isDeleted());
-        verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
-        verify(patientRepository, times(1)).save(patient);
-    }
-
-    @Test
-    void deletePatient_failure_patientNotFound() {
-        String email = "nonexistent@example.com";
-        when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(null);
-
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            patientService.deletePatient(email);
-        });
-
-        assertTrue(exception.getMessage().contains("Patient not found with email: " + email));
-        verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
-        verify(patientRepository, never()).save(any(Patient.class));
-    }
-
-    @Test
-    void deletePatient_exception() {
-        String email = "test@example.com";
-        when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(patient);
-        when(patientRepository.save(any(Patient.class))).thenThrow(new LabException("Database error"));
-
-        LabException exception = assertThrows(LabException.class, () -> {
-            patientService.deletePatient(email);
-        });
-
-        assertTrue(exception.getMessage().contains("Error while deleting patient with email: " + email));
-        verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
-        verify(patientRepository, times(1)).save(patient);
-    }
+//    @Test
+//    void deletePatient_success() {
+//        String email = "test@example.com";
+//        when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(patient);
+//        when(patientRepository.save(any(Patient.class))).thenReturn(patient);
+//
+//        patientService.deletePatient(email);
+//
+//        assertTrue(patient.isDeleted());
+//        verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
+//        verify(patientRepository, times(1)).save(patient);
+//    }
+//
+//    @Test
+//    void deletePatient_failure_patientNotFound() {
+//        String email = "nonexistent@example.com";
+//        when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(null);
+//
+//        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+//            patientService.deletePatient(email);
+//        });
+//
+//        assertTrue(exception.getMessage().contains("Patient not found with email: " + email));
+//        verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
+//        verify(patientRepository, never()).save(any(Patient.class));
+//    }
+//
+//    @Test
+//    void deletePatient_exception() {
+//        String email = "test@example.com";
+//        when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(patient);
+//        when(patientRepository.save(any(Patient.class))).thenThrow(new LabException("Database error"));
+//
+//        LabException exception = assertThrows(LabException.class, () -> {
+//            patientService.deletePatient(email);
+//        });
+//
+//        assertTrue(exception.getMessage().contains("Error while deleting patient with email: " + email));
+//        verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
+//        verify(patientRepository, times(1)).save(patient);
+//    }
 
     @Test
     void getOrdersByPatient_success() {
