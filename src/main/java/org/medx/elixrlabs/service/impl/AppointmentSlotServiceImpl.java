@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.mapper.AppointmentMapper;
+import org.medx.elixrlabs.mapper.TestPackageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,7 +131,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                         .patient(patient)
                         .sampleCollectionPlace(slotBookDto.getTestCollectionPlace())
                         .labLocation(slotBookDto.getLocation())
-                        .testPackage(cart.getTestPackage())
+                        .testPackage(TestPackageMapper.toTestPackageFromResponseDto(cart.getTestPackage()))
                         .testStatus(TestStatusEnum.PENDING)
                         .price(cart.getPrice())
                         .orderDateTime(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("GMT+05:30"))))

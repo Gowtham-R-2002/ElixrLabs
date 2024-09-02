@@ -1,4 +1,4 @@
-package org.medx.elixrlabs.service;
+package org.medx.elixrlabs.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import org.medx.elixrlabs.dto.RequestTestPackageDto;
 import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.TestPackage;
 import org.medx.elixrlabs.repository.TestPackageRepository;
-import org.medx.elixrlabs.service.impl.TestPackageServiceImpl;
+import org.medx.elixrlabs.service.LabTestService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

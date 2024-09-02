@@ -10,6 +10,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Global Exception handler for handling exceptions and modifying the outgoing response.
+ *
+ * @author Gowtham R
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ExpiredJwtException.class)

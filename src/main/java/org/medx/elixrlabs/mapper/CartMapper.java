@@ -42,7 +42,7 @@ public class CartMapper {
         return ResponseCartDto.builder()
                 .id(cart.getId())
                 .tests(tests)
-                .testPackage(cart.getTestPackage())
+                .testPackage(TestPackageMapper.toTestPackageDto(cart.getTestPackage()))
                 .price(price)
                 .build();
 

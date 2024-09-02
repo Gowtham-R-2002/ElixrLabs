@@ -67,4 +67,5 @@ public class LabTestMapper {
                 .description(createLabTestDto.getDescription())
                 .build();
     }
-    }
+
+}

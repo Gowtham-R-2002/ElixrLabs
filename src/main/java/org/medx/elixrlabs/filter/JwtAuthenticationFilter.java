@@ -21,6 +21,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * JWT Filter for authentication and providing authorization.
+ * Uses OncePerRequestFilter for interpreting the request every time HTTP method
+ * is called.
+ *
+ * @author Gowtham R
+ */
 @Configuration
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 

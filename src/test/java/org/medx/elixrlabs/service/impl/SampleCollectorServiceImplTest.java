@@ -1,4 +1,4 @@
-package org.medx.elixrlabs.service;
+package org.medx.elixrlabs.service.impl;
 
 import java.util.*;
 
@@ -12,7 +12,7 @@ import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.SampleCollectorRepository;
-import org.medx.elixrlabs.service.impl.SampleCollectorServiceImpl;
+import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.RoleEnum;
 import org.mockito.InjectMocks;

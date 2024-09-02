@@ -1,10 +1,9 @@
-package org.medx.elixrlabs.service;
+package org.medx.elixrlabs.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.UserRepository;
-import org.medx.elixrlabs.service.impl.UserService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

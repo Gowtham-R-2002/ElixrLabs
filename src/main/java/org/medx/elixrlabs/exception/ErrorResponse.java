@@ -5,6 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents the Outgoing Message for exceptions occured.
+ *
+ * @author Gowtham R
+ */
 @Builder
 @Data
 @NoArgsConstructor

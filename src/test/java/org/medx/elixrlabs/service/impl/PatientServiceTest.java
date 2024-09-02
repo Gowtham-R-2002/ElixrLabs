@@ -1,4 +1,4 @@
-package org.medx.elixrlabs.service;
+package org.medx.elixrlabs.service.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -15,7 +15,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.mapper.TestResultMapper;
-import org.medx.elixrlabs.service.impl.PatientServiceImpl;
+import org.medx.elixrlabs.service.OrderService;
+import org.medx.elixrlabs.service.RoleService;
+import org.medx.elixrlabs.service.TestResultService;
 import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.medx.elixrlabs.util.TestStatusEnum;
 import org.mockito.InjectMocks;

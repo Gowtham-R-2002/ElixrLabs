@@ -1,4 +1,4 @@
-package org.medx.elixrlabs.service;
+package org.medx.elixrlabs.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,6 @@ import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.Patient;
 import org.medx.elixrlabs.model.User;
-import org.medx.elixrlabs.service.impl.OrderServiceImpl;
 import org.medx.elixrlabs.repository.OrderRepository;
 import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.medx.elixrlabs.util.LocationEnum;

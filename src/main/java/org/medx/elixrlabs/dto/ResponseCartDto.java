@@ -20,7 +20,7 @@ public class ResponseCartDto {
     @NotNull
     private long id;
     private List<ResponseTestInCartDto> tests;
-    private TestPackage testPackage;
+    private ResponseTestPackageDto testPackage;
     @NotNull
     private double price;
 }

@@ -1,4 +1,4 @@
-package org.medx.elixrlabs.service;
+package org.medx.elixrlabs.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.repository.RoleRepository;
-import org.medx.elixrlabs.service.impl.RoleServiceImpl;
 import org.medx.elixrlabs.util.RoleEnum;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

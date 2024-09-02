@@ -1,11 +1,9 @@
-package org.medx.elixrlabs.service;
+package org.medx.elixrlabs.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.repository.TestResultRepository;
-import org.medx.elixrlabs.service.impl.TestResultServiceImpl;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

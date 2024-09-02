@@ -1,18 +1,16 @@
-package org.medx.elixrlabs.service;
+package org.medx.elixrlabs.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.dto.LabTestDto;
+import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.repository.LabTestRepository;
-import org.medx.elixrlabs.service.impl.LabTestServiceImpl;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -93,9 +91,9 @@ public class LabTestServiceTest {
 
     @Test
     void testGetAllLabTests_negative() {
-        when(labTestRepository.findByIsDeletedFalse()).thenReturn(null);
+        when(labTestRepository.findByIsDeletedFalse()).thenReturn(List.of(LabTest.builder().build()));
         List<LabTestDto> result = labTestService.getAllLabTests();
-        assertEquals(new ArrayList<>(), result);
+        assertEquals(List.of(LabTestDto.builder().build()), result);
     }
 
     @Test
@@ -108,7 +106,7 @@ public class LabTestServiceTest {
     @Test
     void testGetLabTestById_exception() {
         when(labTestRepository.findByIdAndIsDeletedFalse(1L)).thenReturn(null);
-        assertThrows(NullPointerException.class, () -> labTestService.getLabTestById(1L));
+        assertThrows(LabException.class, () -> labTestService.getLabTestById(1L));
     }
 
     @Test
@@ -122,6 +120,6 @@ public class LabTestServiceTest {
     @Test
     void testRemoveLabTestById_exception() {
         when(labTestRepository.findByIdAndIsDeletedFalse(1L)).thenReturn(null);
-        assertThrows(NullPointerException.class, () -> labTestService.removeLabTestById(1L));
+        assertThrows(LabException.class, () -> labTestService.removeLabTestById(1L));
     }
 }
