@@ -62,16 +62,13 @@ public class PatientServiceImpl implements PatientService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)));
         if(patient != null) {
-            System.out.println("inside not null part");
             user.setUUID(patient.getUser().getUUID());
             patient.setUser(user);
             return PatientMapper.toPatientDto(patientRepository.save(patient));
         }
         Patient newPatient = Patient.builder().user(user).build();
         Patient savedPatient;
-        System.out.println("above try");
         try {
-            System.out.println("inside try");
             savedPatient = patientRepository.save(newPatient);
         } catch (Exception e) {
             throw new LabException("Error while saving Patient with email: " + userDto.getEmail() , e);
@@ -97,7 +94,13 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public TestResultDto getTestReport(Long orderId) {
-        return TestResultMapper.toTestResultDto(orderService.getOrder(orderId).getTestResult());
+        TestResultDto testResultDto;
+        if (isOrderOwnedByPatient(orderId)) {
+            testResultDto = TestResultMapper.toTestResultDto(orderService.getOrder(orderId).getTestResult());
+        } else {
+            throw new LabException("Invalid order ID entered!");
+        }
+        return testResultDto;
     }
 
     @Override
@@ -145,5 +148,9 @@ public class PatientServiceImpl implements PatientService {
         } catch (Exception e) {
             throw new RuntimeException("Error in initializing patient data" + e.getMessage());
         }
+    }
+
+    private boolean isOrderOwnedByPatient(Long orderId) {
+        return orderService.getOrder(orderId).getPatient().getUser().getUsername().equals(SecurityContextHelper.extractEmailFromContext());
     }
 }

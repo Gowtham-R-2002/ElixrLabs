@@ -165,20 +165,6 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             throw new LabException("Unable to fetch appointments", e);
         }
     }
-
-    @Override
-    public AppointmentSlot createOrUpdateAppointment(AppointmentSlot appointmentSlot) {
-        try {
-            logger.debug("Creating or updating appointment for date: {}, time slot: {}", appointmentSlot.getDateSlot(), appointmentSlot.getTimeSlot());
-            AppointmentSlot savedAppointmentSlot = appointmentSlotRepository.save(appointmentSlot);
-            logger.info("Appointment created or updated successfully for date: {}, time slot: {}", appointmentSlot.getDateSlot(), appointmentSlot.getTimeSlot());
-            return savedAppointmentSlot;
-        } catch (Exception e) {
-            logger.warn("Exception occurred while creating or updating appointment for date: {}, time slot: {}", appointmentSlot.getDateSlot(), appointmentSlot.getTimeSlot());
-            throw new LabException("Unable to create or update appointment", e);
-        }
-    }
-
     @Override
     public void assignSampleCollectorToAppointment(Long id, SampleCollector sampleCollector) {
         try {

@@ -29,7 +29,6 @@ public interface AppointmentSlotService {
 
     List<AppointmentSlot> getAppointmentsByPlace(LocationEnum location, LocalDate date);
 
-    AppointmentSlot createOrUpdateAppointment(AppointmentSlot appointmentSlot);
 
     void assignSampleCollectorToAppointment(Long id, SampleCollector sampleCollector);
 

@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.medx.elixrlabs.audit.Auditable;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.GenderEnum;
 import org.springframework.security.core.GrantedAuthority;
@@ -51,7 +52,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class User extends Auditable implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String UUID;
