@@ -49,15 +49,6 @@ public interface AppointmentSlotService {
     List<AppointmentDto> getAppointmentsByPlace(LocationEnum location, LocalDate date);
 
     /**
-     * Creates or updates an appointment slot
-     *
-     * @param appointmentSlot slot that has to be created or updated
-     * @return the created or updated slot
-     */
-
-    AppointmentDto createOrUpdateAppointment(SlotBookDto appointmentSlot);
-
-    /**
      * Assigns a specific sample collector to a specific appointment
      *
      * @param id id of the appointment slot

@@ -9,6 +9,7 @@ import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.util.LocationEnum;
+import org.springframework.stereotype.Service;
 
 /**
  * <p>
@@ -35,7 +36,6 @@ public interface OrderService {
      *
      * @return list of all orders
      */
-
     List<Order> getOrders();
 
     /**
@@ -65,7 +65,7 @@ public interface OrderService {
     List<ResponseOrderDto> getOrdersByLocation(LocationEnum location);
 
     /**
-     * fetches the order of the specific appointment slot
+     * Fetches the order of the specific appointment slot
      *
      * @param appointmentSlot appointment slot for which order has to be fetched
      * @return order of the specific appointment slot

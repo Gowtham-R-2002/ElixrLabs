@@ -42,7 +42,7 @@ import org.medx.elixrlabs.util.LocationEnum;
 @RequestMapping("api/v1/auth/login")
 public class AuthenticationController {
 
-    private static final Logger logger = LoggerFactory.getLogger(SampleCollectorServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
     @Autowired
     private AuthenticationManager authenticationManager;
