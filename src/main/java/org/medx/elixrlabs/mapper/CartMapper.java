@@ -33,7 +33,7 @@ public class CartMapper {
         if(cart.getTests() != null) {
             tests = cart.getTests()
                     .stream()
-                    .map(LabTestMapper::toResponseTestPackageDto).toList();
+                    .map(LabTestMapper::toResponseTestDto).toList();
             price = cart.getTests().stream()
                     .mapToDouble(LabTest::getPrice)
                     .sum();

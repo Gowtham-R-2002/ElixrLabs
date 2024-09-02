@@ -44,7 +44,7 @@ public class OrderMapper {
     public static ResponseOrderDto toResponseOrderDto(Order order) {
         return ResponseOrderDto.builder()
                 .id(order.getId())
-                .tests(order.getTests().stream().map(LabTestMapper::toRetrieveLabTestDto).toList())
+                .tests(order.getTests().stream().map(LabTestMapper::toResponseTestDto).toList())
                 .testPackageDto(order.getTestPackage() == null ? null : TestPackageMapper.toTestPackageDto(order.getTestPackage()))
                 .testStatus(order.getTestStatus())
                 .build();
