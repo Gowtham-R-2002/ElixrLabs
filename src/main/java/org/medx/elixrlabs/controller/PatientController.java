@@ -124,7 +124,7 @@ public class PatientController {
      */
     @DeleteMapping
     public ResponseEntity<HttpStatus.Series> deletePatient() {
-        patientService.deletePatient(SecurityContextHelper.extractEmailFromContext());
+        patientService.deletePatient();
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
