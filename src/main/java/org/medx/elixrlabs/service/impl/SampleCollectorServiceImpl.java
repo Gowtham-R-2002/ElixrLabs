@@ -147,11 +147,6 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     }
 
     @Override
-    public SampleCollectorDto getSampleCollectorById(Long id) {
-        return null;
-    }
-
-    @Override
     public void verifySampleCollector(String email) {
         logger.info("Verifying SampleCollector with email: {}", email);
         SampleCollector sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);

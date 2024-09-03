@@ -63,6 +63,7 @@ public class TestPackageMapper {
         return TestPackage.builder()
                 .id(responseTestPackageDto.getId())
                 .name(responseTestPackageDto.getName())
+                .tests(responseTestPackageDto.getLabTests().stream().map(LabTestMapper::toLabTest).toList())
                 .description(responseTestPackageDto.getDescription())
                 .price(responseTestPackageDto.getPrice())
                 .build();
