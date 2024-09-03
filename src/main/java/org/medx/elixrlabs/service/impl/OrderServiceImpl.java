@@ -51,19 +51,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order getOrder(Long id) {
+        Order order;
         try {
-            Optional<Order> orderOptional = orderRepository.findById(id);
-            if (orderOptional.isPresent()) {
-                logger.info("Order retrieved successfully with id: {}", id);
-                return orderOptional.get();
-            } else {
-                logger.warn("Order not found while getting order with id: {}", id);
-                throw new NoSuchElementException("Order not found with id: " + id);
-            }
+            order = orderRepository.findById(id).orElse(null);
         } catch (Exception e) {
             logger.warn("Error while getting order with id: {}", id);
             throw new LabException("Error while fetching order with id: " + id, e);
         }
+        return order;
     }
 
     @Override
