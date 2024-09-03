@@ -38,3 +38,4 @@ logs/
 application.properties
 htmlReport/
 src/main/java/org/medx/elixrlabs/config/EnvConfig.java
+*.yml
