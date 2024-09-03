@@ -53,9 +53,7 @@ public class LabServiceImpl implements LabService {
     public List<ResponseOrderDto> getOrders() {
         try {
             Admin admin = adminService.getAdminByEmail(SecurityContextHelper.extractEmailFromContext());
-            System.out.println(admin);
             LocationEnum location = admin.getUser().getPlace();
-            System.out.println(location);
             return orderService.getOrdersByLocation(location);
         } catch (Exception e) {
             logger.warn("Error while fetching orders: {}", e.getMessage());
