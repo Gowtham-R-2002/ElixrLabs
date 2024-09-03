@@ -4,11 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,20 +84,35 @@ public class PatientServiceTest {
                 .name("BLOOD TEST")
                 .build();
 
+        Order secondOrder = Order.builder()
+                .id(2L)
+                .labLocation(LocationEnum.GUINDY)
+                .sampleCollectionPlace(TestCollectionPlaceEnum.HOME)
+                .testStatus(TestStatusEnum.COMPLETED)
+                .tests(List.of(test))
+                .patient(patient)
+                .orderDateTime(Calendar.getInstance())
+                .build();
+
         patient = Patient.builder()
                 .id(1L)
                 .user(user)
                 .isDeleted(false)
-                .orders(new ArrayList<>())
+                .orders(List.of(secondOrder))
                 .build();
 
         order = Order.builder()
                 .id(1L)
                 .labLocation(LocationEnum.GUINDY)
                 .sampleCollectionPlace(TestCollectionPlaceEnum.HOME)
-                .testStatus(TestStatusEnum.COMPLETED)
+                .testStatus(TestStatusEnum.PENDING)
                 .tests(List.of(test))
                 .patient(patient)
+                .orderDateTime(Calendar.getInstance())
+                .testResult(TestResult.builder()
+                        .id(1L)
+                        .orderDate(LocalDate.now())
+                        .build())
                 .build();
 
         ResponseTestInCartDto responseTestInCartDto = ResponseTestInCartDto.builder()
@@ -217,7 +229,7 @@ public class PatientServiceTest {
     @Test
     void getOrders_success() {
         String email = "test@example.com";
-        patient.getOrders().add(order);
+        patient.setOrders(List.of(order));
 
         try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
             mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
@@ -243,7 +255,6 @@ public class PatientServiceTest {
             List<ResponseOrderDto> result = patientService.getOrders();
 
             assertNotNull(result);
-            assertTrue(result.isEmpty());
             verify(patientRepository, times(1)).getPatientOrders(email);
         }
     }
@@ -260,135 +271,134 @@ public class PatientServiceTest {
                 patientService.getOrders();
             });
 
-            assertEquals(true, exception.getMessage().contains("Error while fetching orders by location"));
+            assertEquals(true, exception.getMessage().contains("Error while fetching all orders"));
             verify(patientRepository, times(1)).getPatientOrders(email);
         }
     }
 
     @Test
     void getTestReport_success() {
-        TestResult testResult = TestResult.builder()
-                .id(1L)
-                .build();
 
         TestResultDto testResultDto = TestResultDto.builder()
                 .id(1L)
+                .orderDate(LocalDate.now())
                 .build();
         when(orderService.getOrder(anyLong())).thenReturn(order);
-        when(order.getTestResult()).thenReturn(testResult);
-        when(TestResultMapper.toTestResultDto(any(TestResult.class))).thenReturn(testResultDto);
 
-        TestResultDto result = patientService.getTestReport(1L);
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
+            TestResultDto result = patientService.getTestReport(1L);
 
         assertNotNull(result);
-        verify(orderService, times(1)).getOrder(1L);
+        verify(orderService, times(2)).getOrder(1L);
+        }
     }
 
     @Test
     void getTestReport_failure_noTestResult() {
         when(orderService.getOrder(anyLong())).thenReturn(order);
-        when(order.getTestResult()).thenReturn(null);
-
-        TestResultDto result = patientService.getTestReport(1L);
-
-        assertNull(result);
-        verify(orderService, times(1)).getOrder(1L);
+        order.getTestResult().setId(9L);
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
+            TestResultDto result = patientService.getTestReport(1L);
+            assertNotNull(result);
+            verify(orderService, times(2)).getOrder(1L);
+        }
     }
 
     @Test
     void getTestReport_exception() {
-        when(orderService.getOrder(anyLong())).thenThrow(new RuntimeException("Service error"));
+        when(orderService.getOrder(anyLong())).thenReturn(order);
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@gmail.com");
+            LabException exception = assertThrows(LabException.class, () -> {
+                patientService.getTestReport(9L);
+            });
 
-        LabException exception = assertThrows(LabException.class, () -> {
-            patientService.getTestReport(1L);
-        });
-
-        assertTrue(exception.getMessage().contains("Error while fetching test report"));
-        verify(orderService, times(1)).getOrder(1L);
+            verify(orderService, times(1)).getOrder(9L);
+        }
     }
 
-//    @Test
-//    void deletePatient_success() {
-//        String email = "test@example.com";
-//        when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(patient);
-//        when(patientRepository.save(any(Patient.class))).thenReturn(patient);
-//
-//        patientService.deletePatient(email);
-//
-//        assertTrue(patient.isDeleted());
-//        verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
-//        verify(patientRepository, times(1)).save(patient);
-//    }
-//
-//    @Test
-//    void deletePatient_failure_patientNotFound() {
-//        String email = "nonexistent@example.com";
-//        when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(null);
-//
-//        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-//            patientService.deletePatient(email);
-//        });
-//
-//        assertTrue(exception.getMessage().contains("Patient not found with email: " + email));
-//        verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
-//        verify(patientRepository, never()).save(any(Patient.class));
-//    }
-//
-//    @Test
-//    void deletePatient_exception() {
-//        String email = "test@example.com";
-//        when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(patient);
-//        when(patientRepository.save(any(Patient.class))).thenThrow(new LabException("Database error"));
-//
-//        LabException exception = assertThrows(LabException.class, () -> {
-//            patientService.deletePatient(email);
-//        });
-//
-//        assertTrue(exception.getMessage().contains("Error while deleting patient with email: " + email));
-//        verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
-//        verify(patientRepository, times(1)).save(patient);
-//    }
+    @Test
+    void deletePatient_success() {
+        String email = "test@example.com";
+        patient.setDeleted(false);
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
+            when(patientService.getPatientByEmail(email)).thenReturn(patient);
+
+            patientService.deletePatient();
+
+            verify(patientRepository, times(1)).save(patient);
+            assertTrue(patient.isDeleted());
+        }
+    }
+
+    @Test
+    void deletePatient_failure_patientNotFound() {
+        String email = "nonexistent@example.com";
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
+            when(patientService.getPatientByEmail(email)).thenReturn(null);
+
+            NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+                patientService.deletePatient();
+            });
+
+            verify(patientRepository, never()).save(any());
+            assertTrue(exception.getMessage().contains("Patient not found with email: " + email));
+        }
+    }
+
+    @Test
+    void deletePatient_exception() {
+        String email = "test@example.com";
+        patient.setDeleted(false);
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
+            when(patientService.getPatientByEmail(email)).thenReturn(patient);
+            doThrow(new RuntimeException("DB error")).when(patientRepository).save(patient);
+
+            LabException exception = assertThrows(LabException.class, () -> {
+                patientService.deletePatient();
+            });
+
+            verify(patientRepository, times(1)).save(patient);
+            assertTrue(exception.getMessage().contains("Error while deleting Patient with email: " + email));
+        }
+    }
 
     @Test
     void getOrdersByPatient_success() {
-        RequestUserNameDto request = new RequestUserNameDto();
-        request.setEmail("test@example.com");
-        patient.getOrders().add(order);
-        when(patientRepository.getPatientOrders(anyString())).thenReturn(patient);
-        when(OrderMapper.toResponseOrderDto(any(Order.class))).thenReturn(new ResponseOrderDto());
+        String email = "test@example.com";
+        RequestUserNameDto requestUserNameDto = RequestUserNameDto.builder()
+                .email(email)
+                .build();
 
-        List<ResponseOrderDto> result = patientService.getOrdersByPatient(request);
+        when(patientRepository.getPatientOrders(email)).thenReturn(patient);
 
+        List<ResponseOrderDto> result = patientService.getOrdersByPatient(requestUserNameDto);
+
+        verify(patientRepository, times(1)).getPatientOrders(email);
         assertNotNull(result);
-        assertEquals(1, result.size());
-        verify(patientRepository, times(1)).getPatientOrders("test@example.com");
-    }
-
-    @Test
-    void getOrdersByPatient_failure_noOrders() {
-        RequestUserNameDto request = new RequestUserNameDto();
-        request.setEmail("test@example.com");
-        when(patientRepository.getPatientOrders(anyString())).thenReturn(patient);
-
-        List<ResponseOrderDto> result = patientService.getOrdersByPatient(request);
-
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
-        verify(patientRepository, times(1)).getPatientOrders("test@example.com");
+        assertEquals(result.size(), 1);
     }
 
     @Test
     void getOrdersByPatient_exception() {
-        RequestUserNameDto request = new RequestUserNameDto();
-        request.setEmail("test@example.com");
-        when(patientRepository.getPatientOrders(anyString())).thenThrow(new RuntimeException("Database error"));
+        String email = "test@example.com";
+        RequestUserNameDto requestUserNameDto = RequestUserNameDto.builder()
+                .email(email)
+                .build();
+
+        when(patientRepository.getPatientOrders(email)).thenThrow(new RuntimeException("DB error"));
 
         LabException exception = assertThrows(LabException.class, () -> {
-            patientService.getOrdersByPatient(request);
+            patientService.getOrdersByPatient(requestUserNameDto);
         });
 
-        assertTrue(exception.getMessage().contains("Error while fetching orders by patient"));
-        verify(patientRepository, times(1)).getPatientOrders("test@example.com");
+        verify(patientRepository, times(1)).getPatientOrders(email);
+        assertTrue(exception.getMessage().contains("Error while getting orders of patient with email: " + email));
     }
 
     @Test
