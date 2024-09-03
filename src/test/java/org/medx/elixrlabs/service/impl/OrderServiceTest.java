@@ -108,7 +108,7 @@ class OrderServiceTest {
 
     @Test
     void getOrder_failure() {
-        when(orderRepository.findById(anyLong())).thenReturn(Optional.empty());
+        when(orderRepository.findById(anyLong())).thenThrow(new LabException("Error while fetching order with id: " + 1));
 
         assertThrows(LabException.class, () -> orderService.getOrder(1L));
         verify(orderRepository, times(1)).findById(1L);
