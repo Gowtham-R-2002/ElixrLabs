@@ -111,42 +111,41 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     public OrderSuccessDto bookSlot(SlotBookDto slotBookDto) {
         try {
             logger.debug("Attempting to book slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
-            if (isSlotAvailable(slotBookDto)) {
-                Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
-                ResponseCartDto cart = cartService.getCartByPatient();
-                if(cart.getTests().isEmpty() && cart.getTestPackage() == null) {
-                    throw new NoSuchElementException("Cart is empty!");
-                }
-                AppointmentSlot appointmentSlot = AppointmentSlot.builder()
-                        .dateSlot(slotBookDto.getDate())
-                        .patient(patient)
-                        .timeSlot(slotBookDto.getTimeSlot())
-                        .location(slotBookDto.getLocation())
-                        .testCollectionPlace(slotBookDto.getTestCollectionPlace())
-                        .build();
-                Order order = Order.builder()
-                        .slot(appointmentSlot)
-                        .tests(cart.getTests().stream().map(LabTestMapper::toLabTest).collect(Collectors.toList()))
-                        .paymentStatus(PaymentStatusEnum.PAID)
-                        .patient(patient)
-                        .sampleCollectionPlace(slotBookDto.getTestCollectionPlace())
-                        .labLocation(slotBookDto.getLocation())
-                        .testPackage(TestPackageMapper.toTestPackageFromResponseDto(cart.getTestPackage()))
-                        .testStatus(TestStatusEnum.PENDING)
-                        .price(cart.getPrice())
-                        .orderDateTime(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("GMT+05:30"))))
-                        .build();
-                emailService.sendInvoice(order.getTests(), order.getTestPackage(), order.getPrice(), patient.getUser().getEmail(), order.getOrderDateTime());
-                appointmentSlotRepository.save(appointmentSlot);
-                cartService.deleteCart();
-                logger.info("Slot booked successfully for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
-                return orderService.createOrUpdateOrder(order);
-            } else {
+            if (!isSlotAvailable(slotBookDto)) {
                 logger.warn("Slot booking failed for date: {}, time slot: {} - Slot filled", slotBookDto.getDate(), slotBookDto.getTimeSlot());
                 throw new SlotException("Slot filled!");
             }
+            Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
+            ResponseCartDto cart = cartService.getCartByPatient();
+            if (cart.getTests().isEmpty() && cart.getTestPackage() == null) {
+                throw new NoSuchElementException("Cart is empty!");
+            }
+            AppointmentSlot appointmentSlot = AppointmentSlot.builder()
+                    .dateSlot(slotBookDto.getDate())
+                    .patient(patient)
+                    .timeSlot(slotBookDto.getTimeSlot())
+                    .location(slotBookDto.getLocation())
+                    .testCollectionPlace(slotBookDto.getTestCollectionPlace())
+                    .build();
+            Order order = Order.builder()
+                    .slot(appointmentSlot)
+                    .tests(cart.getTests().stream().map(LabTestMapper::toLabTest).collect(Collectors.toList()))
+                    .paymentStatus(PaymentStatusEnum.PAID)
+                    .patient(patient)
+                    .sampleCollectionPlace(slotBookDto.getTestCollectionPlace())
+                    .labLocation(slotBookDto.getLocation())
+                    .testPackage(TestPackageMapper.toTestPackageFromResponseDto(cart.getTestPackage()))
+                    .testStatus(TestStatusEnum.PENDING)
+                    .price(cart.getPrice())
+                    .orderDateTime(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("GMT+05:30"))))
+                    .build();
+            emailService.sendInvoice(order.getTests(), order.getTestPackage(), order.getPrice(), patient.getUser().getEmail(), order.getOrderDateTime());
+            appointmentSlotRepository.save(appointmentSlot);
+            cartService.deleteCart();
+            logger.info("Slot booked successfully for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
+            return orderService.createOrUpdateOrder(order);
         } catch (Exception e) {
-            logger.warn("Exception occurred while booking slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
+            logger.error("Exception occurred while booking slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
             throw new SlotException("Unable to book slot", e);
         }
     }
@@ -164,6 +163,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             throw new LabException("Unable to fetch appointments", e);
         }
     }
+
     @Override
     public void assignSampleCollectorToAppointment(Long id) {
         try {
@@ -208,13 +208,13 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                     .getSampleCollectorByEmail(userName);
             List<AppointmentSlot> appointmentSlots = appointmentSlotRepository.findBySampleCollectorId(sampleCollector.getId());
             if (appointmentSlots == null) {
-                logger.warn("There is no appointments for SampleCollector : {}", userName);
+                logger.error("There is no appointments for SampleCollector : {}", userName);
                 throw new NoSuchElementException("No AppointmentSlot Found for Sample Collector : " + userName);
-            } else {
-                logger.info("Appointments fetched successfully for SampleCollector: {}", userName);
-                return appointmentSlots.stream()
-                        .map(AppointmentMapper :: convertToDto).toList();
             }
+            logger.info("Appointments fetched successfully for SampleCollector: {}", userName);
+            return appointmentSlots.stream()
+                    .map(AppointmentMapper::convertToDto).toList();
+
         } catch (Exception e) {
             logger.warn("Exception occurred while fetching all appointments for SampleCollector: {}", userName);
             throw new LabException("Exception occurred while fetching all appointments for SampleCollector : " + userName, e);
@@ -232,11 +232,10 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             if (appointmentSlots == null) {
                 logger.warn("There is no appointments for sample collected by the SampleCollector with Id: {}", sampleCollector.getId());
                 throw new NoSuchElementException("No AppointmentSlot Found for ID: " + sampleCollector.getId());
-            } else {
-                logger.info("Fetching all appointments for which the sample is collected by the sample collector with ID: {}", sampleCollector.getId());
-                return appointmentSlots.stream()
-                        .map(AppointmentMapper :: convertToDto).toList();
             }
+            logger.info("Fetching all appointments for which the sample is collected by the sample collector with ID: {}", sampleCollector.getId());
+            return appointmentSlots.stream()
+                    .map(AppointmentMapper::convertToDto).toList();
         } catch (Exception e) {
             logger.warn("Exception occurred while fetching all appointments for which the sample is collected by the sampleCollector: {}", userName);
             throw new LabException("Exception occurred while fetching all appointments for which the sample is collected by the SampleCollector: " + userName, e);
@@ -254,11 +253,10 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             if (appointmentSlots == null) {
                 logger.warn("There is no appointments for sample is not collected by the SampleCollector with Id: {}", sampleCollector.getId());
                 throw new NoSuchElementException("No AppointmentSlot Found for ID: " + sampleCollector.getId());
-            } else {
-                logger.info("Fetching all appointments for which the sample is not collected by the sample collector with ID: {}", sampleCollector.getId());
-                return appointmentSlots.stream()
-                        .map(AppointmentMapper :: convertToDto).toList();
             }
+            logger.info("Fetching all appointments for which the sample is not collected by the sample collector with ID: {}", sampleCollector.getId());
+            return appointmentSlots.stream()
+                    .map(AppointmentMapper::convertToDto).toList();
         } catch (Exception e) {
             logger.warn("Exception occurred while fetching all appointments for which the sample is not collected by the SampleCollector : {}", userName);
             throw new LabException("Exception occurred while fetching all appointments for which the sample is collected by the SampleCollector : " + userName, e);
