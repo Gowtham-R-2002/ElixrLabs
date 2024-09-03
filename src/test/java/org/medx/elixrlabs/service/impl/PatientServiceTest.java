@@ -200,7 +200,7 @@ public class PatientServiceTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("test@example.com", result.get(0).getEmail());
+        assertEquals("test@example.com", result.getFirst().getEmail());
         verify(patientRepository, times(1)).fetchAllPatients();
     }
 
@@ -271,7 +271,7 @@ public class PatientServiceTest {
                 patientService.getOrders();
             });
 
-            assertEquals(true, exception.getMessage().contains("Error while fetching all orders"));
+            assertTrue(exception.getMessage().contains("Error while fetching all orders"));
             verify(patientRepository, times(1)).getPatientOrders(email);
         }
     }

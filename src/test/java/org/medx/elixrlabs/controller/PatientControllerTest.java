@@ -45,7 +45,7 @@ public class PatientControllerTest {
 
     @BeforeEach
     void setUp() {
-        userDto = UserDto.builder()
+        UserDto userDto = UserDto.builder()
                 .email("user@gmail.com")
                 .place(LocationEnum.VELACHERY)
                 .password("user@123")

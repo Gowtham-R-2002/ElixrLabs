@@ -36,15 +36,6 @@ public interface SampleCollectorService {
     List<SampleCollectorDto> getSampleCollectors();
 
     /**
-     * Retrieves an SampleCollector by ID.
-     *
-     * @param id {@link Long} The ID of the SampleCollector.
-     * @return The SampleCollector DTO.
-     * @throws NoSuchElementException if the SampleCollector is not found.
-     */
-    SampleCollectorDto getSampleCollectorById(Long id);
-
-    /**
      * Deletes an SampleCollector by user id (soft deletion).
      *
      * @throws RuntimeException if the SampleCollector is not found.

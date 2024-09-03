@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
+import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.model.SampleCollector;
@@ -15,9 +16,7 @@ import org.medx.elixrlabs.repository.SampleCollectorRepository;
 import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.RoleEnum;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -109,33 +108,47 @@ class SampleCollectorServiceImplTest {
         assertNotNull(result);
     }
 
-//    @Test
-//    void testCreateOrUpdateSampleCollector_exception() {
-//        when(sampleCollectorRepository.save(any(SampleCollector.class))).thenThrow(new RuntimeException("Database error"));
-//        assertThrows(RuntimeException.class, () -> sampleCollectorService.createOrUpdateSampleCollector(userDto));
-//    }
-
     @Test
-    void testDeleteSampleCollector_positive() {
-        when(SecurityContextHelper.extractEmailFromContext()).thenReturn(email);
-        when(sampleCollectorService.getSampleCollectorByEmail(email)).thenReturn(sampleCollector);
-        when(sampleCollectorRepository.save(sampleCollector)).thenReturn(sampleCollector);
-        boolean result = sampleCollectorService.deleteSampleCollector();
-        assertTrue(result);
-        assertTrue(sampleCollector.getUser().isBlocked());
-        verify(sampleCollectorRepository).save(sampleCollector);
+    void testCreateOrUpdateSampleCollector_exception() {
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+
+            when(SecurityContextHelper.extractEmailFromContext()).thenReturn(email);
+            when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenThrow(new RuntimeException("Database error"));
+
+            assertThrows(RuntimeException.class, () -> {
+                sampleCollectorService.createOrUpdateSampleCollector(userDto);
+            });
+        }
     }
 
     @Test
-    void testDeleteSampleCollector_negative() {
-        when(sampleCollectorService.getSampleCollectorByEmail(anyString())).thenReturn(null);
-        assertThrows(NullPointerException.class, () -> sampleCollectorService.deleteSampleCollector());
+    void testDeleteSampleCollector_positive() {
+
+        try (MockedStatic<SecurityContextHelper> mockSecurityContext = Mockito.mockStatic(SecurityContextHelper.class)) {
+            mockSecurityContext.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
+            when(sampleCollectorRepository.getSampleCollectorByEmail(email)).thenReturn(sampleCollector);
+
+            boolean result = sampleCollectorService.deleteSampleCollector();
+
+            assertTrue(result);
+            verify(sampleCollectorRepository, times(1)).save(sampleCollector);
+            assertTrue(sampleCollector.isDeleted());
+        }
     }
 
     @Test
     void testDeleteSampleCollector_exception() {
-        when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenThrow(new RuntimeException("Database error"));
-        assertThrows(RuntimeException.class, () -> sampleCollectorService.deleteSampleCollector());
+
+        try (MockedStatic<SecurityContextHelper> mockSecurityContext = Mockito.mockStatic(SecurityContextHelper.class)) {
+            mockSecurityContext.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
+            when(sampleCollectorRepository.getSampleCollectorByEmail(email)).thenReturn(sampleCollector);
+            when(sampleCollectorRepository.save(sampleCollector)).thenThrow(new RuntimeException("Database error"));
+
+            assertThrows(LabException.class, () -> {
+                sampleCollectorService.deleteSampleCollector();
+            });
+            verify(sampleCollectorRepository, times(1)).save(sampleCollector);
+        }
     }
 
     @Test
@@ -146,11 +159,6 @@ class SampleCollectorServiceImplTest {
         assertEquals(sampleCollector, result);
     }
 
-    @Test
-    void testGetSampleCollectorByEmail_negative() {
-        when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenReturn(null);
-        assertThrows(NoSuchElementException.class, () -> sampleCollectorService.getSampleCollectorByEmail(email));
-    }
 
     @Test
     void testGetSampleCollectorByEmail_exception() {
@@ -200,6 +208,24 @@ class SampleCollectorServiceImplTest {
     void testGetSampleCollectorByPlace_exception() {
         when(sampleCollectorRepository.getSampleCollectorsByPlace(any(LocationEnum.class))).thenThrow(new RuntimeException("Database error"));
         assertThrows(RuntimeException.class, () -> sampleCollectorService.getSampleCollectorByPlace(LocationEnum.GUINDY));
+    }
+
+    @Test
+    void testVerifySampleCollector_positive() {
+        when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenReturn(sampleCollector);
+        when(sampleCollectorRepository.save(any(SampleCollector.class))).thenReturn(sampleCollector);
+        sampleCollectorService.verifySampleCollector(anyString());
+        assertTrue(sampleCollector.isVerified());
+    }
+
+    @Test
+    void testGetAllSampleCollectors_positive() {
+        when(sampleCollectorRepository.findAll()).thenReturn(sampleCollectors);
+        List<SampleCollectorDto> result = sampleCollectorService.getAllSampleCollectors();
+
+        assertNotNull(result);
+        assertEquals(2,result.size());
+        assertEquals("sabari@gmail.com", result.getFirst().getEmail());
     }
 
 }
