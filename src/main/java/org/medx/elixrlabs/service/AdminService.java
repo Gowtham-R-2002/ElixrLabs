@@ -19,7 +19,7 @@ public interface AdminService {
      * </p>
      */
 
-    void setupInitialData();
+    //void setupInitialData();
 
     /**
      *Fetches admin with the help of email

@@ -14,8 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -63,5 +62,25 @@ public class RoleServiceTest {
     void testGetAllRoles_exception() {
         when(roleRepository.findAll()).thenThrow(RuntimeException.class);
         assertThrows(LabException.class, () -> roleService.getAllRoles());
+    }
+
+    @Test
+    void testGetRoleByName() {
+        when(roleRepository.findByName(RoleEnum.ROLE_ADMIN)).thenReturn(Role.builder().name(RoleEnum.ROLE_ADMIN).build());
+        Role role = roleService.getRoleByName(RoleEnum.ROLE_ADMIN);
+        assertEquals(RoleEnum.ROLE_ADMIN, role.getName());
+    }
+
+    @Test
+    void testGetRoleByName_negative() {
+        when(roleRepository.findByName(RoleEnum.ROLE_ADMIN)).thenReturn(null);
+        Role role = roleService.getRoleByName(RoleEnum.ROLE_ADMIN);
+        assertNull(role);
+    }
+
+    @Test
+    void testGetRoleByName_exception() {
+        when(roleRepository.findByName(RoleEnum.ROLE_ADMIN)).thenThrow(LabException.class);
+        assertThrows(LabException.class, () -> roleService.getRoleByName(RoleEnum.ROLE_ADMIN));
     }
 }
