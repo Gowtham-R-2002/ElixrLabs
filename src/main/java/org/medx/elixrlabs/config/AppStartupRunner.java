@@ -31,7 +31,7 @@ public class AppStartupRunner {
     public CommandLineRunner run() {
         return args -> {
             roleService.setupInitialData();
-            adminService.setupInitialData();
+           // adminService.setupInitialData();
             labTestService.setupInitialData();
         };
     }

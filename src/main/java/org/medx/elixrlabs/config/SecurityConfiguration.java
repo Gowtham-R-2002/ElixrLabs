@@ -53,7 +53,7 @@ public class SecurityConfiguration{
                     registry.requestMatchers("/error").permitAll();
                     registry.requestMatchers("api/v1/labs/**", "api/v1/test-packages/**", "api/v1/lab-tests/**").hasRole("ADMIN");
                     registry.requestMatchers("api/v1/sample-collectors/**").hasRole("SAMPLE_COLLECTOR");
-                    registry.requestMatchers("api/v1/patients/**").hasRole("PATIENT");
+                    registry.requestMatchers("api/v1/patients/**", "api/v1/orders/**").hasRole("PATIENT");
                     registry.anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults())

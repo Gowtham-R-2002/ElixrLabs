@@ -32,35 +32,35 @@ public class AdminServiceImpl implements AdminService {
 
     BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-    @Override
-    public void setupInitialData() {
-        User user = User.builder()
-                .email("sabarisha0622@gmail.com")
-                .password("admin@123")
-                .build();
-        user.setRoles(roleRepository.findAll());
-        String password = bCryptPasswordEncoder.encode(user.getPassword());
-        user.setPassword(password);
-        Admin admin = Admin.builder()
-                .user(user)
-                .build();
-        User anotherUser = User.builder()
-                .email("deomuja@gmail.com")
-                .password("admin@123")
-                .build();
-        anotherUser.setRoles(roleRepository.findAll());
-        String anotherPassword = bCryptPasswordEncoder.encode(anotherUser.getPassword());
-        anotherUser.setPassword(anotherPassword);
-        Admin anotherAdmin = Admin.builder()
-                .user(anotherUser)
-                .build();
-        try {
-            adminRepository.save(admin);
-            adminRepository.save(anotherAdmin);
-        } catch (Exception e) {
-            System.out.println("Admin already present...Skipping" + e.getMessage());
-        }
-    }
+//    @Override
+//    public void setupInitialData() {
+//        User user = User.builder()
+//                .email("sabarisha0622@gmail.com")
+//                .password("admin@123")
+//                .build();
+//        user.setRoles(roleRepository.findAll());
+//        String password = bCryptPasswordEncoder.encode(user.getPassword());
+//        user.setPassword(password);
+//        Admin admin = Admin.builder()
+//                .user(user)
+//                .build();
+//        User anotherUser = User.builder()
+//                .email("deomuja@gmail.com")
+//                .password("admin@123")
+//                .build();
+//        anotherUser.setRoles(roleRepository.findAll());
+//        String anotherPassword = bCryptPasswordEncoder.encode(anotherUser.getPassword());
+//        anotherUser.setPassword(anotherPassword);
+//        Admin anotherAdmin = Admin.builder()
+//                .user(anotherUser)
+//                .build();
+//        try {
+//            adminRepository.save(admin);
+//            adminRepository.save(anotherAdmin);
+//        } catch (Exception e) {
+//            System.out.println("Admin already present...Skipping" + e.getMessage());
+//        }
+//    }
 
     @Override
     public Admin getAdminByEmail(String email) {

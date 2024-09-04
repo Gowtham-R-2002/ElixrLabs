@@ -225,6 +225,7 @@ public class LabServiceTest {
         order = Order.builder()
                 .id(1L)
                 .labLocation(LocationEnum.VELACHERY)
+                .sampleCollectionPlace(TestCollectionPlaceEnum.LAB)
                 .tests(labTests)
                 .patient(patient)
                 .testPackage(testPackage)
@@ -270,6 +271,15 @@ public class LabServiceTest {
     void testAssignReport_negative() {
         order.setTestStatus(TestStatusEnum.PENDING);
         order.setSampleCollectionPlace(TestCollectionPlaceEnum.HOME);
+        when(orderService.getOrder(anyLong())).thenReturn(order);
+        Exception exception = assertThrows(LabException.class, () -> labService.assignReport(order.getId(), requestTestResultDto));
+        assertEquals("Error while assigning test report: ", exception.getMessage());
+    }
+
+    @Test
+    void testAssignReport_exception() {
+        order.setTestStatus(TestStatusEnum.PENDING);
+        order.setSampleCollectionPlace(TestCollectionPlaceEnum.LAB);
         when(orderService.getOrder(anyLong())).thenReturn(order);
         Exception exception = assertThrows(LabException.class, () -> labService.assignReport(order.getId(), requestTestResultDto));
         assertEquals("Error while assigning test report: ", exception.getMessage());
