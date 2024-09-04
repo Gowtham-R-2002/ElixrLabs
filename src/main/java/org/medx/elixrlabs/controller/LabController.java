@@ -50,44 +50,6 @@ public class LabController {
     private PatientService patientService;
 
     /**
-     * <p>Retrieves a list of all orders.</p>
-     *
-     * @return A list of {@link ResponseOrderDto} containing order details.
-     */
-    @GetMapping
-    public ResponseEntity<List<ResponseOrderDto>> getOrders() {
-        logger.debug("Getting the orders");
-        return new ResponseEntity<>(labService.getOrders(), HttpStatus.OK);
-    }
-
-    /**
-     * <p>Updates the status of a specific order identified by its ID.</p>
-     *
-     * @param id The unique identifier of the order whose status needs to be updated.
-     * @return HTTP status indicating the result of the update operation.
-     */
-    @PatchMapping("orders/{id}")
-    public ResponseEntity<HttpStatus.Series> updateOrderStatus(@PathVariable Long id) {
-        logger.debug("Updating the order status for the ID: {}", id);
-        labService.updateStatus(id);
-        logger.info("Successfully updated the status of order for the ID: {}", id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    /**
-     * <p>Updates the test report for a specific order with the provided result details.</p>
-     *
-     * @param resultDto Contains the test result data to be updated.
-     * @param id The unique identifier of the order for which the report is being updated.
-     * @return HTTP status indicating the acceptance of the report update.
-     */
-    @PutMapping("orders/{id}/results")
-    public ResponseEntity<HttpStatus.Series> updateReport(@Valid @RequestBody RequestTestResultDto resultDto, @PathVariable(name = "id") long id) {
-        labService.assignReport(id, resultDto);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
-
-    /**
      * <p>Verifies the sample collector using the provided email address.</p>
      *
      * @param sampleCollector Contains the email of the sample collector to be verified.
@@ -109,25 +71,4 @@ public class LabController {
         return new ResponseEntity<>(sampleCollectorService.getAllSampleCollectors(), HttpStatus.OK);
     }
 
-    /**
-     * <p>Retrieves a list of orders associated with a specific patient.</p>
-     *
-     * @param patient Contains the details of the patient for whom orders are to be retrieved.
-     * @return A list of {@link ResponseOrderDto} related to the specified patient.
-     */
-    @GetMapping("patients/orders")
-    public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(@Valid @RequestBody RequestUserNameDto patient) {
-        return new ResponseEntity<>(patientService.getOrdersByPatient(patient), HttpStatus.OK);
-    }
-
-    /**
-     * <p>Retrieves the test result for a specific order identified by its ID.</p>
-     *
-     * @param orderId The unique identifier of the order for which the test result is being retrieved.
-     * @return The {@link TestResultDto} associated with the specified order.
-     */
-    @GetMapping("orders/{id}/results")
-    public ResponseEntity<TestResultDto> getTestResult(@PathVariable(name = "id") Long orderId) {
-        return new ResponseEntity<>(labService.getTestResultByOrder(orderId), HttpStatus.OK);
-    }
 }

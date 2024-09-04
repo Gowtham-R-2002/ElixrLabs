@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.service.impl;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,8 +66,11 @@ public class AppointmentSlotServiceTest {
     private AppointmentDto appointmentDto;
     private Order order;
 
+    private MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class);
+
     @BeforeEach
     void setUp() {
+        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("user@gmail.com");
         requestSlotBookDto = RequestSlotBookDto.builder()
                 .date(LocalDate.parse("2024-08-29"))
                 .location(LocationEnum.VELACHERY)
@@ -157,6 +161,11 @@ public class AppointmentSlotServiceTest {
         timeSlots = new HashSet<>(Arrays.asList("7AM", "10AM", "7PM"));
     }
 
+    @AfterEach
+    public void close() {
+        mockedStatic.close();
+    }
+
     @Test
     void testGetAvailableSlots() {
         when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
@@ -173,52 +182,48 @@ public class AppointmentSlotServiceTest {
 
     @Test
     void testBookSlot() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
-            when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
-            when(SecurityContextHelper.extractEmailFromContext()).thenReturn(patient.getUser().getEmail());
-            when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
-            when(cartService.getCartByPatient()).thenReturn(cart);
-            when(orderService.createOrUpdateOrder(any(Order.class))).thenReturn(OrderSuccessDto.builder().id(1).dateTime(LocalDateTime.now()).build());
-            OrderSuccessDto orderSuccessDto = appointmentSlotService.bookSlot(slotBookDto);
-            assertEquals(orderSuccessDto.getId(), 1);
-        }
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
+        when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
+        when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
+        when(cartService.getCartByPatient()).thenReturn(cart);
+        when(orderService.createOrUpdateOrder(any(Order.class))).thenReturn(OrderSuccessDto.builder().id(1).dateTime(LocalDateTime.now()).build());
+        OrderSuccessDto orderSuccessDto = appointmentSlotService.bookSlot(slotBookDto);
+        assertEquals(orderSuccessDto.getId(), 1);
     }
 
     @Test
     void testBookSlot_cart_null() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
-            when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
-            when(SecurityContextHelper.extractEmailFromContext()).thenReturn(patient.getUser().getEmail());
-            when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
-            when(cartService.getCartByPatient()).thenReturn(ResponseCartDto.builder().tests(new ArrayList<>()).build());
-            assertThrows(SlotException.class, () -> appointmentSlotService.bookSlot(slotBookDto));
-        }
+
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
+        when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
+
+        when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
+        when(cartService.getCartByPatient()).thenReturn(ResponseCartDto.builder().tests(new ArrayList<>()).build());
+        assertThrows(SlotException.class, () -> appointmentSlotService.bookSlot(slotBookDto));
     }
 
     @Test
     void testBookSlot_exception() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(null, slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
-            when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
-            when(SecurityContextHelper.extractEmailFromContext()).thenReturn(patient.getUser().getEmail());
-            when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
-            when(cartService.getCartByPatient()).thenReturn(cart);
-            when(orderService.createOrUpdateOrder(any(Order.class))).thenReturn(OrderSuccessDto.builder().id(1).dateTime(LocalDateTime.now()).build());
-            assertThrows(SlotException.class, ()-> appointmentSlotService.bookSlot(slotBookDto));        }
+
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(null, slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
+        when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
+
+        when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
+        when(cartService.getCartByPatient()).thenReturn(cart);
+        when(orderService.createOrUpdateOrder(any(Order.class))).thenReturn(OrderSuccessDto.builder().id(1).dateTime(LocalDateTime.now()).build());
+        assertThrows(SlotException.class, () -> appointmentSlotService.bookSlot(slotBookDto));
     }
 
     @Test
     void testBookSlot_exception_slot_filled() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(LocationEnum.MARINA, slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>(Arrays.asList(AppointmentSlot.builder().timeSlot("7PM").build(), AppointmentSlot.builder().timeSlot("7PM").build(), AppointmentSlot.builder().timeSlot("7PM").build())));
-            when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
-            when(SecurityContextHelper.extractEmailFromContext()).thenReturn(patient.getUser().getEmail());
-            when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
-            when(cartService.getCartByPatient()).thenReturn(cart);
-            when(orderService.createOrUpdateOrder(any(Order.class))).thenReturn(OrderSuccessDto.builder().id(1).dateTime(LocalDateTime.now()).build());
-            assertThrows(SlotException.class, ()-> appointmentSlotService.bookSlot(slotBookDto));        }
+
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(LocationEnum.MARINA, slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>(Arrays.asList(AppointmentSlot.builder().timeSlot("7PM").build(), AppointmentSlot.builder().timeSlot("7PM").build(), AppointmentSlot.builder().timeSlot("7PM").build())));
+        when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
+
+        when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
+        when(cartService.getCartByPatient()).thenReturn(cart);
+        when(orderService.createOrUpdateOrder(any(Order.class))).thenReturn(OrderSuccessDto.builder().id(1).dateTime(LocalDateTime.now()).build());
+        assertThrows(SlotException.class, () -> appointmentSlotService.bookSlot(slotBookDto));
     }
 
     @Test
@@ -246,20 +251,18 @@ public class AppointmentSlotServiceTest {
     @Test
     void testAssignSampleCollectorsToAppointment() {
         when(appointmentSlotRepository.findById(1L)).thenReturn(Optional.ofNullable(AppointmentSlot.builder().build()));
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("sc@gmail.com");
-            appointmentSlotService.assignSampleCollectorToAppointment(1L);
-        }
+
+        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("sc@gmail.com");
+        appointmentSlotService.assignSampleCollectorToAppointment(1L);
     }
 
     @Test
     void testAssignSampleCollectorsToAppointment_exception() {
         when(appointmentSlotRepository.findById(1L)).thenReturn(Optional.ofNullable(AppointmentSlot.builder().build()));
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(null);
-            when(sampleCollectorService.getSampleCollectorByEmail("test@xyz.com")).thenReturn(null);
-            assertThrows(LabException.class, () -> appointmentSlotService.assignSampleCollectorToAppointment(1L));
-        }
+
+        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(null);
+        when(sampleCollectorService.getSampleCollectorByEmail("test@xyz.com")).thenReturn(null);
+        assertThrows(LabException.class, () -> appointmentSlotService.assignSampleCollectorToAppointment(1L));
     }
 
     @Test
@@ -271,123 +274,95 @@ public class AppointmentSlotServiceTest {
 
     @Test
     void testGetAppointmentsBySampleCollector() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().build());
-            when(appointmentSlotRepository.findBySampleCollectorId(any())).thenReturn(List.of(AppointmentSlot.builder()
-                    .id(1L)
-                    .dateSlot(LocalDate.now())
-                    .timeSlot("7AM")
-                    .patient(Patient.builder()
-                            .user(User.builder().email("test@gmail.com").build())
-                            .build())
-                    .build()));
-            List<AppointmentDto> appointmentDtos = appointmentSlotService.getAppointmentsBySampleCollector();
-            assertEquals(appointmentDtos.size(), 1);
-
-        }
+        when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().build());
+        when(appointmentSlotRepository.findBySampleCollectorId(any())).thenReturn(List.of(AppointmentSlot.builder()
+                .id(1L)
+                .dateSlot(LocalDate.now())
+                .timeSlot("7AM")
+                .patient(Patient.builder()
+                        .user(User.builder().email("test@gmail.com").build())
+                        .build())
+                .build()));
+        List<AppointmentDto> appointmentDtos = appointmentSlotService.getAppointmentsBySampleCollector();
+        assertEquals(appointmentDtos.size(), 1);
     }
 
     @Test
     void testGetAppointmentsBySampleCollector_appointment_null() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().build());
-            when(appointmentSlotRepository.findBySampleCollectorId(any())).thenReturn(null);
-            assertThrows(LabException.class, () -> appointmentSlotService.getAppointmentsBySampleCollector());
-
-        }
+        when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().build());
+        when(appointmentSlotRepository.findBySampleCollectorId(any())).thenReturn(null);
+        assertThrows(LabException.class, () -> appointmentSlotService.getAppointmentsBySampleCollector());
     }
 
     @Test
     void testGetAppointmentsBySampleCollector_exception() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().build());
-            when(appointmentSlotRepository.findBySampleCollectorId(1L)).thenReturn(List.of(AppointmentSlot.builder()
-                    .id(1L)
-                    .dateSlot(LocalDate.now())
-                    .timeSlot("7AM")
-                    .patient(Patient.builder()
-                            .user(User.builder().email("test@gmail.com").build())
-                            .build())
-                    .build()));
-            assertThrows(LabException.class, () -> appointmentSlotService.getAppointmentsBySampleCollector());
-
-        }
+        when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().build());
+        when(appointmentSlotRepository.findBySampleCollectorId(1L)).thenReturn(List.of(AppointmentSlot.builder()
+                .id(1L)
+                .dateSlot(LocalDate.now())
+                .timeSlot("7AM")
+                .patient(Patient.builder()
+                        .user(User.builder().email("test@gmail.com").build())
+                        .build())
+                .build()));
+        assertThrows(LabException.class, () -> appointmentSlotService.getAppointmentsBySampleCollector());
     }
 
     @Test
     void testGetCollectedAppointmentsBySampleCollector() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().id(1L).build());
-            when(appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedTrue(anyLong())).thenReturn(List.of(AppointmentSlot.builder()
-                    .id(1L)
-                    .dateSlot(LocalDate.now())
-                    .timeSlot("7AM")
-                    .patient(Patient.builder()
-                            .user(User.builder().email("test@gmail.com").build())
-                            .build())
-                            .isSampleCollected(true)
-                    .build()));
-            List<AppointmentDto> appointmentDtos = appointmentSlotService.getCollectedAppointmentsBySampleCollector();
-            assertEquals(appointmentDtos.size(), 1);
-        }
+        when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().id(1L).build());
+        when(appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedTrue(anyLong())).thenReturn(List.of(AppointmentSlot.builder()
+                .id(1L)
+                .dateSlot(LocalDate.now())
+                .timeSlot("7AM")
+                .patient(Patient.builder()
+                        .user(User.builder().email("test@gmail.com").build())
+                        .build())
+                .isSampleCollected(true)
+                .build()));
+        List<AppointmentDto> appointmentDtos = appointmentSlotService.getCollectedAppointmentsBySampleCollector();
+        assertEquals(appointmentDtos.size(), 1);
     }
 
     @Test
     void testGetCollectedAppointmentsBySampleCollector_appointmets_null() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().id(1L).build());
-            when(appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedTrue(anyLong())).thenReturn(null);
-            assertThrows(LabException.class, () -> appointmentSlotService.getCollectedAppointmentsBySampleCollector());
-        }
+        when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().id(1L).build());
+        when(appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedTrue(anyLong())).thenReturn(null);
+        assertThrows(LabException.class, () -> appointmentSlotService.getCollectedAppointmentsBySampleCollector());
     }
 
     @Test
     void testGetCollectedAppointmentsBySampleCollector_exception() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(null);
-            assertThrows(LabException.class, () -> appointmentSlotService.getCollectedAppointmentsBySampleCollector());
-        }
+        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(null);
+        assertThrows(LabException.class, () -> appointmentSlotService.getCollectedAppointmentsBySampleCollector());
     }
 
     @Test
     void testGetPendingAppointmentsBySampleCollector() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().id(1L).build());
-            when(appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedFalse(anyLong())).thenReturn(List.of(AppointmentSlot.builder()
-                    .id(1L)
-                    .dateSlot(LocalDate.now())
-                    .timeSlot("7AM")
-                    .patient(Patient.builder()
-                            .user(User.builder().email("test@gmail.com").build())
-                            .build())
-                    .build()));
-            List<AppointmentDto> appointmentDtos = appointmentSlotService.getPendingAppointmentsBySampleCollector();
-            assertEquals(appointmentDtos.size(), 1);
-        }
+        when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().id(1L).build());
+        when(appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedFalse(anyLong())).thenReturn(List.of(AppointmentSlot.builder()
+                .id(1L)
+                .dateSlot(LocalDate.now())
+                .timeSlot("7AM")
+                .patient(Patient.builder()
+                        .user(User.builder().email("test@gmail.com").build())
+                        .build())
+                .build()));
+        List<AppointmentDto> appointmentDtos = appointmentSlotService.getPendingAppointmentsBySampleCollector();
+        assertEquals(appointmentDtos.size(), 1);
     }
 
     @Test
     void testGetPendingAppointmentsBySampleCollector_appointment_null() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().id(1L).build());
-            when(appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedFalse(anyLong())).thenReturn(null);
-            assertThrows(LabException.class, () -> appointmentSlotService.getPendingAppointmentsBySampleCollector());
-        }
+        when(sampleCollectorService.getSampleCollectorByEmail(user.getEmail())).thenReturn(SampleCollector.builder().id(1L).build());
+        when(appointmentSlotRepository.findBySampleCollectorIdAndIsSampleCollectedFalse(anyLong())).thenReturn(null);
+        assertThrows(LabException.class, () -> appointmentSlotService.getPendingAppointmentsBySampleCollector());
     }
 
     @Test
     void testGetPendingAppointmentsBySampleCollector_exception() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(null);
-            assertThrows(LabException.class, () -> appointmentSlotService.getPendingAppointmentsBySampleCollector());
-        }
+        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(null);
+        assertThrows(LabException.class, () -> appointmentSlotService.getPendingAppointmentsBySampleCollector());
     }
 
     @Test

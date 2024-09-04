@@ -310,6 +310,4 @@ public class CartServiceTest {
             verify(cartRepository, times(1)).delete(cart);
         }
     }
-
-
 }

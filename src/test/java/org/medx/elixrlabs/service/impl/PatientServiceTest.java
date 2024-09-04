@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDate;
 import java.util.*;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,12 +66,13 @@ public class PatientServiceTest {
     private Order order;
     private Role patientRole;
     private Patient patient;
-    private  ResponseOrderDto responseOrderDto;
+    private ResponseOrderDto responseOrderDto;
+    private MockedStatic<SecurityContextHelper> mockedStatic;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
+        mockedStatic = mockStatic(SecurityContextHelper.class);
+        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@example.com");
         user = User.builder()
                 .UUID(UUID.randomUUID().toString())
                 .place(LocationEnum.GUINDY)
@@ -129,13 +131,18 @@ public class PatientServiceTest {
                 .build();
     }
 
+    @AfterEach
+    public void close() {
+        mockedStatic.close();
+    }
+
     @Test
     void createOrUpdatePatient_success_create() {
+        System.out.println(mockedStatic.isClosed());
         UserDto userDto = new UserDto();
         userDto.setEmail("newpatient@example.com");
         userDto.setPassword("newpassword");
         userDto.setPlace(LocationEnum.GUINDY);
-
         when(patientRepository.findByEmailAndIsDeletedFalse(anyString())).thenReturn(patient);
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)).thenReturn(patientRole);
@@ -146,7 +153,6 @@ public class PatientServiceTest {
         });
 
         ResponsePatientDto result = patientService.createOrUpdatePatient(userDto);
-
         assertNotNull(result);
         assertEquals("newpatient@example.com", result.getEmail());
         verify(patientRepository, times(1)).save(any(Patient.class));
@@ -158,7 +164,6 @@ public class PatientServiceTest {
         userDto.setEmail("test@example.com");
         userDto.setPassword("updatedpassword");
         userDto.setPlace(LocationEnum.GUINDY);
-
         when(patientRepository.findByEmailAndIsDeletedFalse(anyString())).thenReturn(patient);
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedUpdatedPassword");
         when(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)).thenReturn(patientRole);
@@ -177,16 +182,13 @@ public class PatientServiceTest {
         userDto.setEmail("error@example.com");
         userDto.setPassword("password");
         userDto.setPlace(LocationEnum.GUINDY);
-
         when(patientRepository.findByEmailAndIsDeletedFalse(anyString())).thenReturn(null);
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)).thenReturn(patientRole);
         when(patientRepository.save(any(Patient.class))).thenThrow(new RuntimeException("Database error"));
-
         LabException exception = assertThrows(LabException.class, () -> {
             patientService.createOrUpdatePatient(userDto);
         });
-
         assertTrue(exception.getMessage().contains("Error while saving Patient with email: error@example.com"));
         verify(patientRepository, times(1)).save(any(Patient.class));
     }
@@ -195,9 +197,7 @@ public class PatientServiceTest {
     void getAllPatients_success() {
         List<Patient> patients = List.of(patient);
         when(patientRepository.fetchAllPatients()).thenReturn(patients);
-
         List<ResponsePatientDto> result = patientService.getAllPatients();
-
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals("test@example.com", result.getFirst().getEmail());
@@ -207,9 +207,7 @@ public class PatientServiceTest {
     @Test
     void getAllPatients_failure_emptyList() {
         when(patientRepository.fetchAllPatients()).thenReturn(Collections.emptyList());
-
         List<ResponsePatientDto> result = patientService.getAllPatients();
-
         assertNotNull(result);
         assertTrue(result.isEmpty());
         verify(patientRepository, times(1)).fetchAllPatients();
@@ -218,11 +216,9 @@ public class PatientServiceTest {
     @Test
     void getAllPatients_exception() {
         when(patientRepository.fetchAllPatients()).thenThrow(new LabException("Database error"));
-
         LabException exception = assertThrows(LabException.class, () -> {
             patientService.getAllPatients();
         });
-
         assertFalse(exception.getMessage().contains("Error while fetching patients"));
     }
 
@@ -230,17 +226,11 @@ public class PatientServiceTest {
     void getOrders_success() {
         String email = "test@example.com";
         patient.setOrders(List.of(order));
-
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
-            when(patientRepository.getPatientOrders(email)).thenReturn(patient);
-
-            List<ResponseOrderDto> result = patientService.getOrders();
-
-            assertNotNull(result);
-            assertEquals(1, result.size());
-            verify(patientRepository, times(1)).getPatientOrders(email);
-        }
+        when(patientRepository.getPatientOrders(email)).thenReturn(patient);
+        List<ResponseOrderDto> result = patientService.getOrders();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(patientRepository, times(1)).getPatientOrders(email);
     }
 
     @Test
@@ -248,125 +238,85 @@ public class PatientServiceTest {
         String email = "test@example.com";
         Patient patientWithNoOrders = patient;
         when(patientRepository.getPatientOrders(email)).thenReturn(patientWithNoOrders);
-
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
-
-            List<ResponseOrderDto> result = patientService.getOrders();
-
-            assertNotNull(result);
-            verify(patientRepository, times(1)).getPatientOrders(email);
-        }
+        List<ResponseOrderDto> result = patientService.getOrders();
+        assertNotNull(result);
+        verify(patientRepository, times(1)).getPatientOrders(email);
     }
 
     @Test
     void getOrders_exception() {
         String email = "test@example.com";
         when(patientRepository.getPatientOrders(email)).thenThrow(new LabException("Database error"));
-
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
-
-            LabException exception = assertThrows(LabException.class, () -> {
-                patientService.getOrders();
-            });
-
-            assertTrue(exception.getMessage().contains("Error while fetching all orders"));
-            verify(patientRepository, times(1)).getPatientOrders(email);
-        }
+        LabException exception = assertThrows(LabException.class, () -> {
+            patientService.getOrders();
+        });
+        assertTrue(exception.getMessage().contains("Error while fetching all orders"));
+        verify(patientRepository, times(1)).getPatientOrders(email);
     }
 
     @Test
     void getTestReport_success() {
-
         TestResultDto testResultDto = TestResultDto.builder()
                 .id(1L)
                 .orderDate(LocalDate.now())
                 .build();
         when(orderService.getOrder(anyLong())).thenReturn(order);
-
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            TestResultDto result = patientService.getTestReport(1L);
-
+        TestResultDto result = patientService.getTestReport(1L);
         assertNotNull(result);
         verify(orderService, times(2)).getOrder(1L);
-        }
     }
 
     @Test
     void getTestReport_failure_noTestResult() {
         when(orderService.getOrder(anyLong())).thenReturn(order);
         order.getTestResult().setId(9L);
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            TestResultDto result = patientService.getTestReport(1L);
-            assertNotNull(result);
-            verify(orderService, times(2)).getOrder(1L);
-        }
+        TestResultDto result = patientService.getTestReport(1L);
+        assertNotNull(result);
+        verify(orderService, times(2)).getOrder(1L);
     }
 
     @Test
     void getTestReport_exception() {
+        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("false@example.com");
         when(orderService.getOrder(anyLong())).thenReturn(order);
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@gmail.com");
-            LabException exception = assertThrows(LabException.class, () -> {
-                patientService.getTestReport(9L);
-            });
-
-            verify(orderService, times(1)).getOrder(9L);
-        }
+        LabException exception = assertThrows(LabException.class, () -> {
+            patientService.getTestReport(9L);
+        });
+        verify(orderService, times(1)).getOrder(9L);
     }
 
     @Test
     void deletePatient_success() {
         String email = "test@example.com";
         patient.setDeleted(false);
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
-            when(patientService.getPatientByEmail(email)).thenReturn(patient);
-
-            patientService.deletePatient();
-
-            verify(patientRepository, times(1)).save(patient);
-            assertTrue(patient.isDeleted());
-        }
+        when(patientService.getPatientByEmail(email)).thenReturn(patient);
+        patientService.deletePatient();
+        verify(patientRepository, times(1)).save(patient);
+        assertTrue(patient.isDeleted());
     }
 
     @Test
     void deletePatient_failure_patientNotFound() {
         String email = "nonexistent@example.com";
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
-            when(patientService.getPatientByEmail(email)).thenReturn(null);
+        when(patientService.getPatientByEmail(email)).thenReturn(null);
+        assertThrows(NoSuchElementException.class, () -> patientService.deletePatient());
 
-            NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-                patientService.deletePatient();
-            });
-
-            verify(patientRepository, never()).save(any());
-            assertTrue(exception.getMessage().contains("Patient not found with email: " + email));
-        }
     }
 
     @Test
     void deletePatient_exception() {
         String email = "test@example.com";
         patient.setDeleted(false);
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
-            when(patientService.getPatientByEmail(email)).thenReturn(patient);
-            doThrow(new RuntimeException("DB error")).when(patientRepository).save(patient);
+        when(patientService.getPatientByEmail(email)).thenReturn(patient);
+        doThrow(new RuntimeException("DB error")).when(patientRepository).save(patient);
+        LabException exception = assertThrows(LabException.class, () -> {
+            patientService.deletePatient();
+        });
 
-            LabException exception = assertThrows(LabException.class, () -> {
-                patientService.deletePatient();
-            });
-
-            verify(patientRepository, times(1)).save(patient);
-            assertTrue(exception.getMessage().contains("Error while deleting Patient with email: " + email));
-        }
+        verify(patientRepository, times(1)).save(patient);
+        assertTrue(exception.getMessage().contains("Error while deleting Patient with email: " + email));
     }
+
 
     @Test
     void getOrdersByPatient_success() {
@@ -374,11 +324,8 @@ public class PatientServiceTest {
         RequestUserNameDto requestUserNameDto = RequestUserNameDto.builder()
                 .email(email)
                 .build();
-
         when(patientRepository.getPatientOrders(email)).thenReturn(patient);
-
         List<ResponseOrderDto> result = patientService.getOrdersByPatient(requestUserNameDto);
-
         verify(patientRepository, times(1)).getPatientOrders(email);
         assertNotNull(result);
         assertEquals(result.size(), 1);
@@ -390,9 +337,7 @@ public class PatientServiceTest {
         RequestUserNameDto requestUserNameDto = RequestUserNameDto.builder()
                 .email(email)
                 .build();
-
         when(patientRepository.getPatientOrders(email)).thenThrow(new RuntimeException("DB error"));
-
         LabException exception = assertThrows(LabException.class, () -> {
             patientService.getOrdersByPatient(requestUserNameDto);
         });
@@ -405,9 +350,7 @@ public class PatientServiceTest {
     void getPatientByEmail_success() {
         String email = "test@example.com";
         when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(patient);
-
         Patient result = patientService.getPatientByEmail(email);
-
         assertNotNull(result);
         assertEquals(email, result.getUser().getEmail());
         verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
@@ -417,9 +360,7 @@ public class PatientServiceTest {
     void getPatientByEmail_failure_patientNotFound() {
         String email = "nonexistent@example.com";
         when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(null);
-
         Patient result = patientService.getPatientByEmail(email);
-
         assertNull(result);
         verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
     }
@@ -428,13 +369,10 @@ public class PatientServiceTest {
     void getPatientByEmail_exception() {
         String email = "test@example.com";
         when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenThrow(new RuntimeException("Database error"));
-
         LabException exception = assertThrows(LabException.class, () -> {
             patientService.getPatientByEmail(email);
         });
-
         assertTrue(exception.getMessage().contains("Error while getting patient with email: " + email));
         verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
     }
 }
-

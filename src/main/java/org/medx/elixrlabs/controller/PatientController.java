@@ -83,26 +83,6 @@ public class PatientController {
         return new ResponseEntity<>(appointmentSlotService.bookSlot(slotBookDto), HttpStatus.OK);
     }
 
-    /**
-     * <p>Retrieves all orders associated with the patient.</p>
-     *
-     * @return A list of {@link ResponseOrderDto} associated with the patient.
-     */
-    @GetMapping("orders")
-    public ResponseEntity<List<ResponseOrderDto>> getOrders() {
-        return new ResponseEntity<>(patientService.getOrders(), HttpStatus.OK);
-    }
-
-    /**
-     * <p>Retrieves the test report for a specific order identified by its ID.</p>
-     *
-     * @param orderId The unique identifier of the order for which the test report is requested.
-     * @return The {@link TestResultDto} associated with the specified order ID.
-     */
-    @GetMapping("orders/{id}/report")
-    public ResponseEntity<TestResultDto> getTestReport(@PathVariable(name = "id") Long orderId) {
-        return new ResponseEntity<>(patientService.getTestReport(orderId), HttpStatus.OK);
-    }
 
     /**
      * <p>Updates an existing patient's details with the provided information.</p>

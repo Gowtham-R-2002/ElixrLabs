@@ -33,7 +33,6 @@ import java.util.UUID;
 public class ResponsePatientDto {
     @NotNull
     private long id;
-    private String uuid;
     @NotBlank
     @NotNull
     private String email;

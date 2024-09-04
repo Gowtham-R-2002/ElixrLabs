@@ -1,9 +1,8 @@
-package org.medx.elixrlabs.service;
+package org.medx.elixrlabs.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,7 @@ import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.TestPackage;
 import org.medx.elixrlabs.repository.TestPackageRepository;
-import org.medx.elixrlabs.service.impl.TestPackageServiceImpl;
+import org.medx.elixrlabs.service.LabTestService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -51,7 +50,6 @@ class TestPackageServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
 
         LabTest labTest = LabTest.builder()
                 .id(1L)
@@ -95,11 +93,11 @@ class TestPackageServiceTest {
     }
 
     @Test
-    void testCreateOrUpdateTest_exception() {
-        when(labTestService.getLabTestById(anyLong())).thenThrow(LabException.class);
-
+    void testCreateOrUpdateTest_negative() {
+        when(labTestService.getLabTestById(anyLong())).thenReturn(null);
         Exception exception = assertThrows(LabException.class,
                 () -> testPackageService.createOrUpdateTestPackage(requestTestPackageDto));
+
         assertEquals("Error occurred while saving TestPackage" + requestTestPackageDto.getName(), exception.getMessage());
         verify(testPackageRepository, never()).save(any(TestPackage.class));
     }
@@ -147,7 +145,7 @@ class TestPackageServiceTest {
 
     @Test
     void testGetTestPackageById_negative() {
-        when(testPackageRepository.findByIdAndIsDeletedFalse(requestTestPackageDto.getId())).thenThrow(NullPointerException.class);
+        when(testPackageRepository.findByIdAndIsDeletedFalse(anyLong())).thenReturn(null);
 
         Exception exception = assertThrows(LabException.class,
                 () -> testPackageService.getTestPackageById(1L));
@@ -159,10 +157,11 @@ class TestPackageServiceTest {
     @Test
     void testGetTestPackageById_exception() {
         when(testPackageRepository.findByIdAndIsDeletedFalse(anyLong())).thenThrow(RuntimeException.class);
+
         Exception exception = assertThrows(RuntimeException.class,
                 () -> testPackageService.getTestPackageById(1L));
 
-        assertEquals("Error occurred while retrieving TestPackage1", exception.getMessage());
+        assertEquals("Error occurred while retrieving TestPackage" + 1L, exception.getMessage());
         verify(testPackageRepository).findByIdAndIsDeletedFalse(1L);
     }
 
@@ -178,24 +177,23 @@ class TestPackageServiceTest {
 
     @Test
     void testDeleteTestPackageById_negative() {
-        when(testPackageRepository.findByIdAndIsDeletedFalse(requestTestPackageDto.getId())).thenReturn(null);
+        when(testPackageRepository.findByIdAndIsDeletedFalse(anyLong())).thenReturn(null);
 
         Exception exception = assertThrows(LabException.class,
-                () -> testPackageService.deleteTestPackageById(requestTestPackageDto.getId()));
+                () -> testPackageService.deleteTestPackageById(1L));
 
-        assertEquals("Error occurred while deleting TestPackage" + requestTestPackageDto.getId(), exception.getMessage());
+        assertEquals("Error occurred while deleting TestPackage" + 1L, exception.getMessage());
         verify(testPackageRepository, never()).save(any(TestPackage.class));
     }
 
     @Test
     void testDeleteTestPackageById_exception() {
-        when(testPackageRepository.findByIdAndIsDeletedFalse(requestTestPackageDto.getId())).thenThrow(RuntimeException.class);
+        when(testPackageRepository.findByIdAndIsDeletedFalse(anyLong())).thenThrow(RuntimeException.class);
 
         Exception exception = assertThrows(LabException.class,
-                () -> testPackageService.deleteTestPackageById(requestTestPackageDto.getId()));
+                () -> testPackageService.deleteTestPackageById(1L));
 
-        assertEquals("Error occurred while deleting TestPackage" + requestTestPackageDto.getId(), exception.getMessage());
+        assertEquals("Error occurred while deleting TestPackage" + 1L, exception.getMessage());
         verify(testPackageRepository, never()).save(any(TestPackage.class));
     }
 }
-

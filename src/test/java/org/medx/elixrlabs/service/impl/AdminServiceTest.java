@@ -15,9 +15,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class AdminServiceTest {
@@ -70,5 +69,11 @@ public class AdminServiceTest {
         Admin foundAdmin = adminService.getAdminByEmail(user.getEmail());
         assertNotNull(foundAdmin);
         assertEquals(foundAdmin.getId(), 1L);
+    }
+
+    @Test
+    public void testGetAdminByEmail_exception() {
+        when(adminRepository.findByEmail(user.getEmail())).thenThrow(RuntimeException.class);
+        assertThrows(RuntimeException.class, () -> adminService.getAdminByEmail(user.getEmail()));
     }
 }
