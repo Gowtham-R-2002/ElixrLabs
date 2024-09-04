@@ -87,7 +87,7 @@ public class SampleCollectorController {
      * Gets all appointments unassigned in the particular place
      *
      * @param appointmentsQueryDto {@link AppointmentsQueryDto} contains date to be queried.
-     * @return {@link List<AppointmentDto}>} Appointments that are unassigned in that particular location.
+     * @return {@link List<AppointmentDto>} Appointments that are unassigned in that particular location.
      */
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentDto>> getAppointments(@Valid @RequestBody AppointmentsQueryDto appointmentsQueryDto) {
