@@ -56,7 +56,7 @@ public class OrderController {
      *
      * @return A list of {@link ResponseOrderDto} containing order details.
      */
-    @Secured("ROLE_ADMIN")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("all")
     public ResponseEntity<List<ResponseOrderDto>> getOrders() {
         logger.debug("Getting the orders");
@@ -83,7 +83,6 @@ public class OrderController {
      * @param patient Contains the details of the patient for whom orders are to be retrieved.
      * @return A list of {@link ResponseOrderDto} related to the specified patient.
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("patients")
     public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(@Valid @RequestBody RequestUserNameDto patient) {
         return new ResponseEntity<>(patientService.getOrdersByPatient(patient), HttpStatus.OK);
