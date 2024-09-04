@@ -131,7 +131,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                         .patient(patient)
                         .sampleCollectionPlace(slotBookDto.getTestCollectionPlace())
                         .labLocation(slotBookDto.getLocation())
-                        .testPackage(TestPackageMapper.toTestPackageFromResponseDto(cart.getTestPackage()))
+                        .testPackage((cart.getTestPackage() != null) ? TestPackageMapper.toTestPackageFromResponseDto(cart.getTestPackage()) : null)
                         .testStatus(TestStatusEnum.PENDING)
                         .price(cart.getPrice())
                         .orderDateTime(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("GMT+05:30"))))

@@ -25,7 +25,6 @@ import org.medx.elixrlabs.dto.ResponsePatientDto;
 import org.medx.elixrlabs.dto.SlotBookDto;
 import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.dto.UserDto;
-import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.CartService;
 import org.medx.elixrlabs.service.PatientService;
