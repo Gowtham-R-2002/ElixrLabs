@@ -93,21 +93,11 @@ public class LabServiceImpl implements LabService {
             emailService.sendTestResult(testResult);
             order.setTestResult(savedTestResult);
             orderService.createOrUpdateOrder(order);
+            orderService.updateOrderStatus(orderId);
             logger.info("Test result assigned successfully: {}", resultDto);
         } catch (Exception e) {
             logger.warn("Error while assigning test report: {}", e.getMessage());
             throw new LabException("Error while assigning test report: ", e);
-        }
-    }
-
-    @Override
-    public void updateStatus(Long id) {
-        try {
-            orderService.updateOrderStatus(id);
-            logger.info("Order status updated successfully for order id: {}", id);
-        } catch (Exception e) {
-            logger.warn("Error while updating order status for order id: {}", id);
-            throw new LabException("Error while updating order status for order id: " + id, e );
         }
     }
 

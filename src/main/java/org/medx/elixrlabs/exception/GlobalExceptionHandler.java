@@ -10,6 +10,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.DateTimeException;
+
 /**
  * Global Exception handler for handling exceptions and modifying the outgoing response.
  *
@@ -94,5 +96,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
-
+    @ExceptionHandler(DateTimeException.class)
+    public ResponseEntity<ErrorResponse> handleDateTimeException(DateTimeException dateTimeException) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .message(dateTimeException.getMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 }

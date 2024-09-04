@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.service.impl;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -72,6 +73,10 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     @Override
     public Set<String> getAvailableSlots(RequestSlotBookDto slotBookDto) {
         try {
+            if(slotBookDto.getDate().isBefore(LocalDate.now())) {
+                logger.warn("Date must be today's date or upcoming dates !");
+                throw new DateTimeException("Date must be today's date or upcoming dates !");
+            }
             logger.debug("Fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
             List<AppointmentSlot> appointments = appointmentSlotRepository
                     .findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate());

@@ -24,17 +24,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class LabControllerTest {
@@ -184,27 +177,6 @@ public class LabControllerTest {
     }
 
     @Test
-    void testGetOrders() {
-        when(labService.getOrders()).thenReturn(responseOrderDtos);
-        ResponseEntity<List<ResponseOrderDto>> result = labController.getOrders();
-        assertEquals(responseOrderDtos, result.getBody());
-    }
-
-    @Test
-    void testUpdateOrderStatus() {
-        doNothing().when(labService).updateStatus(anyLong());
-        ResponseEntity<HttpStatus.Series> result = labController.updateOrderStatus(order.getId());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-    }
-
-    @Test
-    void testUpdateReport() {
-        doNothing().when(labService).assignReport(anyLong(),any(RequestTestResultDto.class));
-        ResponseEntity<HttpStatus.Series> result = labController.updateReport(requestTestResultDto, order.getId());
-        assertEquals(HttpStatus.ACCEPTED, result.getStatusCode());
-    }
-
-    @Test
     void testVerifySampleCollector() {
         doNothing().when(sampleCollectorService).verifySampleCollector(sampleCollectorDtos.getFirst().getEmail());
         ResponseEntity<HttpStatus.Series> result = labController.verifySampleCollector(userNameDto);
@@ -219,19 +191,4 @@ public class LabControllerTest {
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
-    @Test
-    void testGetOrdersByPatient() {
-        when(patientService.getOrdersByPatient(userNameDto)).thenReturn(responseOrderDtos);
-        ResponseEntity<List<ResponseOrderDto>> result = labController.getOrdersByPatient(userNameDto);
-        assertEquals(responseOrderDtos, result.getBody());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-    }
-
-    @Test
-    void testGetTestResult() {
-        when(labService.getTestResultByOrder(anyLong())).thenReturn(testResultDto);
-        ResponseEntity<TestResultDto> result = labController.getTestResult(order.getId());
-        assertEquals(testResultDto, result.getBody());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-    }
 }

@@ -37,14 +37,6 @@ public interface LabService {
     void assignReport(long orderId, RequestTestResultDto resultDto);
 
     /**
-     * Updates the order status to TestStatusEnum_COMPLETED
-     *
-     * @param id id of the order for which status has to be updated
-     */
-
-    void updateStatus(Long id);
-
-    /**
      * Fetches the test result of a specific order
      *
      * @param orderId id of the order for which test result has to be fetched
