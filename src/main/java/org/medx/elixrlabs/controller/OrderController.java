@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import org.medx.elixrlabs.dto.RequestTestResultDto;
-import org.medx.elixrlabs.dto.RequestUserNameDto;
 import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.service.LabService;
@@ -79,22 +77,10 @@ public class OrderController {
      * @return HTTP status indicating the acceptance of the report update.
      */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("{id}/results")
+    @PutMapping("{id}/report")
     public ResponseEntity<HttpStatus.Series> updateReport(@Valid @RequestBody RequestTestResultDto resultDto, @PathVariable(name = "id") long id) {
         labService.assignReport(id, resultDto);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
-    }
-
-    /**
-     * <p>Retrieves a list of orders associated with a specific patient.</p>
-     *
-     * @param patient Contains the details of the patient for whom orders are to be retrieved.
-     * @return A list of {@link ResponseOrderDto} related to the specified patient.
-     */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("patients")
-    public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(@Valid @RequestBody RequestUserNameDto patient) {
-        return new ResponseEntity<>(patientService.getOrdersByPatient(patient), HttpStatus.OK);
     }
 
     /**
