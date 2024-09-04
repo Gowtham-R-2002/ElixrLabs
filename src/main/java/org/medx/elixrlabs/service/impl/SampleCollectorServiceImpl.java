@@ -150,6 +150,10 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     public void verifySampleCollector(String email) {
         logger.info("Verifying SampleCollector with email: {}", email);
         SampleCollector sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);
+        if (null == sampleCollector) {
+            logger.warn("Sample Collector not found for Username : {}", email);
+            throw new NoSuchElementException("No Sample Collector found for username : " + email);
+        }
         sampleCollector.setVerified(true);
         sampleCollectorRepository.save(sampleCollector);
         logger.info("Successfully verified SampleCollector with email: {}", email);
