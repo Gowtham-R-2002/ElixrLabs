@@ -65,29 +65,24 @@ public interface AppointmentSlotService {
     void markSampleCollected(Long id);
 
     /**
-     * Fetches all the appointments assigned to a specific sample collector
+     * Fetches all the appointments assigned to a specific sample collector.
      *
-     * @param id id of the sample collector
      * @return All the appointments of a specific sample collector
      */
 
     List<AppointmentDto> getAppointmentsBySampleCollector();
 
     /**
-     * Fetches all the appointments that has to be completed by the sample collector
+     * Fetches all the appointments that has to be completed by the sample collector.
      *
-     * @param id id of the sample collector whose completed appointments has to be
-     *           fetched
-     * @return list of appointments that the sample collector has collected
+     * @return list of appointments that the sample collector collected
      */
 
     List<AppointmentDto> getCollectedAppointmentsBySampleCollector();
 
     /**
-     * Fetches all the pending appointments of the sample collector
+     * Fetches all the pending appointments of the sample collector.
      *
-     * @param id id of the sample collector whose pending appointments has to be
-     *           fetched
      * @return list of appointments that the sample collector has not collected
      */
 

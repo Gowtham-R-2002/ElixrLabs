@@ -52,6 +52,17 @@ public class OrderController {
     }
 
     /**
+     * <p>Retrieves a list of orders associated with a specific patient.</p>
+     *
+     * @param patient Contains the details of the patient for whom orders are to be retrieved.
+     * @return A list of {@link ResponseOrderDto} related to the specified patient.
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("patients")
+    public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(@Valid @RequestBody RequestUserNameDto patient) {
+        return new ResponseEntity<>(patientService.getOrdersByPatient(patient), HttpStatus.OK);
+    }
+    /**
      * <p>Retrieves a list of all orders.</p>
      *
      * @return A list of {@link ResponseOrderDto} containing order details.
@@ -77,16 +88,6 @@ public class OrderController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    /**
-     * <p>Retrieves a list of orders associated with a specific patient.</p>
-     *
-     * @param patient Contains the details of the patient for whom orders are to be retrieved.
-     * @return A list of {@link ResponseOrderDto} related to the specified patient.
-     */
-    @GetMapping("patients")
-    public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(@Valid @RequestBody RequestUserNameDto patient) {
-        return new ResponseEntity<>(patientService.getOrdersByPatient(patient), HttpStatus.OK);
-    }
 
     /**
      * <p>Retrieves the test result for a specific order identified by its ID.</p>
