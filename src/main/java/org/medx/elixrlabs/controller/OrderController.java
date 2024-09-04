@@ -72,21 +72,6 @@ public class OrderController {
     }
 
     /**
-     * <p>Updates the status of a specific order identified by its ID.</p>
-     *
-     * @param id The unique identifier of the order whose status needs to be updated.
-     * @return HTTP status indicating the result of the update operation.
-     */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PatchMapping("{id}")
-    public ResponseEntity<HttpStatus.Series> updateOrderStatus(@PathVariable Long id) {
-        logger.debug("Updating the order status for the ID: {}", id);
-        labService.updateStatus(id);
-        logger.info("Successfully updated the status of order for the ID: {}", id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    /**
      * <p>Updates the test report for a specific order with the provided result details.</p>
      *
      * @param resultDto Contains the test result data to be updated.

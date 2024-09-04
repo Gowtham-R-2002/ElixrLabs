@@ -3,6 +3,7 @@ package org.medx.elixrlabs.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,6 @@ import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.TestPackage;
 import org.medx.elixrlabs.service.LabService;
 import org.medx.elixrlabs.service.PatientService;
-import org.medx.elixrlabs.service.SampleCollectorService;
 import org.medx.elixrlabs.util.GenderEnum;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.TestStatusEnum;
@@ -30,33 +30,25 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class LabControllerTest {
-
-    @Mock
-    private LabService labService;
-
-    @Mock
-    private SampleCollectorService sampleCollectorService;
+public class OrderControllerTest {
 
     @Mock
     private PatientService patientService;
 
-    @InjectMocks
-    private LabController labController;
+    @Mock
+    private LabService labService;
 
+    @InjectMocks
+    private OrderController orderController;
+
+    private TestResultDto testResultDto;
+    private Order order;
     private RequestUserNameDto userNameDto;
     private List<ResponseOrderDto> responseOrderDtos;
-    private List<SampleCollectorDto> sampleCollectorDtos;
-    private Order order;
-    private TestResultDto testResultDto;
-    private ResponseTestPackageDto responseTestPackageDto;
-    private List<LabTestDto> labTestDtos;
-    private List<ResponseTestInCartDto> responseTestInCartDtos;
-    private TestPackage testPackage;
-    private List<LabTest> tests;
     private RequestTestResultDto requestTestResultDto;
+
     @BeforeEach
-    public void setup() {
+    void setUp() {
         SampleCollectorDto firstSampleCollectorDto = SampleCollectorDto.builder()
                 .place(LocationEnum.MARINA)
                 .gender(GenderEnum.M)
@@ -64,14 +56,6 @@ public class LabControllerTest {
                 .dateOfBirth(LocalDate.of(2002,8,8))
                 .isVerified(true)
                 .email("samplecollector1@gmail.com")
-                .build();
-        SampleCollectorDto secondSampleCollectorDto = SampleCollectorDto.builder()
-                .place(LocationEnum.MARINA)
-                .gender(GenderEnum.F)
-                .phoneNumber("1234567899")
-                .dateOfBirth(LocalDate.of(2002,8,8))
-                .isVerified(true)
-                .email("samplecollector2@gmail.com")
                 .build();
         userNameDto = RequestUserNameDto.builder()
                 .email(firstSampleCollectorDto.getEmail())
@@ -106,7 +90,7 @@ public class LabControllerTest {
                 .description("A simple HIV test")
                 .build();
 
-        tests = List.of(firstLabTest, secondLabTest);
+        List<LabTest> tests = List.of(firstLabTest, secondLabTest);
         ResponseTestInCartDto firstResponseTestInCartDto = ResponseTestInCartDto.builder()
                 .name("Blood Test")
                 .id(1L)
@@ -119,16 +103,16 @@ public class LabControllerTest {
                 .price(150.00)
                 .description("A simple HIV test")
                 .build();
-        responseTestInCartDtos = List.of(firstResponseTestInCartDto, secondResponseTestInCartDto);
-        labTestDtos = List.of(firstLabTestDto, secondLabTestDto);
-        responseTestPackageDto = ResponseTestPackageDto.builder()
+        List<ResponseTestInCartDto> responseTestInCartDtos = List.of(firstResponseTestInCartDto, secondResponseTestInCartDto);
+        List<LabTestDto> labTestDtos = List.of(firstLabTestDto, secondLabTestDto);
+        ResponseTestPackageDto responseTestPackageDto = ResponseTestPackageDto.builder()
                 .id(1L)
                 .price(1000.00)
                 .labTests(labTestDtos)
                 .name("Body test")
                 .description("Simple body test")
                 .build();
-        testPackage = TestPackage.builder()
+        TestPackage testPackage = TestPackage.builder()
                 .id(1L)
                 .price(1000.00)
                 .tests(tests)
@@ -172,23 +156,69 @@ public class LabControllerTest {
                 .id(1L)
                 .email("gowtham080802@gmail.com")
                 .build();
-        sampleCollectorDtos = List.of(firstSampleCollectorDto, secondSampleCollectorDto);
         responseOrderDtos = List.of(firstResponseOrderDto, secondResponseOrderDto);
+        testResultDto = TestResultDto.builder()
+                .generatedAt(LocalDateTime.now())
+                .id(1L)
+                .email("user@gmail.com")
+                .orderDate(LocalDate.of(2024, 8, 29))
+                .result(List.of("Normal"))
+                .ageAndGender("24 M")
+                .build();
     }
 
     @Test
-    void testVerifySampleCollector() {
-        doNothing().when(sampleCollectorService).verifySampleCollector(sampleCollectorDtos.getFirst().getEmail());
-        ResponseEntity<HttpStatus.Series> result = labController.verifySampleCollector(userNameDto);
-        assertEquals(HttpStatus.ACCEPTED, result.getStatusCode());
-    }
-
-    @Test
-    void testGetAllSampleCollectors() {
-        when(sampleCollectorService.getAllSampleCollectors()).thenReturn(sampleCollectorDtos);
-        ResponseEntity<List<SampleCollectorDto>> result = labController.getAllSampleCollectors();
-        assertEquals(sampleCollectorDtos, result.getBody());
+    void testGetOrdersByPatient() {
+        when(patientService.getOrdersByPatient(userNameDto)).thenReturn(responseOrderDtos);
+        ResponseEntity<List<ResponseOrderDto>> result = orderController.getOrdersByPatient(userNameDto);
+        assertEquals(responseOrderDtos, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
 
+    @Test
+    void testGetTestResult() {
+        when(labService.getTestResultByOrder(anyLong())).thenReturn(testResultDto);
+        ResponseEntity<TestResultDto> result = orderController.getTestResult(order.getId());
+        assertEquals(testResultDto, result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+
+    @Test
+    void testGetOrders_all() {
+        when(labService.getOrders()).thenReturn(responseOrderDtos);
+        ResponseEntity<List<ResponseOrderDto>> result = orderController.getOrders();
+        assertEquals(responseOrderDtos, result.getBody());
+    }
+
+    @Test
+    void testUpdateOrderStatus() {
+        doNothing().when(labService).updateStatus(anyLong());
+        ResponseEntity<HttpStatus.Series> result = orderController.updateOrderStatus(order.getId());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void testUpdateReport() {
+        doNothing().when(labService).assignReport(anyLong(),any(RequestTestResultDto.class));
+        ResponseEntity<HttpStatus.Series> result = orderController.updateReport(requestTestResultDto, order.getId());
+        assertEquals(HttpStatus.ACCEPTED, result.getStatusCode());
+    }
+
+
+    @Test
+    void testGetOrders() {
+        when(patientService.getOrders()).thenReturn(List.of(ResponseOrderDto.builder().build()));
+        ResponseEntity<List<ResponseOrderDto>> result = orderController.getOrdersOfPatient();
+        assertEquals(1, Objects.requireNonNull(result.getBody()).size());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
+
+    @Test
+    void testGetTestReport() {
+        when(patientService.getTestReport(anyLong())).thenReturn(testResultDto);
+        ResponseEntity<TestResultDto> result = orderController.getTestReport(order.getId());
+        assertEquals(testResultDto, result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
 }

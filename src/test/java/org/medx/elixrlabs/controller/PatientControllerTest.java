@@ -147,22 +147,6 @@ public class PatientControllerTest {
     }
 
     @Test
-    void testGetOrders() {
-        when(patientService.getOrders()).thenReturn(orders);
-        ResponseEntity<List<ResponseOrderDto>> result = patientController.getOrders();
-        assertEquals(orders, result.getBody());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-    }
-
-    @Test
-    void testGetTestReport() {
-        when(patientService.getTestReport(anyLong())).thenReturn(testResultDto);
-        ResponseEntity<TestResultDto> result = patientController.getTestReport(order.getId());
-        assertEquals(testResultDto, result.getBody());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-    }
-
-    @Test
     void testUpdatePatient() {
         when(patientService.createOrUpdatePatient(userDto)).thenReturn(responsePatientDto);
         ResponseEntity<ResponsePatientDto> result = patientController.updatePatient(userDto);
