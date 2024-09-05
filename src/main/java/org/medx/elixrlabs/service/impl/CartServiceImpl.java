@@ -2,6 +2,7 @@ package org.medx.elixrlabs.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.medx.elixrlabs.model.Patient;
@@ -85,7 +86,12 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public ResponseCartDto getCartByPatient() {
-        Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
+        String email = SecurityContextHelper.extractEmailFromContext();
+        Patient patient = patientService.getPatientByEmail(email);
+        if (null == patient) {
+            logger.warn("Patient not found with email : {}", email);
+            throw new NoSuchElementException("Patient not found with email : " + email);
+        }
         try {
             Cart userCart = cartRepository.findCartByUser(patient);
             if (userCart == null) {

@@ -24,7 +24,6 @@ public class OrderController {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderController.class);
 
-
     @Autowired
     private PatientService patientService;
 
