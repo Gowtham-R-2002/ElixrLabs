@@ -17,9 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.medx.elixrlabs.dto.LabTestDto;
-import org.medx.elixrlabs.service.LabTestService;
-
 /**
  * <p>Handles operations related to lab tests, including creation, retrieval,
  * updating, and deletion of lab test records. Provides endpoints for managing
