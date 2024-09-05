@@ -2,6 +2,7 @@ package org.medx.elixrlabs.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.UserRepository;
 import org.mockito.InjectMocks;
@@ -42,22 +43,20 @@ class UserServiceTest {
     @Test
     void testLoadUserByUsername_positive() {
         when(userRepository.findByEmailWithRoles(email)).thenReturn(user);
-        User result = userRepository.findByEmailWithRoles(email);
-        assertEquals(user.getEmail(), result.getEmail());
+        User foundUser = userService.loadUserByUsername(email);
+        assertEquals(foundUser.getEmail(),email);
         verify(userRepository).findByEmailWithRoles(email);
     }
 
     @Test
     void testLoadUserByUsername_negative() {
-        when(userRepository.findByEmailWithRoles(email)).thenReturn(null);
-        User result = userRepository.findByEmailWithRoles(email);
-        assertNull(result);
-        verify(userRepository).findByEmailWithRoles(email);
+        when(userRepository.findByEmailWithRoles(email)).thenThrow(LabException.class);
+        assertThrows(LabException.class, () -> userService.loadUserByUsername(email));
     }
 
     @Test
     void testLoadUserByUsername_exception() {
-        when(userRepository.findByEmailWithRoles(email)).thenThrow(new UsernameNotFoundException("Database error"));
-        assertThrows(UsernameNotFoundException.class, () -> userRepository.findByEmailWithRoles(email));
+        when(userRepository.findByEmailWithRoles(email)).thenReturn(null);
+        assertThrows(LabException.class, () -> userService.loadUserByUsername(email));
     }
 }

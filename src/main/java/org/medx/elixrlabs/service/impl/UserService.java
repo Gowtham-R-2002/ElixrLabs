@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.service.impl;
 
+import org.medx.elixrlabs.exception.LabException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,7 +42,7 @@ public class UserService implements UserDetailsService {
             }
         } catch (Exception e) {
             logger.warn("An error occurred while loading user by email: {}", email, e);
-            throw new UsernameNotFoundException("Error occurred while loading user by email: " + email, e);
+            throw new LabException("Error occurred while loading user by email: " + email, e);
         }
     }
 }

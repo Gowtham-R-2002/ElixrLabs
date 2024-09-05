@@ -44,12 +44,9 @@ class SampleCollectorServiceImplTest {
     private SampleCollector sampleCollector;
     private List<SampleCollector> sampleCollectors;
     private String email;
-    private MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class);
 
     @BeforeEach
     void setUp() {
-        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("sabari@gmail.com");
-
         userDto = UserDto.builder()
                 .email("sabari@gmail.com")
                 .password("sabari@123")
@@ -85,12 +82,6 @@ class SampleCollectorServiceImplTest {
         email = "sabari@gmail.com";
 
     }
-    
-    @AfterEach
-    public void close() {
-        mockedStatic.close();
-    }
-
 
     @Test
     void testCreateOrUpdateSampleCollector_positive() {
@@ -117,34 +108,38 @@ class SampleCollectorServiceImplTest {
 
     @Test
     void testCreateOrUpdateSampleCollector_exception() {
-            when(SecurityContextHelper.extractEmailFromContext()).thenReturn(email);
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
             when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenThrow(new RuntimeException("Database error"));
-
             assertThrows(RuntimeException.class, () -> {
                 sampleCollectorService.createOrUpdateSampleCollector(userDto);
             });
+        }
     }
 
     @Test
     void testDeleteSampleCollector_positive() {
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
             when(sampleCollectorRepository.getSampleCollectorByEmail(email)).thenReturn(sampleCollector);
-
             boolean result = sampleCollectorService.deleteSampleCollector();
-
             assertTrue(result);
             verify(sampleCollectorRepository, times(1)).save(sampleCollector);
             assertTrue(sampleCollector.isDeleted());
+        }
     }
 
     @Test
     void testDeleteSampleCollector_exception() {
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
             when(sampleCollectorRepository.getSampleCollectorByEmail(email)).thenReturn(sampleCollector);
             when(sampleCollectorRepository.save(sampleCollector)).thenThrow(new RuntimeException("Database error"));
-
             assertThrows(LabException.class, () -> {
                 sampleCollectorService.deleteSampleCollector();
             });
             verify(sampleCollectorRepository, times(1)).save(sampleCollector);
+        }
     }
 
     @Test
