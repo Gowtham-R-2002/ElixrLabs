@@ -157,6 +157,43 @@ public class CartServiceTest {
     }
 
     @Test
+    void addTestsOrPackagesToCart_testPackage_null_success() {
+
+        try (MockedStatic<SecurityContextHelper> mockSecurityContext = Mockito.mockStatic(SecurityContextHelper.class)) {
+            mockSecurityContext.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@example.com");
+
+            when(patientService.getPatientByEmail(anyString())).thenReturn(patient);
+            when(cartRepository.findCartByUser(patient)).thenReturn(cart);
+            when(labTestService.getLabTestById(anyLong())).thenReturn(labTestDto);
+            cartDto.setTestPackageId(null);
+            when(cartRepository.save(any(Cart.class))).thenReturn(cart);
+
+            ResponseCartDto response = cartService.addTestsOrPackagesToCart(cartDto);
+            assertNotNull(response);
+            verify(cartRepository, times(1)).save(any(Cart.class));
+        }
+    }
+
+    @Test
+    void addTestsOrPackagesToCart_success_test_null() {
+
+        try (MockedStatic<SecurityContextHelper> mockSecurityContext = Mockito.mockStatic(SecurityContextHelper.class)) {
+            mockSecurityContext.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@example.com");
+
+            when(patientService.getPatientByEmail(anyString())).thenReturn(patient);
+            when(cartRepository.findCartByUser(patient)).thenReturn(cart);
+            cartDto.setTestIds(null);
+            when(testPackageService.getTestPackageById(anyLong())).thenReturn(testPackage);
+            when(cartRepository.save(any(Cart.class))).thenReturn(cart);
+
+            ResponseCartDto response = cartService.addTestsOrPackagesToCart(cartDto);
+            assertNotNull(response);
+            verify(cartRepository, times(1)).save(any(Cart.class));
+        }
+    }
+
+
+    @Test
     void addTestsOrPackagesToCart_cart_null_success() {
 
         try (MockedStatic<SecurityContextHelper> mockSecurityContext = Mockito.mockStatic(SecurityContextHelper.class)) {
@@ -196,13 +233,11 @@ public class CartServiceTest {
             mockSecurityContext.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@example.com");
 
             when(patientService.getPatientByEmail(anyString())).thenReturn(patient);
-            when(cartRepository.findCartByUser(patient)).thenThrow(new LabException("Database error"));
-
-            LabException exception = assertThrows(LabException.class, () -> {
-                cartService.addTestsOrPackagesToCart(cartDto);
-            });
-            assertTrue(exception.getMessage().contains("Database error"));
-            verify(cartRepository, never()).save(cart);
+            when(cartRepository.findCartByUser(patient)).thenReturn(cart);
+            when(labTestService.getLabTestById(anyLong())).thenReturn(labTestDto);
+            when(testPackageService.getTestPackageById(anyLong())).thenReturn(testPackage);
+            when(cartRepository.save(cart)).thenThrow(LabException.class);
+            assertThrows(LabException.class, () -> cartService.addTestsOrPackagesToCart(cartDto));
         }
     }
 
@@ -224,19 +259,26 @@ public class CartServiceTest {
     }
 
     @Test
-    void getCartByPatient_failure() {
-
-        Cart cartFailure = Cart.builder()
-                .id(9L)
-                .patient(patient)
-                .build();
+    void getCartByPatient_success_cart_null() {
 
         try (MockedStatic<SecurityContextHelper> mockSecurityContext = Mockito.mockStatic(SecurityContextHelper.class)) {
             mockSecurityContext.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@example.com");
 
-            when(patientService.getPatientByEmail(anyString())).thenReturn(null);
+            when(patientService.getPatientByEmail(anyString())).thenReturn(patient);
+            when(cartRepository.findCartByUser(patient)).thenReturn(null);
 
-            assertThrows(NullPointerException.class, () -> {
+            ResponseCartDto response = cartService.getCartByPatient();
+
+            assertNotNull(response);
+            verify(cartRepository, times(1)).findCartByUser(patient);
+        }
+    }
+
+    @Test
+    void getCartByPatient_failure() {
+        try (MockedStatic<SecurityContextHelper> mockSecurityContext = Mockito.mockStatic(SecurityContextHelper.class)) {
+            mockSecurityContext.when(SecurityContextHelper::extractEmailFromContext).thenThrow(LabException.class);
+            assertThrows(LabException.class, () -> {
                 cartService.getCartByPatient();
             });
 
