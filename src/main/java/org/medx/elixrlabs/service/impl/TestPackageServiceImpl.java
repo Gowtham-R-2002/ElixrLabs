@@ -45,19 +45,22 @@ public class TestPackageServiceImpl implements TestPackageService {
     public ResponseTestPackageDto createOrUpdateTestPackage(RequestTestPackageDto requestTestPackageDto) {
         logger.info("Creating or updating TestPackage with name: {}", requestTestPackageDto.getName());
         TestPackage testPackage = TestPackageMapper.toTestPackage(requestTestPackageDto);
-        List<LabTest> tests = new ArrayList<>();
+        List<LabTest> tests;
+        TestPackage savedTestPackage;
+        tests = requestTestPackageDto.getLabTestIds().stream()
+                .map(testId -> LabTestMapper
+                        .toLabTest(labTestService
+                                .getLabTestById(testId)))
+                .toList();
+        testPackage.setTests(tests);
         try {
-            for (Long testId : requestTestPackageDto.getLabTestIds()) {
-                tests.add(LabTestMapper.toLabTest(labTestService.getLabTestById(testId)));
-            }
-            testPackage.setTests(tests);
-            TestPackage savedTestPackage = testPackageRepository.save(testPackage);
+            savedTestPackage = testPackageRepository.save(testPackage);
             logger.info("Successfully saved TestPackage with name: {}", requestTestPackageDto.getName());
-            return TestPackageMapper.toTestPackageDto(savedTestPackage);
         } catch (Exception e) {
             logger.warn("Failed to create or update TestPackage: {}", requestTestPackageDto.getName());
             throw new LabException("Error occurred while saving TestPackage" + requestTestPackageDto.getName(), e);
         }
+        return TestPackageMapper.toTestPackageDto(savedTestPackage);
     }
 
     @Override

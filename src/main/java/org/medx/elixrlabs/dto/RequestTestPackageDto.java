@@ -2,10 +2,12 @@ package org.medx.elixrlabs.dto;
 
 import java.util.List;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+import org.medx.elixrlabs.annotation.LabTests;
 
 /**
  * <p>Represents data required for creating or updating a test package.</p>
@@ -29,9 +31,9 @@ public class RequestTestPackageDto {
     @NotBlank
     private String description;
 
-    @NotNull
+    @Min(value = 500, message = "Must be greater than 500")
     private double price;
 
-    @NotNull
+    @LabTests
     private List<Long> labTestIds;
 }
