@@ -72,7 +72,7 @@ public class AppointmentSlotServiceTest {
     void setUp() {
         mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("user@gmail.com");
         requestSlotBookDto = RequestSlotBookDto.builder()
-                .date(LocalDate.parse("2024-08-29"))
+                .date(LocalDate.now())
                 .location(LocationEnum.VELACHERY)
                 .testCollectionPlace(TestCollectionPlaceEnum.HOME)
                 .build();
@@ -97,7 +97,7 @@ public class AppointmentSlotServiceTest {
                 .build();
         slots = List.of(slot);
         slotBookDto = SlotBookDto.builder()
-                .date(LocalDate.parse("2024-08-29"))
+                .date(LocalDate.now())
                 .location(LocationEnum.VELACHERY)
                 .testCollectionPlace(TestCollectionPlaceEnum.HOME)
                 .timeSlot("7PM")

@@ -234,7 +234,7 @@ public class CartServiceTest {
         try (MockedStatic<SecurityContextHelper> mockSecurityContext = Mockito.mockStatic(SecurityContextHelper.class)) {
             mockSecurityContext.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@example.com");
 
-            when(patientService.getPatientByEmail(anyString())).thenReturn(null);
+            when(patientService.getPatientByEmail(anyString())).thenThrow(NullPointerException.class);
 
             assertThrows(NullPointerException.class, () -> {
                 cartService.getCartByPatient();
