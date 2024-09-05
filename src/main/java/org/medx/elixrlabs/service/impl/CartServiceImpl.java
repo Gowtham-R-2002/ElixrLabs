@@ -2,6 +2,7 @@ package org.medx.elixrlabs.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.medx.elixrlabs.model.Patient;
@@ -62,30 +63,37 @@ public class CartServiceImpl implements CartService {
                     .patient(patient)
                     .build();
         }
+        if (cartDto.getTestIds() != null) {
+            List<LabTest> tests = cartDto.getTestIds()
+                    .stream()
+                    .map(testId -> LabTestMapper
+                            .toLabTest(labTestService
+                                    .getLabTestById(testId)))
+                    .collect(Collectors.toList());
+            userCart.setTests(tests);
+        }
+        if (cartDto.getTestPackageId() != null) {
+            userCart.setTestPackage(TestPackageMapper.toTestPackageFromResponseDto(
+                    testPackageService.getTestPackageById(cartDto.getTestPackageId())));
+        }
+        ResponseCartDto responseCartDto;
         try {
-            if (cartDto.getTestIds() != null) {
-                List<LabTest> tests = cartDto.getTestIds()
-                        .stream()
-                        .map(testId -> LabTestMapper
-                                .toLabTest(labTestService
-                                        .getLabTestById(testId)))
-                        .collect(Collectors.toList());
-                userCart.setTests(tests);
-            }
-            if (cartDto.getTestPackageId() != null) {
-                userCart.setTestPackage(TestPackageMapper.toTestPackageFromResponseDto(
-                        testPackageService.getTestPackageById(cartDto.getTestPackageId())));
-            }
-            return CartMapper.toCartDto(cartRepository.save(userCart));
+            responseCartDto = CartMapper.toCartDto(cartRepository.save(userCart));
         } catch (Exception e) {
             logger.warn("Error while adding tests or packages to cart for patient: {}", patient.getUser().getUsername());
             throw new LabException("Error while adding tests or packages to cart", e);
         }
+        return responseCartDto;
     }
 
     @Override
     public ResponseCartDto getCartByPatient() {
-        Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
+        String email = SecurityContextHelper.extractEmailFromContext();
+        Patient patient = patientService.getPatientByEmail(email);
+        if (null == patient) {
+            logger.warn("Patient not found with email : {}", email);
+            throw new NoSuchElementException("Patient not found with email : " + email);
+        }
         try {
             Cart userCart = cartRepository.findCartByUser(patient);
             if (userCart == null) {

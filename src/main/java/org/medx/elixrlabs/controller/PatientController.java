@@ -1,6 +1,5 @@
 package org.medx.elixrlabs.controller;
 
-import java.util.List;
 import java.util.Set;
 
 import jakarta.validation.Valid;
@@ -9,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,10 +18,8 @@ import org.medx.elixrlabs.dto.CartDto;
 import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.RequestSlotBookDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
-import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.ResponsePatientDto;
 import org.medx.elixrlabs.dto.SlotBookDto;
-import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.CartService;
@@ -56,7 +52,7 @@ public class PatientController {
      * @return The created or updated {@link ResponsePatientDto}.
      */
     @PostMapping("register")
-    public ResponseEntity<ResponsePatientDto> createOrUpdatePatient(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<ResponsePatientDto> createPatient(@Valid @RequestBody UserDto userDto) {
         ResponsePatientDto savedUser = patientService.createOrUpdatePatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }

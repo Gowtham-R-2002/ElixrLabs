@@ -182,11 +182,11 @@ public class PatientServiceImpl implements PatientService {
         Patient patient;
         try {
             patient = patientRepository.findByEmailAndIsDeletedFalse(email);
-            logger.info("Successfully fetched patient with email: {}", email);
         } catch (Exception e) {
             logger.warn("Error while getting patient with email: {}", email);
             throw new LabException("Error while getting patient with email: " + email, e);
         }
+        logger.info("Successfully fetched patient with email: {}", email);
         return patient;
     }
 

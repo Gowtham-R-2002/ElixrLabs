@@ -70,18 +70,20 @@ public class LabTestServiceImpl implements LabTestService {
 
     @Override
     public LabTestDto getLabTestById(long id) {
+        LabTest labTest = labTestRepository.findByIdAndIsDeletedFalse(id);
+        if (labTest == null) {
+            logger.warn("Lab test not found with id: {}", id);
+            throw new NoSuchElementException("Lab Test Not Found with id " + id);
+        }
+        LabTestDto labTestDto;
         try {
-            LabTest labTest = labTestRepository.findByIdAndIsDeletedFalse(id);
-            if (labTest == null) {
-                logger.warn("Lab test not found with id: {}", id);
-                throw new NoSuchElementException("Lab Test Not Found with id " + id);
-            }
             logger.info("Lab test retrieved successfully with id: {}", id);
-            return LabTestMapper.toRetrieveLabTestDto(labTest);
+            labTestDto = LabTestMapper.toRetrieveLabTestDto(labTest);
         } catch (Exception e) {
             logger.warn("Error while retrieving lab test with id: {}", id);
             throw new LabException("Error while retrieving lab test with id: " + id + e.getMessage(), e);
         }
+        return labTestDto;
     }
 
     @Override

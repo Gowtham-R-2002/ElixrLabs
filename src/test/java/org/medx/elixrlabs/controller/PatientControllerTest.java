@@ -125,7 +125,7 @@ public class PatientControllerTest {
     @Test
     void testCreateOrUpdatePatient() {
         when(patientService.createOrUpdatePatient(userDto)).thenReturn(responsePatientDto);
-        ResponseEntity<ResponsePatientDto> result = patientController.createOrUpdatePatient(userDto);
+        ResponseEntity<ResponsePatientDto> result = patientController.createPatient(userDto);
         assertEquals(responsePatientDto, result.getBody());
         assertEquals(HttpStatus.CREATED, result.getStatusCode());
     }
