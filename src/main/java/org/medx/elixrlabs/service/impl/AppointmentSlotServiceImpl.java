@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.medx.elixrlabs.dto.*;
+import org.medx.elixrlabs.exception.AntecedentDateException;
 import org.medx.elixrlabs.mapper.AppointmentMapper;
 import org.medx.elixrlabs.mapper.TestPackageMapper;
 import org.slf4j.Logger;
@@ -72,12 +73,12 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     @Override
     public Set<String> getAvailableSlots(RequestSlotBookDto slotBookDto) {
+        if (slotBookDto.getDate().isBefore(LocalDate.now())) {
+            logger.warn("Date must be today's date or upcoming dates !");
+            throw new AntecedentDateException("Date must be today's date or upcoming dates !");
+        }
+        logger.debug("Fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
         try {
-            if(slotBookDto.getDate().isBefore(LocalDate.now())) {
-                logger.warn("Date must be today's date or upcoming dates !");
-                throw new DateTimeException("Date must be today's date or upcoming dates !");
-            }
-            logger.debug("Fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
             List<AppointmentSlot> appointments = appointmentSlotRepository
                     .findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate());
             List<String> bookedTimeSlots = appointments.stream()

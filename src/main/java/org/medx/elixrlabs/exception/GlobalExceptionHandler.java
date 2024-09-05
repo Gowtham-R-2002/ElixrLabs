@@ -96,11 +96,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(DateTimeException.class)
-    public ResponseEntity<ErrorResponse> handleDateTimeException(DateTimeException dateTimeException) {
+    @ExceptionHandler(AntecedentDateException.class)
+    public ResponseEntity<ErrorResponse> handleDateTimeException(AntecedentDateException antecedentDateException) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .message(dateTimeException.getMessage())
+                .message(antecedentDateException.getMessage())
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

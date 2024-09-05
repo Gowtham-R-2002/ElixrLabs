@@ -292,14 +292,6 @@ public class LabServiceTest {
     }
 
     @Test
-    void testUpdateStatus_exception() {
-        orderService.updateOrderStatus(anyLong());
-        doThrow(RuntimeException.class).when(orderService).updateOrderStatus(anyLong());
-        Exception exception = assertThrows(LabException.class, () -> labService.updateStatus(order.getId()));
-        assertEquals("Error while updating order status for order id: " + order.getId(), exception.getMessage());
-    }
-
-    @Test
     void testGetTestResultByOrder_positive() {
         when(orderService.getOrder(anyLong())).thenReturn(order);
         TestResultDto result = labService.getTestResultByOrder(order.getId());

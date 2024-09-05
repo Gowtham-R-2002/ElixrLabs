@@ -54,13 +54,9 @@ public class JwtService {
 
 
     public String generateToken(UserDetails userDetails, LocationEnum place) {
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
         try {
             return Jwts.builder()
                     .subject(userDetails.getUsername())
-                    .claim("roles", roles)
                     .issuedAt(Date.from(Instant.now()))
                     .expiration(Date.from(Instant.now().plusMillis(VALIDITY)))
                     .signWith(generateKey())
@@ -110,10 +106,5 @@ public class JwtService {
             logger.warn("Error while validating token: {}", e.getMessage());
             throw new LabException("Error while validating token", e);
         }
-    }
-
-    public List<String> extractRoles(String jwt) {
-        Claims claims = getClaims(jwt);
-        return claims.get("roles", List.class);
     }
 }

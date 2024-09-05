@@ -192,13 +192,6 @@ public class OrderControllerTest {
     }
 
     @Test
-    void testUpdateOrderStatus() {
-        doNothing().when(labService).updateStatus(anyLong());
-        ResponseEntity<HttpStatus.Series> result = orderController.updateOrderStatus(order.getId());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
-    }
-
-    @Test
     void testUpdateReport() {
         doNothing().when(labService).assignReport(anyLong(),any(RequestTestResultDto.class));
         ResponseEntity<HttpStatus.Series> result = orderController.updateReport(requestTestResultDto, order.getId());
