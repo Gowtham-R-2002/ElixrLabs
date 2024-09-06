@@ -1,13 +1,9 @@
 package org.medx.elixrlabs.service.impl;
 
-import java.util.List;
-
-import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.model.Admin;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.AdminRepository;
 import org.medx.elixrlabs.repository.RoleRepository;
-import org.medx.elixrlabs.repository.UserRepository;
 import org.medx.elixrlabs.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

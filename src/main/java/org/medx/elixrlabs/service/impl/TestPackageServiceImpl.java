@@ -52,6 +52,11 @@ public class TestPackageServiceImpl implements TestPackageService {
                         .toLabTest(labTestService
                                 .getLabTestById(testId)))
                 .toList();
+        double price = tests.stream()
+                        .mapToDouble(LabTest :: getPrice)
+                .sum();
+        double offerPrice = price * 0.8;
+        testPackage.setPrice(offerPrice);
         testPackage.setTests(tests);
         try {
             savedTestPackage = testPackageRepository.save(testPackage);
