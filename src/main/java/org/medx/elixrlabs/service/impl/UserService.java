@@ -32,7 +32,7 @@ public class UserService implements UserDetailsService {
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
         logger.debug("Attempting to load user by email: {}", email);
         try {
-            User user = userRepository.findByEmailWithRoles(email);
+            User user = userRepository.findByEmailWithRole(email);
             if (user != null) {
                 logger.info("Successfully loaded user with email: {}", email);
                 return user;

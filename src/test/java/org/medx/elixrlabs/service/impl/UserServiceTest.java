@@ -8,7 +8,6 @@ import org.medx.elixrlabs.repository.UserRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
@@ -42,21 +41,21 @@ class UserServiceTest {
 
     @Test
     void testLoadUserByUsername_positive() {
-        when(userRepository.findByEmailWithRoles(email)).thenReturn(user);
+        when(userRepository.findByEmailWithRole(email)).thenReturn(user);
         User foundUser = userService.loadUserByUsername(email);
         assertEquals(foundUser.getEmail(),email);
-        verify(userRepository).findByEmailWithRoles(email);
+        verify(userRepository).findByEmailWithRole(email);
     }
 
     @Test
     void testLoadUserByUsername_negative() {
-        when(userRepository.findByEmailWithRoles(email)).thenThrow(LabException.class);
+        when(userRepository.findByEmailWithRole(email)).thenThrow(LabException.class);
         assertThrows(LabException.class, () -> userService.loadUserByUsername(email));
     }
 
     @Test
     void testLoadUserByUsername_exception() {
-        when(userRepository.findByEmailWithRoles(email)).thenReturn(null);
+        when(userRepository.findByEmailWithRole(email)).thenReturn(null);
         assertThrows(LabException.class, () -> userService.loadUserByUsername(email));
     }
 }

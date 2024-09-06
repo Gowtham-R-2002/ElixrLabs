@@ -35,7 +35,7 @@ public class AdminServiceTest {
     private Role firstRole;
     private Role secondRole;
     private Role thirdRole;
-    private List<Role> roles;
+    private Role role;
 
     @BeforeEach
     void setUp() {
@@ -51,11 +51,11 @@ public class AdminServiceTest {
                 .id(3)
                 .name(RoleEnum.ROLE_PATIENT)
                 .build();
-        roles = List.of(firstRole, secondRole, thirdRole);
+        role = (firstRole);
         user = User.builder()
                 .email("admin@gmail.com")
                 .password("admin@123")
-                .roles(roles)
+                .role(role)
                 .build();
         admin = Admin.builder()
                 .id(1L)
