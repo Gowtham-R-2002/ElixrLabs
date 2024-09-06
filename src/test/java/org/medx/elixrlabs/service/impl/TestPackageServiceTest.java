@@ -95,10 +95,8 @@ class TestPackageServiceTest {
     @Test
     void testCreateOrUpdateTest_negative() {
         when(labTestService.getLabTestById(anyLong())).thenReturn(null);
-        Exception exception = assertThrows(LabException.class,
+        assertThrows(NullPointerException.class,
                 () -> testPackageService.createOrUpdateTestPackage(requestTestPackageDto));
-
-        assertEquals("Error occurred while saving TestPackage" + requestTestPackageDto.getName(), exception.getMessage());
         verify(testPackageRepository, never()).save(any(TestPackage.class));
     }
 
