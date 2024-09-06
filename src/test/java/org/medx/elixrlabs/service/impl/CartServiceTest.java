@@ -99,7 +99,7 @@ public class CartServiceTest {
                 .dateOfBirth(LocalDate.parse("1998-04-20"))
                 .gender(GenderEnum.M)
                 .phoneNumber("9876543210")
-                .roles(Collections.singletonList(role))
+                .role(role)
                 .build();
 
         patient = Patient.builder()

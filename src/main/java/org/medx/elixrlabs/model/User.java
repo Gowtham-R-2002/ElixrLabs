@@ -5,20 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * The {@code User} class represents the users of the system,
  * including customers, sample collectors, and admins. It stores
  * personal information such as name, email, and password, and also
- * manages the roles associated with the user for access control.
+ * manages the role associated with the user for access control.
  * </p>
  *
  * @author  Sabarinathan K
@@ -62,13 +49,8 @@ public class User extends Auditable implements UserDetails {
 
     private String password;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private List<Role> roles;
+    @OneToOne
+    private Role role;
 
     @Enumerated(EnumType.STRING)
     private LocationEnum place;
@@ -87,9 +69,7 @@ public class User extends Auditable implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(
-                role -> new SimpleGrantedAuthority(role.getName().toString())
-        ).collect(Collectors.toList());
+        return List.of(new SimpleGrantedAuthority(getRole().getName().toString()));
     }
 
     @Override

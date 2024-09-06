@@ -9,6 +9,7 @@ import org.medx.elixrlabs.repository.AdminRepository;
 import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.repository.UserRepository;
 import org.medx.elixrlabs.service.AdminService;
+import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class AdminServiceImpl implements AdminService {
                 .email("sabarisha0622@gmail.com")
                 .password("admin@123")
                 .build();
-        user.setRoles(roleRepository.findAll());
+        user.setRole(roleRepository.findByName(RoleEnum.ROLE_ADMIN));
         String password = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(password);
         Admin admin = Admin.builder()
@@ -48,7 +49,7 @@ public class AdminServiceImpl implements AdminService {
                 .email("deomuja@gmail.com")
                 .password("admin@123")
                 .build();
-        anotherUser.setRoles(roleRepository.findAll());
+        anotherUser.setRole(roleRepository.findByName(RoleEnum.ROLE_ADMIN));
         String anotherPassword = bCryptPasswordEncoder.encode(anotherUser.getPassword());
         anotherUser.setPassword(anotherPassword);
         Admin anotherAdmin = Admin.builder()
