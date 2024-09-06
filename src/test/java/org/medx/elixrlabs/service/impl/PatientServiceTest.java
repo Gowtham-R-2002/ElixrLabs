@@ -7,21 +7,29 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDate;
 import java.util.*;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import org.medx.elixrlabs.dto.*;
+import org.medx.elixrlabs.mapper.TestResultMapper;
+import org.medx.elixrlabs.service.OrderService;
+import org.medx.elixrlabs.service.RoleService;
+import org.medx.elixrlabs.service.TestResultService;
+import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.medx.elixrlabs.util.TestStatusEnum;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import org.medx.elixrlabs.dto.*;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
+import org.medx.elixrlabs.mapper.OrderMapper;
 import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.Patient;
@@ -29,10 +37,6 @@ import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.model.TestResult;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.PatientRepository;
-import org.medx.elixrlabs.service.OrderService;
-import org.medx.elixrlabs.service.RoleService;
-import org.medx.elixrlabs.service.TestResultService;
-import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.RoleEnum;
 
@@ -63,16 +67,12 @@ public class PatientServiceTest {
     private Role patientRole;
     private Patient patient;
     private ResponseOrderDto responseOrderDto;
-    private static MockedStatic<SecurityContextHelper> mockedStatic;
-
-    @BeforeAll
-    public static void beforeAll() {
-        mockedStatic = mockStatic(SecurityContextHelper.class);
-        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@example.com");
-    }
+    private MockedStatic<SecurityContextHelper> mockedStatic;
 
     @BeforeEach
     void setUp() {
+        mockedStatic = mockStatic(SecurityContextHelper.class);
+        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@example.com");
         user = User.builder()
                 .UUID(UUID.randomUUID().toString())
                 .place(LocationEnum.GUINDY)
@@ -131,10 +131,10 @@ public class PatientServiceTest {
                 .build();
     }
 
-//    @AfterAll
-//    public static void close() {
-//        mockedStatic.close();
-//    }
+    @AfterEach
+    public void close() {
+        mockedStatic.close();
+    }
 
     @Test
     void createOrUpdatePatient_success_create() {
@@ -283,7 +283,6 @@ public class PatientServiceTest {
             patientService.getTestReport(9L);
         });
         verify(orderService, times(1)).getOrder(9L);
-        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@example.com");
     }
 
     @Test

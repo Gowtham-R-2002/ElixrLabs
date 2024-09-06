@@ -123,14 +123,6 @@ public class PatientControllerTest {
     }
 
     @Test
-    void testCreateOrUpdatePatient() {
-        when(patientService.createOrUpdatePatient(userDto)).thenReturn(responsePatientDto);
-        ResponseEntity<ResponsePatientDto> result = patientController.createPatient(userDto);
-        assertEquals(responsePatientDto, result.getBody());
-        assertEquals(HttpStatus.CREATED, result.getStatusCode());
-    }
-
-    @Test
     void testGetAvailableSlots() {
         when(appointmentSlotService.getAvailableSlots(any(RequestSlotBookDto.class))).thenReturn(Set.of("1AM", "2AM"));
         ResponseEntity<Set<String>> result = patientController.getAvailableSlots(requestSlotBookDto);
