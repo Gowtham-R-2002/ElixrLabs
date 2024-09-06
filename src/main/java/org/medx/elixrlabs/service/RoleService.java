@@ -14,9 +14,6 @@ import org.medx.elixrlabs.util.RoleEnum;
  * </p>
  */
 public interface RoleService {
-
-    void setupInitialData();
-
     /**
      * Retrieves all Roles.
      *
