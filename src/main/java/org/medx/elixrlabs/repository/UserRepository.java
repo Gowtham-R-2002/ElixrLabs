@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 /**
  * Repository interface for accessing User data from the database.
  *
@@ -19,9 +17,9 @@ import java.util.List;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    String getUserWithRoles = "FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email AND u.isBlocked = false";
+    String getUserWithRole = "FROM User u LEFT JOIN FETCH u.role WHERE u.email = :email AND u.isBlocked = false";
 
-    @Query(getUserWithRoles)
-    User findByEmailWithRoles(@Param("email") String email);
+    @Query(getUserWithRole)
+    User findByEmailWithRole(@Param("email") String email);
 
 }
