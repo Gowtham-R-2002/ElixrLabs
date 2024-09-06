@@ -8,8 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.medx.elixrlabs.dto.AppointmentDto;
+import org.medx.elixrlabs.dto.AppointmentsQueryDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
+import org.medx.elixrlabs.helper.SecurityContextHelper;
+import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.SampleCollectorService;
@@ -17,6 +20,7 @@ import org.medx.elixrlabs.util.GenderEnum;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -48,10 +52,13 @@ class SampleCollectorControllerTest {
     private SampleCollectorDto sampleCollectorDto2;
     private List<SampleCollectorDto> sampleCollectorDtos;
     private List<AppointmentDto> appointmentDtos;
+    private AppointmentsQueryDto appointmentsQueryDto;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        appointmentsQueryDto = AppointmentsQueryDto.builder()
+                .date(LocalDate.now())
+                .build();
 
         userDto = UserDto.builder()
                 .email("sabari@gmail.com")
@@ -138,6 +145,17 @@ class SampleCollectorControllerTest {
         assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(sampleCollectorService).deleteSampleCollector();
+    }
+
+    @Test
+    void testGetAppointments() {
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@gmail.com");
+        when(sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()))
+                .thenReturn(SampleCollector.builder().user(User.builder().place(LocationEnum.MARINA).build()).build());
+        when(appointmentSlotService.getAppointmentsByPlace(LocationEnum.MARINA, appointmentsQueryDto.getDate())).thenReturn(appointmentDtos);
+        assertEquals(2, sampleCollectorController.getAppointments(appointmentsQueryDto).getBody().size());
+        }
     }
 
     @Test

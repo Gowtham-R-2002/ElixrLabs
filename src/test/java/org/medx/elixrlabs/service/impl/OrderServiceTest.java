@@ -55,7 +55,6 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         User user = User.builder()
                 .place(LocationEnum.GUINDY)
                 .build();

@@ -1,6 +1,5 @@
 package org.medx.elixrlabs.service.impl;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,33 +45,22 @@ public class LabServiceTest {
 
     @InjectMocks
     private LabServiceImpl labService;
-
-    private static final MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class);
+    
 
     private Admin admin;
     private User user;
     private ResponseOrderDto responseOrderDto;
-    private List<ResponseTestInCartDto> tests;
     private List<LabTest> labTests;
     private List<LabTestDto> labTestDtos;
     private Order order;
-    private Patient patient;
-    private TestPackage testPackage;
-    private AppointmentSlot slot;
     private SampleCollector sampleCollector;
-    private TestResult testResult;
     private TestResult responseTestResult;
     private TestResultDto testResultDto;
     private RequestTestResultDto requestTestResultDto;
 
-    @BeforeAll
-    static void staticSetUp() {
-        mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("admin@gmail.com");
-    }
-
     @BeforeEach
     void setUp() {
-        testPackage = TestPackage.builder()
+        TestPackage testPackage = TestPackage.builder()
                 .tests(List.of(LabTest.builder()
                                 .id(1L)
                                 .name("Blood test")
@@ -89,13 +77,13 @@ public class LabServiceTest {
                 .price(500)
                 .description("Simple Test Pack")
                 .build();
-        patient = Patient.builder()
+        Patient patient = Patient.builder()
                 .id(1L)
                 .user(User.builder()
                         .UUID(UUID.randomUUID().toString())
                         .phoneNumber("1234567890")
                         .email("user@gmail.com")
-                        .dateOfBirth(LocalDate.of(2002,8,8))
+                        .dateOfBirth(LocalDate.of(2002, 8, 8))
                         .roles(List.of(Role.builder()
                                 .id(1)
                                 .name(RoleEnum.ROLE_PATIENT)
@@ -106,7 +94,7 @@ public class LabServiceTest {
                         .build())
                 .isDeleted(false)
                 .build();
-        tests = List.of(ResponseTestInCartDto.builder()
+        List<ResponseTestInCartDto> tests = List.of(ResponseTestInCartDto.builder()
                         .id(1L)
                         .name("Blood test")
                         .price(100)
@@ -190,7 +178,7 @@ public class LabServiceTest {
                         .description("Simple test pack")
                         .build())
                 .build();
-        slot = AppointmentSlot.builder()
+        AppointmentSlot slot = AppointmentSlot.builder()
                 .location(LocationEnum.VELACHERY)
                 .testCollectionPlace(TestCollectionPlaceEnum.HOME)
                 .timeSlot("7PM")
@@ -198,7 +186,7 @@ public class LabServiceTest {
                 .dateSlot(LocalDate.parse("2024-08-29"))
                 .sampleCollector(sampleCollector)
                 .build();
-        testResult = TestResult.builder()
+        TestResult testResult = TestResult.builder()
                 .id(1L)
                 .name("user@gmail.com")
                 .orderDate(LocalDate.parse("2024-08-29"))
@@ -243,28 +231,37 @@ public class LabServiceTest {
 
     @Test
     void testGetOrders_positive() {
-        when(adminService.getAdminByEmail(anyString())).thenReturn(admin);
-        when(orderService.getOrdersByLocation(user.getPlace())).thenReturn(List.of(responseOrderDto));
-        List<ResponseOrderDto> result = labService.getOrders();
-        assertEquals(List.of(responseOrderDto), result);
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
+            when(adminService.getAdminByEmail(anyString())).thenReturn(admin);
+            when(orderService.getOrdersByLocation(user.getPlace())).thenReturn(List.of(responseOrderDto));
+            List<ResponseOrderDto> result = labService.getOrders();
+            assertEquals(List.of(responseOrderDto), result);
+        }
     }
 
     @Test
     void testGetOrders_exception() {
-        when(adminService.getAdminByEmail(anyString())).thenReturn(admin);
-        when(orderService.getOrdersByLocation(user.getPlace())).thenThrow(RuntimeException.class);
-        Exception exception = assertThrows(LabException.class,() -> labService.getOrders());
-        assertEquals("Error while fetching orders: ", exception.getMessage());
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
+            when(adminService.getAdminByEmail(anyString())).thenReturn(admin);
+            when(orderService.getOrdersByLocation(user.getPlace())).thenThrow(RuntimeException.class);
+            Exception exception = assertThrows(LabException.class, () -> labService.getOrders());
+            assertEquals("Error while fetching orders: ", exception.getMessage());
+        }
     }
 
     @Test
     void testAssignReport_positive() {
-        when(orderService.getOrder(anyLong())).thenReturn(order);
-        when(labTestService.getLabTestById(labTests.getFirst().getId())).thenReturn(labTestDtos.getFirst());
-        when(testResultService.addResult(any(TestResult.class))).thenReturn(responseTestResult);
-        orderService.createOrUpdateOrder(order);
-        labService.assignReport(order.getId(), requestTestResultDto);
-        verify(orderService, times(2)).createOrUpdateOrder(any(Order.class));
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
+            when(orderService.getOrder(anyLong())).thenReturn(order);
+            when(labTestService.getLabTestById(labTests.getFirst().getId())).thenReturn(labTestDtos.getFirst());
+            when(testResultService.addResult(any(TestResult.class))).thenReturn(responseTestResult);
+            orderService.createOrUpdateOrder(order);
+            labService.assignReport(order.getId(), requestTestResultDto);
+            verify(orderService, times(2)).createOrUpdateOrder(any(Order.class));
+        }
     }
 
     @Test
@@ -290,6 +287,7 @@ public class LabServiceTest {
         orderService.updateOrderStatus(order.getId());
         verify(orderService,times(1)).updateOrderStatus(order.getId());
     }
+
 
     @Test
     void testGetTestResultByOrder_positive() {

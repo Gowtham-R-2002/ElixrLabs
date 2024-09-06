@@ -11,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -79,7 +80,8 @@ public class LabTestServiceTest {
 
     @Test
     void testCreateOrUpdate_negative() {
-
+        when(labTestRepository.save(labTest)).thenThrow(LabException.class);
+        assertThrows(LabException.class, () -> labTestService.createOrUpdateTest(labTestDto));
     }
 
     @Test
@@ -90,10 +92,23 @@ public class LabTestServiceTest {
     }
 
     @Test
+    void testGetAllLabTests_positive_testsEmpty() {
+        when(labTestRepository.findByIsDeletedFalse()).thenReturn(new ArrayList<>());
+        List<LabTestDto> result = labTestService.getAllLabTests();
+        assertEquals(0,result.size());
+    }
+
+    @Test
     void testGetAllLabTests_negative() {
         when(labTestRepository.findByIsDeletedFalse()).thenReturn(List.of(LabTest.builder().build()));
         List<LabTestDto> result = labTestService.getAllLabTests();
         assertEquals(List.of(LabTestDto.builder().build()), result);
+    }
+
+    @Test
+    void testGetAllLabTests_exception() {
+        when(labTestRepository.findByIsDeletedFalse()).thenThrow(LabException.class);
+        assertThrows(LabException.class, () -> labTestService.getAllLabTests());
     }
 
     @Test
