@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -121,7 +122,7 @@ public class LabTestServiceTest {
     @Test
     void testGetLabTestById_exception() {
         when(labTestRepository.findByIdAndIsDeletedFalse(1L)).thenReturn(null);
-        assertThrows(LabException.class, () -> labTestService.getLabTestById(1L));
+        assertThrows(NoSuchElementException.class, () -> labTestService.getLabTestById(1L));
     }
 
     @Test
