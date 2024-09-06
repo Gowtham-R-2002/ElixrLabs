@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.mapper.PatientMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -82,7 +83,10 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         try {
             savedSampleCollector = sampleCollectorRepository.save(sampleCollector);
             logger.info("Successfully Created SampleCollector with email: {}", userDto.getEmail());
-        } catch (Exception e) {
+        } catch (DataIntegrityViolationException e) {
+            logger.warn("Error while creating existing user with email : {}", userDto.getEmail());
+            throw new DataIntegrityViolationException("User already exists with email " + userDto.getEmail());
+        } catch(Exception e) {
             logger.warn("Error while creating SampleCollector with email: {}", userDto.getEmail());
             throw new LabException("Error while saving SampleCollector with email: " + userDto.getEmail(), e);
         }
