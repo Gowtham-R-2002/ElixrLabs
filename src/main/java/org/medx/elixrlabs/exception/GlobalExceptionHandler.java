@@ -109,10 +109,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ErrorResponse> handleDateTimeException(NoSuchElementException noSuchElementException) {
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .statusCode(HttpStatus.NOT_FOUND.value())
                 .message(noSuchElementException.getMessage())
                 .build();
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

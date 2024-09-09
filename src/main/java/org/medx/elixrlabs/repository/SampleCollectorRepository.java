@@ -30,6 +30,9 @@ public interface SampleCollectorRepository extends JpaRepository<SampleCollector
     String getSampleCollectorByPlaceQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.user.place = :place"
             + " AND s.isVerified = true AND s.isDeleted = false";
 
+    String getUnVerifiedSampleCollectorByEmailQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.user.email = :email"
+            + " AND s.isDeleted = false";
+
     @Query(getSampleCollectorByEmailQuery)
     SampleCollector getSampleCollectorByEmail(@Param("email") String email);
 
@@ -38,4 +41,7 @@ public interface SampleCollectorRepository extends JpaRepository<SampleCollector
 
     @Query(getSampleCollectorByPlaceQuery)
     List<SampleCollector> getSampleCollectorsByPlace(@Param("place")LocationEnum place);
+
+    @Query(getUnVerifiedSampleCollectorByEmailQuery)
+    SampleCollector getUnVerifiedSampleCollectorByEmail(@Param("email") String email);
 }
