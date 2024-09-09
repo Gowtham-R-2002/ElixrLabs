@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.hibernate.validator.constraints.Length;
 import org.medx.elixrlabs.util.GenderEnum;
 import org.medx.elixrlabs.util.LocationEnum;
 
@@ -33,7 +34,7 @@ public class UserDto {
 
     @NotNull
     @NotBlank
-    @Min(value = 6)
+    @Length(min = 6, max = 15)
     private String password;
 
     @NotNull

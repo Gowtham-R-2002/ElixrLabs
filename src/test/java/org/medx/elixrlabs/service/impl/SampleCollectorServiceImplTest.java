@@ -88,7 +88,6 @@ class SampleCollectorServiceImplTest {
         when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenReturn(sampleCollector);
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)).thenReturn(new Role());
-        when(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)).thenReturn(new Role());
         when(sampleCollectorRepository.save(any(SampleCollector.class))).thenReturn(sampleCollector);
         SampleCollectorDto result = sampleCollectorService.createOrUpdateSampleCollector(userDto);
         assertNotNull(result);
@@ -100,7 +99,6 @@ class SampleCollectorServiceImplTest {
         when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenReturn(null);
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)).thenReturn(new Role());
-        when(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)).thenReturn(new Role());
         when(sampleCollectorRepository.save(any(SampleCollector.class))).thenReturn(sampleCollector);
         SampleCollectorDto result = sampleCollectorService.createOrUpdateSampleCollector(userDto);
         assertNotNull(result);

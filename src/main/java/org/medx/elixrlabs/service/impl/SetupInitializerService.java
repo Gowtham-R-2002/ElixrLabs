@@ -125,6 +125,7 @@ public class SetupInitializerService {
     private void setupSuperAdminData() {
         try {
             User superAdmin = User.builder()
+                    .roles(List.of(roleRepository.findByName(RoleEnum.ROLE_SUPER_ADMIN)))
                     .email("ergowthamramesh@gmail.com")
                     .password(bCryptPasswordEncoder.encode("sup@123"))
                     .build();
