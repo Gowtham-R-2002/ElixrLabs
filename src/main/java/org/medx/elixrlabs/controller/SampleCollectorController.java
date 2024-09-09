@@ -120,7 +120,7 @@ public class SampleCollectorController {
 
     /**
      * Gets all assigned appointments of the currently logged in sample collector
-     * @return {@link List<AppointmentDto}>} Appointments that are assigned to the currently logged in sample collector
+     * @return {@link List<AppointmentDto>} Appointments that are assigned to the currently logged in sample collector
      */
     @GetMapping("appointments/assigned")
     public ResponseEntity<List<AppointmentDto>> getAllAssignedAppointments() {
@@ -131,7 +131,7 @@ public class SampleCollectorController {
 
     /**
      * Gets all sample-collected appointments of the currently logged in sample collector
-     * @return {@link List<AppointmentDto}>} Sample-collected Appointments of the currently logged in sample collector
+     * @return {@link List<AppointmentDto>} Sample-collected Appointments of the currently logged in sample collector
      */
     @GetMapping("appointments/assigned/collected")
     public ResponseEntity<List<AppointmentDto>> getCollectedAppointments() {
@@ -142,7 +142,7 @@ public class SampleCollectorController {
 
     /**
      * Gets all appointments of the currently logged in sample collector that have uncollected samples
-     * @return {@link List<AppointmentDto}>} Appointments of the currently logged in sample collector that have uncollected samples
+     * @return {@link List<AppointmentDto>} Appointments of the currently logged in sample collector that have uncollected samples
      */
     @GetMapping("appointments/assigned/pending")
     public ResponseEntity<List<AppointmentDto>> getPendingAppointments() {

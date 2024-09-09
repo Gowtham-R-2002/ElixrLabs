@@ -30,7 +30,6 @@ public class TestPackageMapper {
                 .id(requestTestPackageDto.getId())
                 .name(requestTestPackageDto.getName())
                 .description(requestTestPackageDto.getDescription())
-                .price(requestTestPackageDto.getPrice())
                 .build();
     }
 

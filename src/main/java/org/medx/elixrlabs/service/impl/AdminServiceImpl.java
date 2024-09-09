@@ -4,16 +4,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.model.Admin;
-import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.AdminRepository;
 import org.medx.elixrlabs.repository.RoleRepository;
-import org.medx.elixrlabs.repository.UserRepository;
 import org.medx.elixrlabs.service.AdminService;
-import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**

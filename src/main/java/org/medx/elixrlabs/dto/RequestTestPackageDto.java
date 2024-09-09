@@ -31,9 +31,6 @@ public class RequestTestPackageDto {
     @NotBlank
     private String description;
 
-    @Min(value = 500, message = "Must be greater than 500")
-    private double price;
-
     @LabTests
     private List<Long> labTestIds;
 }

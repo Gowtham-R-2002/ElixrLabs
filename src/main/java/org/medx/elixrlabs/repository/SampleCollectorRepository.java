@@ -21,7 +21,7 @@ import java.util.List;
 @Repository
 public interface SampleCollectorRepository extends JpaRepository<SampleCollector, Long> {
     String getSampleCollectorByEmailQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.user.email = :email"
-            + " AND s.isDeleted = false";
+            + " AND s.isDeleted = false AND s.isVerified = true";
 
     String getAllSampleCollectorQuery = "FROM SampleCollector s LEFT JOIN FETCH s.user WHERE s.isVerified = true"
             + " AND s.isDeleted = false";
