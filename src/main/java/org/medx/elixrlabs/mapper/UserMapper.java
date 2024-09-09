@@ -4,19 +4,18 @@ import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.model.User;
 
 /**
- * Mapper class for mapping between User and UserDto.
- *
- * <p>
+ * <p> Mapper class for mapping between User and UserDto.
  * This class provides static methods for converting between User entities
  * and their corresponding Data Transfer Objects (DTOs). It facilitates the
  * conversion process needed for interacting with the service and controller layers
- * while keeping the domain model and DTOs separate.
- * </p>
+ * while keeping the domain model and DTOs separate. </p>
+ *
+ * @author Gowtham R
  */
 public class UserMapper {
 
     /**
-     * Converts an {@link User} entity to an {@link UserDto}.
+     * Converts an {@link User} entity to its respective {@link UserDto}.
      *
      * @param user {@link User} The User entity to be converted.
      * @return {@link UserDto} The corresponding User DTO.
@@ -33,7 +32,7 @@ public class UserMapper {
     }
 
     /**
-     * Converts an {@link UserDto} to an {@link User} entity.
+     * Converts an {@link UserDto} to its respective {@link User} entity.
      *
      * @param userDto {@link UserDto} The User DTO to be converted.
      * @return {@link User} The corresponding User entity.

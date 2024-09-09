@@ -1,35 +1,20 @@
 package org.medx.elixrlabs.controller;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.medx.elixrlabs.service.impl.AuthenticationService;
-import org.medx.elixrlabs.service.impl.SampleCollectorServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import org.medx.elixrlabs.dto.LoginRequestDto;
 import org.medx.elixrlabs.dto.OtpDto;
-import org.medx.elixrlabs.exception.OTPValidationException;
-import org.medx.elixrlabs.model.OTP;
-import org.medx.elixrlabs.service.EmailService;
-import org.medx.elixrlabs.service.impl.JwtService;
-import org.medx.elixrlabs.service.impl.UserService;
-import org.medx.elixrlabs.util.LocationEnum;
 
 /**
  * <p>Handles user authentication, login processes, and OTP management.

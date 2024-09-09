@@ -1,23 +1,35 @@
 package org.medx.elixrlabs.controller;
 
+import java.util.List;
+
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import org.medx.elixrlabs.dto.RequestTestResultDto;
 import org.medx.elixrlabs.dto.RequestUserNameDto;
 import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.service.LabService;
 import org.medx.elixrlabs.service.PatientService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
+/**
+ * <p>Handles operations related to orders, including their creation, retrieval,
+ * updating, and deletion of orders placed. Provides endpoints for managing
+ * orders data.</p>
+ *
+ * @author Gowtham R
+ */
 @RestController
 @RequestMapping("api/v1/orders")
 public class OrderController {

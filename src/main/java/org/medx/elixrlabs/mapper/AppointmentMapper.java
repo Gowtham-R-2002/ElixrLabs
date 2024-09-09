@@ -7,14 +7,13 @@ import org.medx.elixrlabs.dto.AppointmentDto;
 import org.medx.elixrlabs.model.AppointmentSlot;
 
 /**
- * Mapper class for mapping between Appointment and AppointmentDTO.
- *
- * <p>
+ * <p>Mapper class for mapping between Appointment and AppointmentDTO.
  * This class provides static methods for converting between Appointment entities
  * and their corresponding Data Transfer Objects (DTOs). It facilitates the
  * conversion process needed for interacting with the service and controller layers
- * while keeping the domain model and DTOs separate.
- * </p>
+ * while keeping the domain model and DTOs separate.</p>
+ *
+ * @author Sabarinathan K
  */
 public class AppointmentMapper {
 

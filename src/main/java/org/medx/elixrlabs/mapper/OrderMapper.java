@@ -8,14 +8,13 @@ import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.model.Order;
 
 /**
- * Mapper class for mapping DTOs and entity related to order.
- *
- * <p>
+ * <p> Mapper class for mapping DTOs and entity related to order.
  * This class provides static methods for converting between User entities
  * and their corresponding Data Transfer Objects (DTOs). It facilitates the
  * conversion process needed for interacting with the service and controller layers
- * while keeping the domain model and DTOs separate.
- * </p>
+ * while keeping the domain model and DTOs separate.</p>
+ *
+ * @author Gowtham R
  */
 
 public class OrderMapper {

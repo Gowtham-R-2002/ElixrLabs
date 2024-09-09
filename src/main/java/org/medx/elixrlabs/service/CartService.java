@@ -6,10 +6,8 @@ import org.medx.elixrlabs.dto.CartDto;
 import org.medx.elixrlabs.dto.ResponseCartDto;
 
 /**
- * <p>
- * Interface for CartService, manages all the operations that are related to the
- * cart module. This interface is implemented by CartServiceImpl
- * </p>
+ * <p> Interface for CartService, manages all the operations that are related to the
+ * cart module. This interface is implemented by CartServiceImpl. </p>
  */
 
 @Service

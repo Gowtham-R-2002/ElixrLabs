@@ -9,14 +9,11 @@ import org.medx.elixrlabs.model.Cart;
 import org.medx.elixrlabs.model.LabTest;
 
 /**
- * Mapper class for mapping DTOs and entity related to cart.
- *
- * <p>
+ * <p> Mapper class for mapping DTOs and entity related to cart.
  * This class provides static methods for converting between User entities
  * and their corresponding Data Transfer Objects (DTOs). It facilitates the
  * conversion process needed for interacting with the service and controller layers
- * while keeping the domain model and DTOs separate.
- * </p>
+ * while keeping the domain model and DTOs separate.</p>
  */
 
 public class CartMapper {

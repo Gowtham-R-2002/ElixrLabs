@@ -7,11 +7,11 @@ import org.medx.elixrlabs.model.Role;
 import org.medx.elixrlabs.util.RoleEnum;
 
 /**
- * <p>
- * Interface for RoleService, defining the business operations related to Role.
+ * <p> Interface for RoleService, defining the business operations related to Role.
  * This interface is implemented by RoleServiceImpl and defines the contract for
- * managing Role entities.
- * </p>
+ * managing Role entities. </p>
+ *
+ * @author Sabarinathan K
  */
 public interface RoleService {
     /**

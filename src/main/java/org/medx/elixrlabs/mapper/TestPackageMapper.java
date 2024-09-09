@@ -8,19 +8,18 @@ import org.medx.elixrlabs.dto.ResponseTestPackageDto;
 import org.medx.elixrlabs.model.TestPackage;
 
 /**
- * Mapper class for mapping between TestPackage and TestPackageDTO.
- *
- * <p>
+ * <p> Mapper class for mapping between TestPackage and TestPackageDTO.
  * This class provides static methods for converting between TestPackage entities
  * and their corresponding Data Transfer Objects (DTOs). It facilitates the
  * conversion process needed for interacting with the service and controller layers
- * while keeping the domain model and DTOs separate.
- * </p>
+ * while keeping the domain model and DTOs separate. </p>
+ *
+ * @author Deolin Jaffens
  */
 public class TestPackageMapper {
 
     /**
-     * Converts an {@link RequestTestPackageDto} to an {@link TestPackage} entity.
+     * Converts a {@link RequestTestPackageDto} to its respective {@link TestPackage} entity.
      *
      * @param requestTestPackageDto {@link RequestTestPackageDto} The TestPackage DTO to be converted.
      * @return {@link TestPackage} The corresponding TestPackage entity.

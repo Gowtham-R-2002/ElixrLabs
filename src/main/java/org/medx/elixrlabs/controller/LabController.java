@@ -10,17 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.medx.elixrlabs.dto.RequestTestResultDto;
 import org.medx.elixrlabs.dto.RequestUserNameDto;
-import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
-import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.service.LabService;
 import org.medx.elixrlabs.service.PatientService;
 import org.medx.elixrlabs.service.SampleCollectorService;

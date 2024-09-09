@@ -8,11 +8,9 @@ import org.springframework.stereotype.Service;
 import org.medx.elixrlabs.dto.LabTestDto;
 
 /**
- * <p>
- * Interface for LabTestService, defining the business operations related to LabTest.
+ * <p> Interface for LabTestService, defining the business operations related to LabTest.
  * This interface is implemented by LabTestServiceImpl and defines the contract for
- * managing LabTest entities.
- * </p>
+ * managing LabTest entities. </p>
  */
 
 @Service

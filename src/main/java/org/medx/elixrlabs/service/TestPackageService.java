@@ -9,11 +9,11 @@ import org.medx.elixrlabs.dto.RequestTestPackageDto;
 import org.medx.elixrlabs.dto.ResponseTestPackageDto;
 
 /**
- * <p>
- * Interface for TestPackageService, defining the business operations related to TestPackage.
+ * <p> Interface for TestPackageService, defining the business operations related to TestPackage.
  * This interface is implemented by TestPackageServiceImpl and defines the contract for
- * managing TestPackage entities.
- * </p>
+ * managing TestPackage entities. </p>
+ *
+ * @author Deolin Jaffens
  */
 @Service
 public interface TestPackageService {

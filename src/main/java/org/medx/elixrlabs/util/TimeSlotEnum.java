@@ -3,6 +3,9 @@ package org.medx.elixrlabs.util;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * This enum represents all the time slots in which samples are collected.
+ */
 @Getter
 @AllArgsConstructor
 public enum TimeSlotEnum {
