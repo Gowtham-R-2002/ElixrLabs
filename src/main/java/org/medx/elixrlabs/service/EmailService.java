@@ -13,11 +13,11 @@ import org.medx.elixrlabs.model.TestPackage;
 import org.medx.elixrlabs.model.TestResult;
 
 /**
- * <p>
- * Interface for EmailService, defining the business operations related to email.
+ * <p> Interface for EmailService, defining the business operations related to email.
  * This interface is implemented by EmailServiceImpl and defines the contract for
- * managing operations which are linked to email.
- * </p>
+ * managing operations which are linked to email. </p>
+ *
+ * @author Gowtham R
  */
 
 @Service

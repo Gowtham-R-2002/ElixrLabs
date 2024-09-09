@@ -4,14 +4,11 @@ import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.model.TestResult;
 
 /**
- * Mapper class for mapping DTOs and entity related to test result.
- *
- * <p>
+ * <p> Mapper class for mapping DTOs and entity related to test result.
  * This class provides static methods for converting between User entities
  * and their corresponding Data Transfer Objects (DTOs). It facilitates the
  * conversion process needed for interacting with the service and controller layers
- * while keeping the domain model and DTOs separate.
- * </p>
+ * while keeping the domain model and DTOs separate. </p>
  */
 
 public class TestResultMapper {

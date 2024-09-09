@@ -11,11 +11,9 @@ import org.medx.elixrlabs.model.SampleCollector;
 import org.medx.elixrlabs.util.LocationEnum;
 
 /**
- * <p>
- * Interface for SampleCollectorService, defining the business operations related to SampleCollector.
+ * <p> Interface for SampleCollectorService, defining the business operations related to SampleCollector.
  * This interface is implemented by SampleCollectorServiceImpl and defines the contract for
- * managing SampleCollector entities.
- * </p>
+ * managing SampleCollector entities. </p>
  */
 @Service
 public interface SampleCollectorService {
@@ -57,7 +55,6 @@ public interface SampleCollectorService {
      * @param place location of the sample collectors associated with a specific place
      * @return list of sample collectors associated with the location
      */
-
     List<SampleCollector> getSampleCollectorByPlace(LocationEnum place);
 
     /**
@@ -65,7 +62,6 @@ public interface SampleCollectorService {
      *
      * @param email - email of the sample collector who has to be verified
      */
-
     void verifySampleCollector(String email);
 
     /**
@@ -73,7 +69,6 @@ public interface SampleCollectorService {
      *
      * @return list of all the sample collectors
      */
-
     List<SampleCollectorDto> getAllSampleCollectors();
 
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents the Outgoing Message for exceptions occured.
+ * Represents the Outgoing Message for exceptions occurred.
  *
  * @author Gowtham R
  */

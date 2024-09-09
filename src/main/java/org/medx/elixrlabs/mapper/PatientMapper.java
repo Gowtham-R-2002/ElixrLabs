@@ -6,14 +6,13 @@ import org.medx.elixrlabs.model.Patient;
 import org.medx.elixrlabs.model.User;
 
 /**
- * Mapper class for mapping DTOs and entity related to patient.
- *
- * <p>
+ * <p> Mapper class for mapping DTOs and entity related to patient.
  * This class provides static methods for converting between patient entities
  * and their corresponding Data Transfer Objects (DTOs). It facilitates the
  * conversion process needed for interacting with the service and controller layers
- * while keeping the domain model and DTOs separate.
- * </p>
+ * while keeping the domain model and DTOs separate. </p>
+ *
+ * @author Gowtham R
  */
 public class PatientMapper {
 

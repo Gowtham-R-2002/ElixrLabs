@@ -9,11 +9,9 @@ import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.TestResultDto;
 
 /**
- * <p>
- * Interface for LabService, defining the business operations related to lab module.
+ * <p> Interface for LabService, defining the business operations related to lab module.
  * This interface is implemented by LabServiceImpl and defines the contract for
- * managing operations which are linked to the lab module.
- * </p>
+ * managing operations which are linked to the lab module. </p>
  */
 
 @Service

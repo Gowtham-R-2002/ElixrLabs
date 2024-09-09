@@ -8,14 +8,13 @@ import org.medx.elixrlabs.dto.AppointmentDto;
 import org.medx.elixrlabs.dto.OrderSuccessDto;
 import org.medx.elixrlabs.dto.RequestSlotBookDto;
 import org.medx.elixrlabs.dto.SlotBookDto;
-import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.util.LocationEnum;
 
 /**
- * <p>
- * Interface for AppointmentSlotService, manages all the operations that are related to the
- * slot allocations. This interface is implemented by AppointmentServiceImpl
- * </p>
+ * <p> Interface for AppointmentSlotService, manages all the operations that are related to the
+ * slot allocations. This interface is implemented by AppointmentServiceImpl. </p>
+ *
+ * @author Gowtham R
  */
 public interface AppointmentSlotService {
 

@@ -4,14 +4,13 @@ import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.model.SampleCollector;
 
 /**
- * Mapper class for mapping between SampleCollector and SampleCollectorDTO.
- *
- * <p>
+ * <p> Mapper class for mapping between SampleCollector and SampleCollectorDTO.
  * This class provides static methods for converting between SampleCollector entities
  * and their corresponding Data Transfer Objects (DTOs). It facilitates the
  * conversion process needed for interacting with the service and controller layers
- * while keeping the domain model and DTOs separate.
- * </p>
+ * while keeping the domain model and DTOs separate.</p>
+ *
+ * @author Sabarinathan K
  */
 public class SampleCollectorMapper {
 

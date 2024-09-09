@@ -3,7 +3,6 @@ package org.medx.elixrlabs.service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.medx.elixrlabs.model.Patient;
 import org.springframework.stereotype.Service;
 
 import org.medx.elixrlabs.dto.RequestUserNameDto;
@@ -11,6 +10,7 @@ import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.ResponsePatientDto;
 import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.dto.UserDto;
+import org.medx.elixrlabs.model.Patient;
 
 /**
  * <p>

@@ -10,6 +10,8 @@ import org.medx.elixrlabs.model.TestResult;
  * This interface is implemented by TestResultServiceImpl and defines the contract for
  * managing TestResult entities.
  * </p>
+ *
+ * @author Gowtham R
  */
 @Service
 public interface TestResultService {
