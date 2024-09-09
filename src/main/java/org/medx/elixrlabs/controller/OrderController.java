@@ -106,7 +106,7 @@ public class OrderController {
      * @param orderId The unique identifier of the order for which the test result is being retrieved.
      * @return The {@link TestResultDto} associated with the specified order.
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("{id}/results")
     public ResponseEntity<TestResultDto> getTestResult(@PathVariable(name = "id") Long orderId) {
         return new ResponseEntity<>(labService.getTestResultByOrder(orderId), HttpStatus.OK);
