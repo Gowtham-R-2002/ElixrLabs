@@ -1,5 +1,8 @@
 package org.medx.elixrlabs.model;
 
+import java.util.Calendar;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,13 +29,10 @@ import org.medx.elixrlabs.util.PaymentStatusEnum;
 import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.medx.elixrlabs.util.TestStatusEnum;
 
-import java.util.Calendar;
-import java.util.List;
-
 /**
  * <p>
- * This class holds the data related to an user including their id, testStatus, sampleCollectionPlace,
- * paymentStatus, labLocation, homeLocation and other relevant details.
+ * This class holds the data related to an user including their id, testStatus,
+ * sampleCollectionPlace, paymentStatus, labLocation, homeLocation and other relevant details.
  * The {@code Order} class represents a customer order for one or
  * more lab tests or test packages. This class captures the details
  * of the order, including the associated user, test status, payment
@@ -40,8 +40,8 @@ import java.util.List;
  * maintains a relationship with the test package and appointment slot.
  * </p>
  *
- * @author  Sabarinathan K
- * @version  1.0
+ * @author Sabarinathan K
+ * @version 1.0
  */
 @Entity
 @Table(name = "orders")
@@ -81,8 +81,8 @@ public class Order {
 
     @ManyToMany
     @JoinTable(name = "order_test",
-    joinColumns = @JoinColumn(name = "order_id"),
-    inverseJoinColumns = @JoinColumn(name = "test_id"))
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "test_id"))
     private List<LabTest> tests;
 
     @OneToOne

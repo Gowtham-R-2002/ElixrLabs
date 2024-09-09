@@ -1,5 +1,7 @@
 package org.medx.elixrlabs.dto;
 
+import java.time.LocalDate;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -9,11 +11,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.util.GenderEnum;
 import org.medx.elixrlabs.util.LocationEnum;
-
-import java.time.LocalDate;
 
 /**
  * <p>

@@ -4,19 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.medx.elixrlabs.exception.LabException;
-import org.medx.elixrlabs.mapper.PatientMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.medx.elixrlabs.util.RoleEnum;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
+import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.SampleCollectorMapper;
 import org.medx.elixrlabs.mapper.UserMapper;
@@ -26,6 +23,7 @@ import org.medx.elixrlabs.repository.SampleCollectorRepository;
 import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.service.SampleCollectorService;
 import org.medx.elixrlabs.util.LocationEnum;
+import org.medx.elixrlabs.util.RoleEnum;
 
 /**
  * <p>

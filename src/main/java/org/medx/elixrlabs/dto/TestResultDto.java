@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NonNull;
 
 /**
  * <p>Encapsulates details of a test result.</p>
@@ -21,9 +20,9 @@ import lombok.NonNull;
 @Data
 @Builder
 public class TestResultDto {
-    @NonNull
+    @NotNull
     private LocalDate orderDate;
-    @NonNull
+    @NotNull
     private Long id;
     @NotNull
     @NotBlank

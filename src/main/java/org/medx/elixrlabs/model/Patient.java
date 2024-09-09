@@ -1,13 +1,22 @@
 package org.medx.elixrlabs.model;
 
-import jakarta.persistence.*;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 /**
  * <p>
@@ -16,7 +25,8 @@ import java.util.List;
  * The {@code Patient} class represents a patient whom a user who is receiving medical care,
  * especially when they are ill or injured and need treatment.
  * </p>
- * @version  1.0
+ *
+ * @version 1.0
  */
 @Getter
 @Setter
@@ -31,7 +41,7 @@ public class Patient {
     @GeneratedValue(generator = "PatientIdGenerator", strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "patient", fetch = FetchType.LAZY)

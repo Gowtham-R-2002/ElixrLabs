@@ -79,5 +79,4 @@ public interface PatientService {
 
     List<ResponseOrderDto> getOrdersByPatient(RequestUserNameDto patient);
 
-    void setupInitialData();
 }

@@ -1,12 +1,12 @@
 package org.medx.elixrlabs.repository;
 
 import java.util.List;
-
-import org.medx.elixrlabs.model.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import org.medx.elixrlabs.model.Patient;
 
 /**
  * Repository interface for accessing patient data from the database.

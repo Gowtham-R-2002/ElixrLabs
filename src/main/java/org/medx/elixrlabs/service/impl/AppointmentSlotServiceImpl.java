@@ -1,6 +1,5 @@
 package org.medx.elixrlabs.service.impl;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -13,16 +12,20 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import org.medx.elixrlabs.dto.*;
-import org.medx.elixrlabs.exception.AntecedentDateException;
-import org.medx.elixrlabs.mapper.AppointmentMapper;
-import org.medx.elixrlabs.mapper.TestPackageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.medx.elixrlabs.dto.AppointmentDto;
+import org.medx.elixrlabs.dto.OrderSuccessDto;
+import org.medx.elixrlabs.dto.RequestSlotBookDto;
+import org.medx.elixrlabs.dto.ResponseCartDto;
+import org.medx.elixrlabs.dto.SlotBookDto;
+import org.medx.elixrlabs.exception.AntecedentDateException;
 import org.medx.elixrlabs.exception.SlotException;
+import org.medx.elixrlabs.mapper.AppointmentMapper;
+import org.medx.elixrlabs.mapper.TestPackageMapper;
 import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.model.Patient;
@@ -43,6 +46,14 @@ import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.LabTestMapper;
 import org.medx.elixrlabs.repository.AppointmentSlotRepository;
 
+/**
+ * <p>
+ * Service implementation for managing AppointmentSlotService-related operations.
+ * This {@code AppointmentSlotServiceImpl} contains business logic for handling AppointmentSlot
+ * operations. It acts as a bridge between the controller layer and the repository
+ * layer, ensuring that business rules are applied before interacting with the database.
+ * </p>
+ */
 @Service
 public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 

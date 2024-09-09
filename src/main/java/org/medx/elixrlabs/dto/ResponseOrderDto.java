@@ -1,5 +1,7 @@
 package org.medx.elixrlabs.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import org.medx.elixrlabs.util.TestStatusEnum;
-
-import java.util.List;
 
 /**
  * <p>Contains details about an order, including its identifier, associated tests, test package,

@@ -5,21 +5,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.medx.elixrlabs.dto.*;
-import org.medx.elixrlabs.mapper.TestResultMapper;
-import org.medx.elixrlabs.model.*;
-import org.medx.elixrlabs.service.*;
-import org.medx.elixrlabs.util.DateUtil;
-import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
-import org.medx.elixrlabs.util.TestStatusEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import org.medx.elixrlabs.dto.IndividualTestReportDto;
+import org.medx.elixrlabs.dto.LabTestDto;
+import org.medx.elixrlabs.dto.RequestTestIdWithResultDto;
+import org.medx.elixrlabs.dto.RequestTestResultDto;
+import org.medx.elixrlabs.dto.ResponseOrderDto;
+import org.medx.elixrlabs.dto.TestResultDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
+import org.medx.elixrlabs.mapper.TestResultMapper;
+import org.medx.elixrlabs.model.Admin;
+import org.medx.elixrlabs.model.Order;
+import org.medx.elixrlabs.model.TestResult;
+import org.medx.elixrlabs.service.AdminService;
+import org.medx.elixrlabs.service.EmailService;
+import org.medx.elixrlabs.service.LabService;
+import org.medx.elixrlabs.service.LabTestService;
+import org.medx.elixrlabs.service.OrderService;
+import org.medx.elixrlabs.service.TestResultService;
+import org.medx.elixrlabs.util.DateUtil;
 import org.medx.elixrlabs.util.LocationEnum;
+import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
+import org.medx.elixrlabs.util.TestStatusEnum;
 
 
 /**

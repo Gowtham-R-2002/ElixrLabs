@@ -1,12 +1,10 @@
 package org.medx.elixrlabs.service.impl;
 
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import jakarta.mail.MessagingException;
-import org.medx.elixrlabs.dto.LoginRequestDto;
-import org.medx.elixrlabs.dto.OtpDto;
-import org.medx.elixrlabs.exception.OTPValidationException;
-import org.medx.elixrlabs.model.OTP;
-import org.medx.elixrlabs.service.EmailService;
-import org.medx.elixrlabs.util.LocationEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +15,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
+import org.medx.elixrlabs.dto.LoginRequestDto;
+import org.medx.elixrlabs.dto.OtpDto;
+import org.medx.elixrlabs.exception.OTPValidationException;
+import org.medx.elixrlabs.model.OTP;
+import org.medx.elixrlabs.service.EmailService;
+import org.medx.elixrlabs.util.LocationEnum;
 
+/**
+ * <p>
+ * This {@code AuthenticationService} contains business logic for handling Authentication related
+ * operations. It acts as a bridge between the controller layer and the repository
+ * layer, ensuring that business rules are applied before interacting with the database.
+ * </p>
+ */
 @Service
 public class AuthenticationService {
     @Autowired

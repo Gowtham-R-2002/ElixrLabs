@@ -6,10 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
-import org.medx.elixrlabs.model.TestPackage;
-
 /**
- * <p>Contains the details of the cart, including the list of tests, associated test package, and the total price.</p>
+ * <p>Contains the details of the cart, including the list of tests,
+ * associated test package, and the total price.</p>
  *
  * @author Deolin Jaffens
  */

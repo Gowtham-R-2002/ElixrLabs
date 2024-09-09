@@ -3,9 +3,16 @@ package org.medx.elixrlabs.model;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +36,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  * manages the role associated with the user for access control.
  * </p>
  *
- * @version  1.0
+ * @version 1.0
  */
 @Getter
 @Setter

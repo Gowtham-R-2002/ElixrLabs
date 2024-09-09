@@ -22,7 +22,8 @@ import lombok.NoArgsConstructor;
  * The {@code Cart} class represents a virtual holding area where you temporarily
  * store items you want to purchase before proceeding to checkout.
  * </p>
- * @version  1.0
+ *
+ * @version 1.0
  */
 @Builder
 @Entity

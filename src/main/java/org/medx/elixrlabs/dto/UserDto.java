@@ -3,6 +3,7 @@ package org.medx.elixrlabs.dto;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -32,6 +33,7 @@ public class UserDto {
 
     @NotNull
     @NotBlank
+    @Min(value = 6)
     private String password;
 
     @NotNull

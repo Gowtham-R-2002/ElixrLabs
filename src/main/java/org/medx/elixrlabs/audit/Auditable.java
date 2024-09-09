@@ -15,6 +15,15 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+/**
+ * <p>
+ * The Auditable class is a base entity used to automatically capture and store
+ * audit information such as the user who created or last modified the entity,
+ * along with the corresponding timestamps. This class can be extended by other
+ * entities to inherit audit-related fields.
+ * </p>
+ *
+ */
 @Getter
 @Setter
 @MappedSuperclass

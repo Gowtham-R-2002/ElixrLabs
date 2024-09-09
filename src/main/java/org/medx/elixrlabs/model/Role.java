@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import org.medx.elixrlabs.util.RoleEnum;
 
 /**
@@ -25,7 +26,7 @@ import org.medx.elixrlabs.util.RoleEnum;
  * within the system.
  * </p>
  *
- * @version  1.0
+ * @version 1.0
  */
 
 @Getter

@@ -1,5 +1,7 @@
 package org.medx.elixrlabs.model;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +16,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 
 /**
  * <p>
@@ -25,8 +26,8 @@ import java.util.List;
  * price, and may be subject to soft deletion via the isDeleted flag.
  * </p>
  *
- * @author  Sabarinathan K
- * @version  1.0
+ * @author Sabarinathan K
+ * @version 1.0
  */
 @Entity
 @Table(name = "test_packages")
@@ -52,8 +53,8 @@ public class TestPackage {
 
     @ManyToMany
     @JoinTable(name = "test_test_package",
-    joinColumns = @JoinColumn(name = "test_package_id"),
-    inverseJoinColumns = @JoinColumn(name = "test_id"))
+            joinColumns = @JoinColumn(name = "test_package_id"),
+            inverseJoinColumns = @JoinColumn(name = "test_id"))
     private List<LabTest> tests;
 
 }

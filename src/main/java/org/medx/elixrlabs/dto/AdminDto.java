@@ -6,8 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 
 /**
+ * <p>
  * This DTO is responsible for getting new Admin details.
  * Encapsulates data related to data of Admin such as username(email) and password.
+ * </p>
  *
  * @author Gowtham R
  */

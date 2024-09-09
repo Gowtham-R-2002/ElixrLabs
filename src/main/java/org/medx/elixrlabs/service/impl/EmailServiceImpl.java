@@ -1,21 +1,5 @@
 package org.medx.elixrlabs.service.impl;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
-import org.medx.elixrlabs.model.LabTest;
-import org.medx.elixrlabs.model.OTP;
-import org.medx.elixrlabs.model.TestPackage;
-import org.medx.elixrlabs.model.TestResult;
-import org.medx.elixrlabs.service.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,6 +10,32 @@ import java.util.Random;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
+
+import org.medx.elixrlabs.model.LabTest;
+import org.medx.elixrlabs.model.OTP;
+import org.medx.elixrlabs.model.TestPackage;
+import org.medx.elixrlabs.model.TestResult;
+import org.medx.elixrlabs.service.EmailService;
+
+/**
+ * <p>
+ * Service implementation for managing EmailService-related operations.
+ * This class contains business logic for handling Email entities, including
+ * sending mail to send OTP, to send results and to send invoice of the purchase.
+ * It acts as a bridge between the controller layer and the repository layer,
+ * ensuring that business rules are applied before interacting with the database.
+ * </p>
+ */
 @Service
 public class EmailServiceImpl implements EmailService {
 

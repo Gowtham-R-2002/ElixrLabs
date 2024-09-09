@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import org.medx.elixrlabs.model.Admin;
 import org.medx.elixrlabs.repository.AdminRepository;
 import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.service.AdminService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * <p>

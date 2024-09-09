@@ -1,14 +1,13 @@
 package org.medx.elixrlabs.service.impl;
 
-import org.medx.elixrlabs.exception.LabException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.UserRepository;
 

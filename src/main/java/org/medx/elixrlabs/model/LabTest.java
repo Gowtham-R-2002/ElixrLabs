@@ -22,8 +22,8 @@ import lombok.NoArgsConstructor;
  * via the isDeleted flag.
  * </p>
  *
- * @author  Sabarinathan K
- * @version  1.0
+ * @author Sabarinathan K
+ * @version 1.0
  */
 
 @Entity

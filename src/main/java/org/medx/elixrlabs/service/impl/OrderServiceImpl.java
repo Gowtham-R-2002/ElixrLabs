@@ -2,18 +2,17 @@ package org.medx.elixrlabs.service.impl;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
-import org.medx.elixrlabs.dto.ResponseOrderDto;
-import org.medx.elixrlabs.model.AppointmentSlot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.medx.elixrlabs.dto.OrderSuccessDto;
+import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.mapper.OrderMapper;
+import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.repository.OrderRepository;
 import org.medx.elixrlabs.service.OrderService;

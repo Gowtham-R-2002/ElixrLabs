@@ -196,24 +196,4 @@ public class PatientServiceImpl implements PatientService {
         return orderService.getOrder(orderId).getPatient().getUser().getUsername().equals(email);
     }
 
-    @Override
-    public void setupInitialData() {
-        User user = User.builder()
-                .gender(GenderEnum.M)
-                .place(LocationEnum.MARINA)
-                .password("gow@123")
-                .email("ergowthamramesh@gmail.com")
-                .roles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)))
-                .phoneNumber("8531911113")
-                .build();
-        Patient patient = Patient.builder()
-                .user(user)
-                .build();
-        try {
-            patientRepository.save(patient);
-        } catch (Exception e) {
-            throw new RuntimeException("Error in initializing patient data" + e.getMessage());
-        }
-    }
-
 }

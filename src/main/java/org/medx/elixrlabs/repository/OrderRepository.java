@@ -2,10 +2,11 @@ package org.medx.elixrlabs.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.model.Order;
 import org.medx.elixrlabs.util.LocationEnum;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
  * Repository interface for accessing order data from the database.

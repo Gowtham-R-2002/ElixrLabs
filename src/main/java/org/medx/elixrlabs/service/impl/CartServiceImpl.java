@@ -20,13 +20,11 @@ import org.medx.elixrlabs.mapper.LabTestMapper;
 import org.medx.elixrlabs.mapper.TestPackageMapper;
 import org.medx.elixrlabs.model.Cart;
 import org.medx.elixrlabs.model.LabTest;
-import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.CartRepository;
 import org.medx.elixrlabs.service.CartService;
 import org.medx.elixrlabs.service.LabTestService;
 import org.medx.elixrlabs.service.PatientService;
 import org.medx.elixrlabs.service.TestPackageService;
-
 
 /**
  * <p>

@@ -1,5 +1,11 @@
 package org.medx.elixrlabs.service.impl;
 
+import javax.crypto.SecretKey;
+import java.time.Instant;
+import java.util.Base64;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -7,24 +13,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.Setter;
-import org.medx.elixrlabs.util.LocationEnum;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import javax.crypto.SecretKey;
-import java.time.Instant;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.medx.elixrlabs.exception.LabException;
+import org.medx.elixrlabs.util.LocationEnum;
 
 
 /**

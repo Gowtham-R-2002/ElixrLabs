@@ -3,7 +3,6 @@ package org.medx.elixrlabs.dto;
 import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.NotNull;
-
 import lombok.Builder;
 import lombok.Data;
 
