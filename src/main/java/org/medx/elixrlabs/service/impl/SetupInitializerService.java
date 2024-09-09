@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SetupInitializerService {
     @Autowired
@@ -50,8 +52,8 @@ public class SetupInitializerService {
                 .email("sabarisha0622@gmail.com")
                 .password("admin@123")
                 .build();
-        user.setRole(roleService.getRoleByName
-                (RoleEnum.ROLE_ADMIN));
+        user.setRoles(List.of(roleService.getRoleByName
+                (RoleEnum.ROLE_ADMIN)));
         String password = bCryptPasswordEncoder.encode(user.getPassword());
         user.setPassword(password);
         Admin admin = Admin.builder()
@@ -61,7 +63,7 @@ public class SetupInitializerService {
                 .email("deomuja@gmail.com")
                 .password("admin@123")
                 .build();
-        anotherUser.setRole(roleService.getRoleByName(RoleEnum.ROLE_ADMIN));
+        anotherUser.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_ADMIN)));
         String anotherPassword = bCryptPasswordEncoder.encode(anotherUser.getPassword());
         anotherUser.setPassword(anotherPassword);
         Admin anotherAdmin = Admin.builder()

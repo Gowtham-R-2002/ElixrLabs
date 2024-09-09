@@ -9,9 +9,12 @@ import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.service.SuperAdminService;
 import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
+@Service
 public class SuperAdminServiceImpl implements SuperAdminService {
     @Autowired
     private RoleService roleService;
@@ -28,7 +31,7 @@ public class SuperAdminServiceImpl implements SuperAdminService {
                 .user(User.builder()
                         .email(adminDto.getEmail())
                         .password(adminDto.getPassword())
-                        .role(roleService.getRoleByName(RoleEnum.ROLE_ADMIN))
+                        .roles(List.of(roleService.getRoleByName(RoleEnum.ROLE_ADMIN)))
                         .build())
                 .build();
         Admin existingAdmin = adminService.getAdminByEmail(adminDto.getEmail());

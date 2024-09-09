@@ -66,7 +66,7 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = getPatientByEmail(userDto.getEmail());
         User user = UserMapper.toUser(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRole(roleService.getRoleByName(RoleEnum.ROLE_PATIENT));
+        user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)));
         if (patient != null) {
             user.setUUID(patient.getUser().getUUID());
             patient.setUser(user);
@@ -203,7 +203,7 @@ public class PatientServiceImpl implements PatientService {
                 .place(LocationEnum.MARINA)
                 .password("gow@123")
                 .email("ergowthamramesh@gmail.com")
-                .role(roleService.getRoleByName(RoleEnum.ROLE_PATIENT))
+                .roles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)))
                 .phoneNumber("8531911113")
                 .build();
         Patient patient = Patient.builder()

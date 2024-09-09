@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/super-admin")
@@ -33,7 +34,7 @@ public class SuperAdminController {
     }
 
     @GetMapping
-    public ResponseEntity<List<String>> getAllAdmins() {
+    public ResponseEntity<Map<String, String>> getAllAdmins() {
         return new ResponseEntity<>(superAdminService.getAdmins(), HttpStatus.OK);
     }
 

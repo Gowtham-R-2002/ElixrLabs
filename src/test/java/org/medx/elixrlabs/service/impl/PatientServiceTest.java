@@ -78,7 +78,7 @@ public class PatientServiceTest {
                 .place(LocationEnum.GUINDY)
                 .email("test@example.com")
                 .password("password")
-                .role(Role.builder().build())
+                .roles(List.of(Role.builder().build()))
                 .build();
 
         LabTest test = LabTest.builder()

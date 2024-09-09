@@ -55,7 +55,7 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         SampleCollector existingSampleCollector = getSampleCollectorByEmail(userDto.getEmail());
         User user = UserMapper.toUser(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        user.setRole(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR));
+        user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)));
         if (existingSampleCollector != null) {
             user.setUUID(existingSampleCollector.getUser().getUUID());
             existingSampleCollector.setUser(user);

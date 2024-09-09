@@ -49,8 +49,8 @@ public class User extends Auditable implements UserDetails {
 
     private String password;
 
-    @OneToOne
-    private Role role;
+    @OneToMany
+    private List<Role> roles;
 
     @Enumerated(EnumType.STRING)
     private LocationEnum place;
@@ -69,7 +69,7 @@ public class User extends Auditable implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(getRole().getName().toString()));
+        return getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName().toString())).toList();
     }
 
     @Override
