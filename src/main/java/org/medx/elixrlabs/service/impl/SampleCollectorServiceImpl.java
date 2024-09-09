@@ -146,7 +146,7 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     @Override
     public void verifySampleCollector(String email) {
         logger.info("Verifying SampleCollector with email: {}", email);
-        SampleCollector sampleCollector = sampleCollectorRepository.getSampleCollectorByEmail(email);
+        SampleCollector sampleCollector = sampleCollectorRepository.getUnVerifiedSampleCollectorByEmail(email);
         if (null == sampleCollector) {
             logger.warn("Sample Collector not found for Username : {}", email);
             throw new NoSuchElementException("No Sample Collector found for username : " + email);

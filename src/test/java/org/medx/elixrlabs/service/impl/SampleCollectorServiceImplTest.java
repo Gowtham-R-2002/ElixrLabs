@@ -2,10 +2,23 @@ package org.medx.elixrlabs.service.impl;
 
 import java.util.*;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.exception.LabException;
@@ -17,13 +30,6 @@ import org.medx.elixrlabs.repository.SampleCollectorRepository;
 import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.RoleEnum;
-import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SampleCollectorServiceImplTest {
@@ -201,7 +207,7 @@ class SampleCollectorServiceImplTest {
 
     @Test
     void testVerifySampleCollector_positive() {
-        when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenReturn(sampleCollector);
+        when(sampleCollectorRepository.getUnVerifiedSampleCollectorByEmail(anyString())).thenReturn(sampleCollector);
         when(sampleCollectorRepository.save(any(SampleCollector.class))).thenReturn(sampleCollector);
         sampleCollectorService.verifySampleCollector(anyString());
         assertTrue(sampleCollector.isVerified());
