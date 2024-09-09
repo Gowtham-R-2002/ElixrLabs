@@ -31,18 +31,6 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository roleRepository;
 
     @Override
-    public void setupInitialData() {
-        try {
-            roleRepository.save(Role.builder().name(RoleEnum.ROLE_ADMIN).build());
-            roleRepository.save(Role.builder().name(RoleEnum.ROLE_PATIENT).build());
-            roleRepository.save(Role.builder().name(RoleEnum.ROLE_SAMPLE_COLLECTOR).build());
-            logger.info("Initial roles setup successfully.");
-        } catch (Exception e) {
-            logger.warn("Roles already exist or could not be created: {}", e.getMessage());
-        }
-    }
-
-    @Override
     public List<Role> getAllRoles() {
         try {
             return roleRepository.findAll();

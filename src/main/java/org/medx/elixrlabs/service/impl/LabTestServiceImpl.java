@@ -103,37 +103,4 @@ public class LabTestServiceImpl implements LabTestService {
             throw new LabException("Error while removing lab test with id: " + id, e);
         }
     }
-
-    public void setupInitialData() {
-        try {
-            LabTest bloodTest = LabTest.builder()
-                    .name("Blood test")
-                    .description("Simple Blood test")
-                    .price(150)
-                    .defaultValue("BPC : 1000")
-                    .build();
-
-            LabTest HIVTest = LabTest.builder()
-                    .name("HIV Test")
-                    .description("Test to identify HIV status")
-                    .price(500)
-                    .defaultValue("Status : negative")
-                    .build();
-
-            LabTest cancerTest = LabTest.builder()
-                    .name("Cancer Test")
-                    .description("Test to detect Cancer presence")
-                    .price(1000)
-                    .defaultValue("Cell count : 500")
-                    .build();
-
-            labTestRepository.save(bloodTest);
-            labTestRepository.save(HIVTest);
-            labTestRepository.save(cancerTest);
-
-            logger.info("Initial lab test data setup completed.");
-        } catch (Exception e) {
-            logger.warn("Error during initial data setup: {}", e.getMessage());
-        }
-    }
 }

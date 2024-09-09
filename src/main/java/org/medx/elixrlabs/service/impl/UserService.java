@@ -45,4 +45,8 @@ public class UserService implements UserDetailsService {
             throw new LabException("Error occurred while loading user by email: " + email, e);
         }
     }
+
+    public void saveUser(User user) {
+        userRepository.save(user);
+    }
 }

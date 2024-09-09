@@ -3,6 +3,8 @@ package org.medx.elixrlabs.service;
 import org.medx.elixrlabs.model.Admin;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 /**
  * <p>
  * Interface for AdminService, defining the business operations related to Admin.
@@ -12,15 +14,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface AdminService {
-
-    /**
-     * <p>
-     *
-     * </p>
-     */
-
-    void setupInitialData();
-
     /**
      *Fetches admin with the help of email
      *
@@ -29,5 +22,9 @@ public interface AdminService {
      */
 
     Admin getAdminByEmail(String email);
+
+    void createOrUpdateAdmin(Admin admin);
+
+    Map<String, String> getAllAdmins();
 }
 

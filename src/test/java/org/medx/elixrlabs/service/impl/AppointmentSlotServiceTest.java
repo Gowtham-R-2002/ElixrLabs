@@ -99,10 +99,10 @@ public class AppointmentSlotServiceTest {
                 .price(200.00)
                 .build();
         user = User.builder()
-                .role(Role.builder()
+                .roles(List.of(Role.builder()
                         .name(RoleEnum.ROLE_PATIENT)
                         .id(1)
-                        .build())
+                        .build()))
                 .email("user@gmail.com")
                 .phoneNumber("1234567890")
                 .dateOfBirth(LocalDate.parse("1999-08-29"))

@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    String getUserWithRole = "FROM User u LEFT JOIN FETCH u.role WHERE u.email = :email AND u.isBlocked = false";
+    String getUserWithRole = "FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email AND u.isBlocked = false";
 
     @Query(getUserWithRole)
     User findByEmailWithRole(@Param("email") String email);

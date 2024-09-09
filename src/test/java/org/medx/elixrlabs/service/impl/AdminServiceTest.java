@@ -55,7 +55,7 @@ public class AdminServiceTest {
         user = User.builder()
                 .email("admin@gmail.com")
                 .password("admin@123")
-                .role(role)
+                .roles(List.of(role))
                 .build();
         admin = Admin.builder()
                 .id(1L)

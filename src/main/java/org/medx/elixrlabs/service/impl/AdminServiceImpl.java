@@ -1,13 +1,14 @@
 package org.medx.elixrlabs.service.impl;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.medx.elixrlabs.model.Admin;
-import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.AdminRepository;
 import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.service.AdminService;
-import org.medx.elixrlabs.util.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,37 +28,6 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private RoleRepository roleRepository;
 
-    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
-    @Override
-    public void setupInitialData() {
-        User user = User.builder()
-                .email("sabarisha0622@gmail.com")
-                .password("admin@123")
-                .build();
-        user.setRole(roleRepository.findByName(RoleEnum.ROLE_ADMIN));
-        String password = bCryptPasswordEncoder.encode(user.getPassword());
-        user.setPassword(password);
-        Admin admin = Admin.builder()
-                .user(user)
-                .build();
-        User anotherUser = User.builder()
-                .email("deomuja@gmail.com")
-                .password("admin@123")
-                .build();
-        anotherUser.setRole(roleRepository.findByName(RoleEnum.ROLE_ADMIN));
-        String anotherPassword = bCryptPasswordEncoder.encode(anotherUser.getPassword());
-        anotherUser.setPassword(anotherPassword);
-        Admin anotherAdmin = Admin.builder()
-                .user(anotherUser)
-                .build();
-        try {
-            adminRepository.save(admin);
-            adminRepository.save(anotherAdmin);
-        } catch (Exception e) {
-            System.out.println("Admin already present...Skipping" + e.getMessage());
-        }
-    }
 
     @Override
     public Admin getAdminByEmail(String email) {
@@ -68,6 +38,26 @@ public class AdminServiceImpl implements AdminService {
             throw new RuntimeException("Error while fetching admin from the given mail : " + email);
         }
         return admin;
+    }
+
+    @Override
+    public void createOrUpdateAdmin(Admin admin) {
+        try {
+            adminRepository.save(admin);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while saving admin from the given mail : " + admin.getUser().getEmail());
+        }
+    }
+
+    @Override
+    public Map<String, String> getAllAdmins() {
+        List<Admin> admins = adminRepository.findAll();
+        return admins.stream().collect(Collectors
+                .toMap(
+                        x -> x.getUser().getEmail(),
+                        x -> (x.isDeleted() ? "Deleted" : "Not Deleted")
+                )
+        );
     }
 
 

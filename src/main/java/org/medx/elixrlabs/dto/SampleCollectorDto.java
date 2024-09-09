@@ -47,5 +47,6 @@ public class SampleCollectorDto {
     private GenderEnum gender;
     @NotNull
     private LocationEnum place;
+
     private boolean isVerified;
 }
