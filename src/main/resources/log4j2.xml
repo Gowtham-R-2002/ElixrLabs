@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="debug">
+
+<!-- Appenders -->
+<Appenders>
+
+<!-- Console Appender -->
+<Console name="LogToConsole" target="SYSTEM_OUT">
+<PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
+</Console>
+
+<!-- Rolling File Appender -->
+<RollingFile name="LogToRollingFile" fileName="logs/app.log"
+filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+<PatternLayout pattern="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"/>
+<Policies>
+<SizeBasedTriggeringPolicy size="10MB"/>
+</Policies>
+<DefaultRolloverStrategy max="10"/>
+</RollingFile>
+
+</Appenders>
+
+<!-- Loggers -->
+<Loggers>
+
+<!-- Logger for P6Spy and your application -->
+<Logger name="org.medx" level="debug" additivity="false">
+<AppenderRef ref="LogToConsole"/>
+<AppenderRef ref="LogToRollingFile"/>
+</Logger>
+
+<!-- Logger for P6Spy -->
+<Logger name="com.p6spy" level="debug" additivity="false">
+<AppenderRef ref="LogToConsole"/>
+<AppenderRef ref="LogToRollingFile"/>
+</Logger>
+
+<!-- Root Logger -->
+<Root level="error">
+<AppenderRef ref="LogToConsole"/>
+</Root>
+
+</Loggers>
+
+</Configuration>
