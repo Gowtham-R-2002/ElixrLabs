@@ -34,7 +34,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(jsr250Enabled = true)
 public class SecurityConfiguration{
 
     @Autowired
@@ -55,7 +55,7 @@ public class SecurityConfiguration{
                     registry.requestMatchers("/error", "/api-docs", "swagger-ui/**", "swagger-resources/**", "initialize").permitAll();
                     registry.requestMatchers("api/v1/labs/**", "api/v1/test-packages/**", "api/v1/lab-tests/**").hasRole("ADMIN");
                     registry.requestMatchers("api/v1/sample-collectors/**").hasRole("SAMPLE_COLLECTOR");
-                    registry.requestMatchers("api/v1/patients/**", "api/v1/orders/**").hasRole("PATIENT");
+                    registry.requestMatchers("api/v1/patients/**", "api/v1/orders/**").hasAnyRole("PATIENT", "ADMIN");
                     registry.anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults())
