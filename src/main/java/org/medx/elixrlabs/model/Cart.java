@@ -15,6 +15,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * <p>
+ * This class holds the data related to an Cart including their list of tests,
+ * testPackage, patient and other relevant details.
+ * The {@code Cart} class represents a virtual holding area where you temporarily
+ * store items you want to purchase before proceeding to checkout.
+ * </p>
+ * @version  1.0
+ */
 @Builder
 @Entity
 @Table(name = "carts")

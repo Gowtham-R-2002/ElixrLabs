@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 /**
  * <p>
  * Service implementation for managing Admin-related operations.
- * This class contains business logic for handling User operations. It acts as
+ * This {@code AdminServiceImpl} contains business logic for handling User operations. It acts as
  * a bridge between the controller layer and the repository layer, ensuring that
  * business rules are applied before interacting with the database.
  * </p>

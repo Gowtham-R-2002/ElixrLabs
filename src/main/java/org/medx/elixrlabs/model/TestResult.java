@@ -20,7 +20,6 @@ import lombok.NoArgsConstructor;
  * the timestamp of when the result was generated.
  * </p>
  *
- * @author  Sabarinathan K
  * @version  1.0
  */
 @Entity

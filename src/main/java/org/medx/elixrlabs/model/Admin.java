@@ -14,6 +14,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * <p>
+ * The {@code Admin} class represents the administrative entity in the system,
+ * responsible for managing various operational aspects.
+ * This entity is associated with the User entity through a one-to-one
+ * relationship, ensuring that every admin has a corresponding user account.
+ * </p>
+ */
 @Getter
 @Setter
 @AllArgsConstructor

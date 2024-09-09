@@ -9,6 +9,15 @@ import lombok.Setter;
 
 import java.util.List;
 
+/**
+ * <p>
+ * This class holds the data related to an Patient including their list of orders
+ * and other relevant details.
+ * The {@code Patient} class represents a patient whom a user who is receiving medical care,
+ * especially when they are ill or injured and need treatment.
+ * </p>
+ * @version  1.0
+ */
 @Getter
 @Setter
 @AllArgsConstructor

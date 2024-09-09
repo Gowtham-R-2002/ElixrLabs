@@ -29,7 +29,6 @@ import org.springframework.security.core.userdetails.UserDetails;
  * manages the role associated with the user for access control.
  * </p>
  *
- * @author  Sabarinathan K
  * @version  1.0
  */
 @Getter
