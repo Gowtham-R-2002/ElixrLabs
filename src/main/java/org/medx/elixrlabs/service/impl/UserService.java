@@ -33,6 +33,7 @@ public class UserService implements UserDetailsService {
         try {
             User user = userRepository.findByEmailWithRole(email);
             if (user != null) {
+                System.out.println(user.getRoles().getFirst().getName());
                 logger.info("Successfully loaded user with email: {}", email);
                 return user;
             } else {

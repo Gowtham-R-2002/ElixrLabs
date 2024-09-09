@@ -2,6 +2,7 @@ package org.medx.elixrlabs.controller;
 
 import java.util.List;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -68,7 +70,7 @@ public class OrderController {
      * @param patient Contains the details of the patient for whom orders are to be retrieved.
      * @return A list of {@link ResponseOrderDto} related to the specified patient.
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @RolesAllowed("ADMIN")
     @GetMapping("patients")
     public ResponseEntity<List<ResponseOrderDto>> getOrdersByPatient(@Valid @RequestBody RequestUserNameDto patient) {
         return new ResponseEntity<>(patientService.getOrdersByPatient(patient), HttpStatus.OK);
@@ -78,7 +80,7 @@ public class OrderController {
      *
      * @return A list of {@link ResponseOrderDto} containing order details.
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @RolesAllowed("ADMIN")
     @GetMapping("all")
     public ResponseEntity<List<ResponseOrderDto>> getOrders() {
         logger.debug("Getting the orders");
@@ -92,7 +94,7 @@ public class OrderController {
      * @param id The unique identifier of the order for which the report is being updated.
      * @return HTTP status indicating the acceptance of the report update.
      */
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RolesAllowed("ADMIN")
     @PutMapping("{id}/results")
     public ResponseEntity<HttpStatus.Series> updateReport(@Valid @RequestBody RequestTestResultDto resultDto, @PathVariable(name = "id") long id) {
         labService.assignReport(id, resultDto);
@@ -106,7 +108,7 @@ public class OrderController {
      * @param orderId The unique identifier of the order for which the test result is being retrieved.
      * @return The {@link TestResultDto} associated with the specified order.
      */
-    @PreAuthorize("hasRole('ADMIN')")
+    @RolesAllowed("ADMIN")
     @GetMapping("{id}/results")
     public ResponseEntity<TestResultDto> getTestResult(@PathVariable(name = "id") Long orderId) {
         return new ResponseEntity<>(labService.getTestResultByOrder(orderId), HttpStatus.OK);

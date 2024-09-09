@@ -1,6 +1,9 @@
 package org.medx.elixrlabs.filter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -35,10 +38,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserService userService;
 
+    private List<String> whitelistApis = new ArrayList<>(Arrays.asList("/error", "/api-docs", "swagger-ui/**",
+            "swagger-resources/**", "initialize","api/v1/auth/login", "api/v1/patients/register"
+            , "api/v1/sample-collectors/register", "api/v1/auth/login/verify"));
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//            if(request.getRequestURI().contains())
             filterChain.doFilter(request, response);
             return;
         }
