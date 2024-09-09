@@ -13,6 +13,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.Setter;
+import org.medx.elixrlabs.exception.SlotException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -74,7 +75,7 @@ public class JwtService {
             return claims.getSubject();
         } catch (Exception e) {
             logger.warn("Error while extracting username from token: {}", e.getMessage());
-            throw new LabException("Error while extracting username from token", e);
+            throw new SlotException("Error while extracting username from token", e);
         }
     }
 
@@ -87,10 +88,10 @@ public class JwtService {
                     .getPayload();
         } catch (ExpiredJwtException e) {
             logger.warn("Token has expired: {}", e.getMessage());
-            throw e;
+            throw new SlotException("Expired token");
         } catch (Exception e) {
             logger.warn("Error while parsing token: {}", e.getMessage());
-            throw new LabException("Error while parsing token", e);
+            throw new SlotException("Error while parsing token", e);
         }
     }
 
@@ -100,7 +101,7 @@ public class JwtService {
             return claims.getExpiration().after(Date.from(Instant.now()));
         } catch (Exception e) {
             logger.warn("Error while validating token: {}", e.getMessage());
-            throw new LabException("Error while validating token", e);
+            throw new SlotException("Error while validating token", e);
         }
     }
 }

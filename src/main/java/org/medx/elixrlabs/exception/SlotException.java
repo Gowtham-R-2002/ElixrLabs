@@ -7,7 +7,7 @@ package org.medx.elixrlabs.exception;
  *
  * @author Sabarinathan K
  */
-public class SlotException extends RuntimeException{
+public class SlotException extends RuntimeException {
     public SlotException(String message, Throwable cause) {
         super(message, cause);
     }
