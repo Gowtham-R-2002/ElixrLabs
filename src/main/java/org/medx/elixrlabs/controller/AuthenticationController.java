@@ -2,6 +2,9 @@ package org.medx.elixrlabs.controller;
 
 import java.io.IOException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.medx.elixrlabs.service.impl.AuthenticationService;
@@ -43,6 +46,11 @@ public class AuthenticationController {
      * @throws IOException If an I/O error occurs during email sending.
      */
 
+    @Operation(summary = "Gets the user details for logging in the user", description = "Returns 200 if ok and sends email else 401")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully authenticated"),
+            @ApiResponse(responseCode = "401", description = "Username or password mismatches or any issue occurs")
+    })
     @PostMapping
     public void login(@Valid @RequestBody LoginRequestDto loginRequestDto) throws MessagingException, IOException {
         authenticationService.createAuthentication(loginRequestDto);
@@ -56,6 +64,11 @@ public class AuthenticationController {
      * @return A JWT token if the OTP is valid.
      */
 
+    @Operation(summary = "Verifies the OTP sent to the user's mail", description = "Returns 200 if ok and OTP is valid else 401")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OTP is valid"),
+            @ApiResponse(responseCode = "401", description = "OTP is invalid or expired")
+    })
     @PostMapping("verify")
     public String verifyAndGenerateToken(@Valid @RequestBody OtpDto otpDto) {
         return authenticationService.generateToken(otpDto);
