@@ -2,6 +2,7 @@ package org.medx.elixrlabs.controller;
 
 import java.util.Map;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,14 +38,13 @@ public class SuperAdminController {
     /**
      * Creates a new admin by accepting the details in the request body.
      *
-     * @param adminDto the DTO containing the admin's details (email, password, etc.).
+     * @param adminDto the DTO containing the admin details (email, password, etc.).
      * @return a {@link ResponseEntity} with an HTTP status of CREATED (201) when the admin
      *         is successfully created.
      */
-    @PostMapping
-    public ResponseEntity<HttpStatus.Series> createAdmin(@RequestBody AdminDto adminDto) {
-        superAdminService.createOrUpdateAdmin(adminDto);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @PostMapping("admins")
+    public ResponseEntity<AdminDto> createAdmin(@Valid @RequestBody AdminDto adminDto) {
+        return new ResponseEntity<>(superAdminService.createAdmin(adminDto), HttpStatus.CREATED);
     }
 
     /**
@@ -54,9 +54,9 @@ public class SuperAdminController {
      * @return a {@link ResponseEntity} with an HTTP status of ACCEPTED (202) when the
      *         update is successful.
      */
-    @PutMapping
-    public ResponseEntity<HttpStatus.Series> updateAdmin(@RequestBody AdminDto adminDto) {
-        superAdminService.createOrUpdateAdmin(adminDto);
+    @PutMapping("admins")
+    public ResponseEntity<HttpStatus.Series> updateAdmin(@Valid @RequestBody AdminDto adminDto) {
+        superAdminService.updateAdmin(adminDto);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
@@ -66,7 +66,7 @@ public class SuperAdminController {
      *
      * @return a {@link ResponseEntity} containing a map of admins and an HTTP status of OK (200).
      */
-    @GetMapping
+    @GetMapping("admins")
     public ResponseEntity<Map<String, String>> getAllAdmins() {
         return new ResponseEntity<>(superAdminService.getAdmins(), HttpStatus.OK);
     }
@@ -79,10 +79,10 @@ public class SuperAdminController {
      * @return a {@link ResponseEntity} with an HTTP status of OK (200) when the deletion
      *         is successful.
      */
-    @DeleteMapping
-    public ResponseEntity<HttpStatus.Series> deleteAdmin(@RequestBody RequestUserNameDto requestUserNameDto) {
+    @DeleteMapping("admins")
+    public ResponseEntity<HttpStatus.Series> deleteAdmin(@Valid @RequestBody RequestUserNameDto requestUserNameDto) {
         superAdminService.deleteAdmin(requestUserNameDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
@@ -93,8 +93,8 @@ public class SuperAdminController {
      * @return a {@link ResponseEntity} with an HTTP status of OK (200) when the user is
      *         successfully blocked.
      */
-    @PatchMapping
-    public ResponseEntity<HttpStatus.Series> blockUser(@RequestBody RequestUserNameDto requestUserNameDto) {
+    @PatchMapping("admins")
+    public ResponseEntity<HttpStatus.Series> blockUser(@Valid @RequestBody RequestUserNameDto requestUserNameDto) {
         superAdminService.blockUser(requestUserNameDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }

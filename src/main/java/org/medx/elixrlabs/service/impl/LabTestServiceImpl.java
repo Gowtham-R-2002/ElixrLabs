@@ -88,13 +88,13 @@ public class LabTestServiceImpl implements LabTestService {
 
     @Override
     public boolean removeLabTestById(long id) {
-        try {
             LabTest labTest = labTestRepository.findByIdAndIsDeletedFalse(id);
             if (labTest == null) {
                 logger.warn("Lab test not found while removing with id: {}", id);
                 throw new NoSuchElementException("Lab test Not Found with id: " + id);
             }
             labTest.setDeleted(true);
+        try {
             labTestRepository.save(labTest);
             logger.info("Lab test marked as deleted with id: {}", id);
             return true;

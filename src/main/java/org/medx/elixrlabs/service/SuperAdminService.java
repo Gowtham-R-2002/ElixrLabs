@@ -2,6 +2,7 @@ package org.medx.elixrlabs.service;
 
 import java.util.Map;
 
+import org.medx.elixrlabs.model.Admin;
 import org.springframework.stereotype.Service;
 
 import org.medx.elixrlabs.dto.AdminDto;
@@ -17,7 +18,9 @@ import org.medx.elixrlabs.dto.RequestUserNameDto;
  */
 @Service
 public interface SuperAdminService {
-    void createOrUpdateAdmin(AdminDto adminDto);
+    AdminDto createAdmin(AdminDto adminDto);
+
+    AdminDto updateAdmin(AdminDto adminDto);
 
     /**
      * Soft deletes an admin by marking them as deleted. This method does not

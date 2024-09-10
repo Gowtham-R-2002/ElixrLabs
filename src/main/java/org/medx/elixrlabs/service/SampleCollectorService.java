@@ -19,12 +19,20 @@ import org.medx.elixrlabs.util.LocationEnum;
 public interface SampleCollectorService {
 
     /**
-     * Creates or updates a SampleCollector.
+     * Creates a SampleCollector with the given data.
      *
-     * @param userDto {@link UserDto} The DTO containing User data.
+     * @param userDto {@link UserDto} The DTO containing SampleCollector data.
      * @return The created SampleCollector Dto.
      */
-    SampleCollectorDto createOrUpdateSampleCollector(UserDto userDto);
+    SampleCollectorDto createSampleCollector(UserDto userDto);
+
+    /**
+     * Updates a SampleCollector with the updated data.
+     *
+     * @param userDto {@link UserDto} The DTO containing SampleCollector data.
+     * @return The updated SampleCollector Dto.
+     */
+    SampleCollectorDto updateSampleCollector(UserDto userDto);
 
     /**
      * Retrieves all the verified SampleCollector.

@@ -49,25 +49,11 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
-    public SampleCollectorDto createOrUpdateSampleCollector(UserDto userDto) {
-        logger.info("Attempting to create or update SampleCollector for email: {}", userDto.getEmail());
-        SampleCollector existingSampleCollector = getSampleCollectorByEmail(userDto.getEmail());
+    public SampleCollectorDto createSampleCollector(UserDto userDto) {
+        logger.info("Attempting to create SampleCollector for email: {}", userDto.getEmail());
         User user = UserMapper.toUser(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)));
-        if (existingSampleCollector != null) {
-            user.setUUID(existingSampleCollector.getUser().getUUID());
-            existingSampleCollector.setUser(user);
-            SampleCollector result;
-            try {
-                result = sampleCollectorRepository.save(existingSampleCollector);
-                logger.info("Successfully Updated existing SampleCollector with email: {}", userDto.getEmail());
-            } catch (Exception e) {
-                logger.warn("Error while updating SampleCollector with email: {}", userDto.getEmail());
-                throw new LabException("Error while updating SampleCollector with email: " + userDto.getEmail(), e);
-            }
-            return SampleCollectorMapper.convertToSampleCollectorDto(result);
-        }
         SampleCollector sampleCollector = SampleCollector.builder()
                 .user(user)
                 .isVerified(false)
@@ -77,13 +63,33 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
             savedSampleCollector = sampleCollectorRepository.save(sampleCollector);
             logger.info("Successfully Created SampleCollector with email: {}", userDto.getEmail());
         } catch (DataIntegrityViolationException e) {
-            logger.warn("Error while creating existing user with email : {}", userDto.getEmail());
+            logger.warn("User already exists with email {}", userDto.getEmail());
             throw new DataIntegrityViolationException("User already exists with email " + userDto.getEmail());
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.warn("Error while creating SampleCollector with email: {}", userDto.getEmail());
             throw new LabException("Error while saving SampleCollector with email: " + userDto.getEmail(), e);
         }
         return SampleCollectorMapper.convertToSampleCollectorDto(savedSampleCollector);
+    }
+
+    @Override
+    public SampleCollectorDto updateSampleCollector(UserDto userDto) {
+        logger.info("Attempting to update SampleCollector for email: {}", userDto.getEmail());
+        SampleCollector existingSampleCollector = getSampleCollectorByEmail(userDto.getEmail());
+        User user = UserMapper.toUser(userDto);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)));
+        user.setUUID(existingSampleCollector.getUser().getUUID());
+        existingSampleCollector.setUser(user);
+        SampleCollector result;
+        try {
+            result = sampleCollectorRepository.save(existingSampleCollector);
+            logger.info("Successfully Updated existing SampleCollector with email: {}", userDto.getEmail());
+        } catch (Exception e) {
+            logger.warn("Error while updating SampleCollector with email: {}", userDto.getEmail());
+            throw new LabException("Error while updating SampleCollector with email: " + userDto.getEmail(), e);
+        }
+        return SampleCollectorMapper.convertToSampleCollectorDto(result);
     }
 
     @Override

@@ -42,7 +42,7 @@ public class TestPackage {
     @Column(name = "test_package_id")
     private Long id;
 
-    @Column(name = "test_package_name")
+    @Column(name = "test_package_name", unique = true)
     private String name;
 
     private String description;

@@ -46,27 +46,18 @@ public class SuperAdminServiceImpl implements SuperAdminService {
      *                 and other relevant information.
      */
     @Override
-    public void createOrUpdateAdmin(AdminDto adminDto) {
-        Admin admin = Admin.builder()
-                .user(User.builder()
-                        .email(adminDto.getEmail())
-                        .password(adminDto.getPassword())
-                        .roles(List.of(roleService.getRoleByName(RoleEnum.ROLE_ADMIN)))
-                        .build())
-                .build();
-        Admin existingAdmin = adminService.getAdminByEmail(adminDto.getEmail());
-        if (null != existingAdmin) {
-            admin.getUser().setUUID(existingAdmin.getUser().getUUID());
-            admin.setId(existingAdmin.getId());
-        }
-        adminService.createOrUpdateAdmin(admin);
+    public AdminDto createAdmin(AdminDto adminDto) {
+        return adminService.createAdmin(adminDto);
+    }
+
+    @Override
+    public AdminDto updateAdmin(AdminDto adminDto) {
+        return adminService.updateAdmin(adminDto);
     }
 
     @Override
     public void deleteAdmin(RequestUserNameDto requestUserNameDto) {
-        Admin admin = adminService.getAdminByEmail(requestUserNameDto.getEmail());
-        admin.setDeleted(true);
-        adminService.createOrUpdateAdmin(admin);
+        adminService.deleteAdmin(requestUserNameDto);
     }
 
     @Override

@@ -59,7 +59,7 @@ public class SampleCollectorController {
      */
     @PostMapping("register")
     public ResponseEntity<SampleCollectorDto> createSampleCollector(@Valid @RequestBody UserDto userDto) {
-        return new ResponseEntity<>(sampleCollectorService.createOrUpdateSampleCollector(userDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(sampleCollectorService.createSampleCollector(userDto), HttpStatus.CREATED);
     }
 
     /**
@@ -70,7 +70,7 @@ public class SampleCollectorController {
      */
     @PutMapping
     public ResponseEntity<SampleCollectorDto> updateSampleCollector(@Valid @RequestBody UserDto userDto) {
-        return new ResponseEntity<>(sampleCollectorService.createOrUpdateSampleCollector(userDto), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(sampleCollectorService.updateSampleCollector(userDto), HttpStatus.ACCEPTED);
     }
 
     /**

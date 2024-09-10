@@ -21,7 +21,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LabTestDto {
-    @NotNull
     private Long id;
 
     @NotNull

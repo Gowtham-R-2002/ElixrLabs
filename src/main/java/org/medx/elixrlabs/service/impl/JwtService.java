@@ -13,6 +13,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.Setter;
+import org.medx.elixrlabs.exception.JwtException;
 import org.medx.elixrlabs.exception.SlotException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -79,7 +80,7 @@ public class JwtService {
         }
     }
 
-    private Claims getClaims(String jwt) throws ExpiredJwtException {
+    private Claims getClaims(String jwt) throws JwtException {
         try {
             return Jwts.parser()
                     .verifyWith(generateKey())
@@ -88,20 +89,20 @@ public class JwtService {
                     .getPayload();
         } catch (ExpiredJwtException e) {
             logger.warn("Token has expired: {}", e.getMessage());
-            throw new SlotException("Expired token");
+            throw new JwtException("Expired token");
         } catch (Exception e) {
             logger.warn("Error while parsing token: {}", e.getMessage());
-            throw new SlotException("Error while parsing token", e);
+            throw new JwtException("Error while parsing token", e);
         }
     }
 
-    public boolean isTokenValid(String jwt) {
+    public boolean isTokenValid(String jwt) throws JwtException {
         try {
             Claims claims = getClaims(jwt);
             return claims.getExpiration().after(Date.from(Instant.now()));
         } catch (Exception e) {
             logger.warn("Error while validating token: {}", e.getMessage());
-            throw new SlotException("Error while validating token", e);
+            throw new JwtException("Error while validating token", e);
         }
     }
 }

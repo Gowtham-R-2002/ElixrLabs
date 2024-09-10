@@ -2,6 +2,8 @@ package org.medx.elixrlabs.service;
 
 import java.util.Map;
 
+import org.medx.elixrlabs.dto.AdminDto;
+import org.medx.elixrlabs.dto.RequestUserNameDto;
 import org.springframework.stereotype.Service;
 
 import org.medx.elixrlabs.model.Admin;
@@ -25,11 +27,25 @@ public interface AdminService {
     /**
      * Creates a new admin or updates an existing admin
      *
-     * @param admin {@link Admin} contains details of admin to be created or
+     * @param adminDto {@link AdminDto} contains details of admin to be created or
      *                           updated
      */
 
-    void createOrUpdateAdmin(Admin admin);
+    AdminDto createAdmin(AdminDto adminDto);
+
+    /**
+     * Updates the existing admin with the updated details
+     * @param adminDto The Updated Admin details.
+     * @return The Updated adminDetails
+     */
+    AdminDto updateAdmin(AdminDto adminDto);
+
+    /**
+     * Soft deletes the admin
+     *
+     * @param userNameDto The username of the admin to be deleted.
+     */
+    void deleteAdmin(RequestUserNameDto userNameDto);
 
     /**
      * Retrieves all the admins

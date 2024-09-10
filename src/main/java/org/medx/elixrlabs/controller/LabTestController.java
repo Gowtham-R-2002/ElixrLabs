@@ -87,6 +87,6 @@ public class LabTestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> removeLabTestById(@PathVariable long id) {
-        return new ResponseEntity<>(labTestService.removeLabTestById(id), HttpStatus.OK);
+        return new ResponseEntity<>(labTestService.removeLabTestById(id), HttpStatus.NO_CONTENT);
     }
 }

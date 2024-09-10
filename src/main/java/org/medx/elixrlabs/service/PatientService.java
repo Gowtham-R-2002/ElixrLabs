@@ -24,13 +24,21 @@ public interface PatientService {
 
 
     /**
-     * Adds a new patient or updates the details associated with a specific patient
+     * Adds a new patient with details associated with a specific patient
      *
-     * @param userDto - patient details which has to be added or updated for a
+     * @param userDto - patient details which has to be added
+     * @return patient details that has been added or updated
+     */
+    ResponsePatientDto createPatient(UserDto userDto);
+
+    /**
+     * Updates the patient details associated with a specific patient
+     *
+     * @param userDto - patient details which has to be updated for a
      *                patient
      * @return patient details that has been added or updated
      */
-    ResponsePatientDto createOrUpdatePatient(UserDto userDto);
+    ResponsePatientDto updatePatient(UserDto userDto);
 
     /**
      * Fetches all the patients.

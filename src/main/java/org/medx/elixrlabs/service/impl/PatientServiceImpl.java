@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -60,36 +61,44 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
     @Override
-    public ResponsePatientDto createOrUpdatePatient(UserDto userDto) {
-        logger.debug("Attempting to create or update Patient for email: {}", userDto.getEmail());
-        Patient patient = getPatientByEmail(userDto.getEmail());
+    public ResponsePatientDto createPatient(UserDto userDto) {
+        logger.debug("Attempting to create Patient for email: {}", userDto.getEmail());
         User user = UserMapper.toUser(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)));
-        if (patient != null) {
-            user.setUUID(patient.getUser().getUUID());
-            patient.setUser(user);
-            Patient resultPatient;
-            try {
-                resultPatient = patientRepository.save(patient);
-                logger.info("Successfully updated Patient for email: {}", userDto.getEmail());
-            } catch (Exception e) {
-                logger.warn("Error while updating Patient with email:{}", userDto.getEmail());
-                throw new LabException("Error while saving Patient with email: " + userDto.getEmail(), e);
-            }
-            return PatientMapper.toPatientDto(resultPatient);
-        }
         Patient newPatient = Patient.builder().user(user).build();
         Patient savedPatient;
         try {
             savedPatient = patientRepository.save(newPatient);
             logger.info("Successfully created new Patient for email: {}", userDto.getEmail());
+        } catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("User with same mail already exists!");
         } catch (Exception e) {
             logger.warn("Error while creating Patient with email:{}", userDto.getEmail());
             throw new LabException("Error while saving Patient with email: " + userDto.getEmail(), e);
         }
         return PatientMapper.toPatientDto(savedPatient);
+    }
+
+    @Override
+    public ResponsePatientDto updatePatient(UserDto userDto) {
+        logger.debug("Attempting to update Patient for email: {}", userDto.getEmail());
+        Patient patient = getPatientByEmail(userDto.getEmail());
+        User user = UserMapper.toUser(userDto);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setUUID(patient.getUser().getUUID());
+        patient.setUser(user);
+        Patient resultPatient;
+        try {
+            resultPatient = patientRepository.save(patient);
+            logger.info("Successfully updated Patient for email: {}", userDto.getEmail());
+        } catch (Exception e) {
+            logger.warn("Error while updating Patient with email:{}", userDto.getEmail());
+            throw new LabException("Error while saving Patient with email: " + userDto.getEmail(), e);
+        }
+        return PatientMapper.toPatientDto(resultPatient);
     }
 
     @Override

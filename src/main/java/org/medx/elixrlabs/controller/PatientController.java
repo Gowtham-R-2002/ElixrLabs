@@ -53,7 +53,7 @@ public class PatientController {
      */
     @PostMapping("register")
     public ResponseEntity<ResponsePatientDto> createPatient(@Valid @RequestBody UserDto userDto) {
-        ResponsePatientDto savedUser = patientService.createOrUpdatePatient(userDto);
+        ResponsePatientDto savedUser = patientService.createPatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
 
@@ -88,7 +88,7 @@ public class PatientController {
      */
     @PutMapping
     public ResponseEntity<ResponsePatientDto> updatePatient(@Valid @RequestBody UserDto userDto) {
-        ResponsePatientDto savedUser = patientService.createOrUpdatePatient(userDto);
+        ResponsePatientDto savedUser = patientService.updatePatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.OK);
     }
 
@@ -100,7 +100,7 @@ public class PatientController {
     @DeleteMapping
     public ResponseEntity<HttpStatus.Series> deletePatient() {
         patientService.deletePatient();
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**

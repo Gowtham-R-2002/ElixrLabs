@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.service.impl;
 
+import org.medx.elixrlabs.dto.AdminDto;
 import org.medx.elixrlabs.model.Admin;
 import org.medx.elixrlabs.model.LabTest;
 import org.medx.elixrlabs.model.Role;
@@ -8,6 +9,7 @@ import org.medx.elixrlabs.repository.LabTestRepository;
 import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.repository.UserRepository;
 import org.medx.elixrlabs.service.*;
+import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.RoleEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,30 +50,19 @@ public class SetupInitializerService {
     }
 
     private void setupAdminData() {
-        User user = User.builder()
+        AdminDto admin = AdminDto.builder()
                 .email("sabarisha0622@gmail.com")
-                .password("admin@123")
+                .password("sab@123")
+                .place(LocationEnum.MARINA)
                 .build();
-        user.setRoles(List.of(roleService.getRoleByName
-                (RoleEnum.ROLE_ADMIN)));
-        String password = bCryptPasswordEncoder.encode(user.getPassword());
-        user.setPassword(password);
-        Admin admin = Admin.builder()
-                .user(user)
-                .build();
-        User anotherUser = User.builder()
+        AdminDto anotherAdmin = AdminDto.builder()
                 .email("deomuja@gmail.com")
-                .password("admin@123")
-                .build();
-        anotherUser.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_ADMIN)));
-        String anotherPassword = bCryptPasswordEncoder.encode(anotherUser.getPassword());
-        anotherUser.setPassword(anotherPassword);
-        Admin anotherAdmin = Admin.builder()
-                .user(anotherUser)
+                .password("deo@123")
+                .place(LocationEnum.VELACHERY)
                 .build();
         try {
-            adminService.createOrUpdateAdmin(admin);
-            adminService.createOrUpdateAdmin(anotherAdmin);
+            adminService.createAdmin(admin);
+            adminService.createAdmin(anotherAdmin);
         } catch (Exception e) {
             System.out.println("Admin already present...Skipping" + e.getMessage());
         }
