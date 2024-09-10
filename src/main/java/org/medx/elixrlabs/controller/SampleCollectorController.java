@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import org.medx.elixrlabs.dto.AppointmentDto;
-import org.medx.elixrlabs.dto.AppointmentsQueryDto;
 import org.medx.elixrlabs.dto.SampleCollectorDto;
 import org.medx.elixrlabs.dto.UserDto;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
@@ -19,7 +18,6 @@ import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.SampleCollectorService;
 import org.medx.elixrlabs.service.impl.JwtService;
 import org.medx.elixrlabs.util.LocationEnum;
-import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * REST controller for managing SampleCollector-related operations.
