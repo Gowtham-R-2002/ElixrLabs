@@ -111,7 +111,12 @@ public class SampleCollectorController {
             throw new NoSuchElementException("URI Not found ! Check the URI entered !");
         }
         if (isAssigned == null && isCollected == null && date != null) {
-            LocationEnum place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
+            LocationEnum place = null;
+            try {
+                place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
+            } catch (Exception e) {
+                throw new NullPointerException("Sample Collecor is Not verified !");
+            }
             List<AppointmentDto> appointments = appointmentSlotService.getAppointmentsByPlace(place, date);
             return new ResponseEntity<>(appointments, HttpStatus.OK);
         } else if (isAssigned && isCollected == null) {
