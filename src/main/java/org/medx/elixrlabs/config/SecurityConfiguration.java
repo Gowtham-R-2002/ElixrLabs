@@ -53,6 +53,7 @@ public class SecurityConfiguration{
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("api/v1/auth/login", "api/v1/patients/register", "api/v1/sample-collectors/register", "api/v1/auth/login/verify").permitAll();
                     registry.requestMatchers("/error", "/api-docs", "swagger-ui/**", "swagger-resources/**", "initialize").permitAll();
+                    registry.requestMatchers("api/v1/super-admin/**").hasRole("SUPER_ADMIN");
                     registry.requestMatchers("api/v1/labs/**", "api/v1/test-packages/**", "api/v1/lab-tests/**").hasRole("ADMIN");
                     registry.requestMatchers("api/v1/sample-collectors/**").hasRole("SAMPLE_COLLECTOR");
                     registry.requestMatchers("api/v1/patients/**", "api/v1/orders/**").hasAnyRole("PATIENT", "ADMIN");
