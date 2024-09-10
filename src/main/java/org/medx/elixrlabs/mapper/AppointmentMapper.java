@@ -32,6 +32,7 @@ public class AppointmentMapper {
                 .appointmentDate(appointmentSlot.getDateSlot())
                 .timeSlot(appointmentSlot.getTimeSlot())
                 .userName(appointmentSlot.getPatient().getUser().getUsername())
+                .order(OrderMapper.toResponseOrderDto(appointmentSlot.getOrder()))
                 .build();
         logger.info("Converted AppointmentSlot entity to AppointmentDTO with ID: {}", appointmentSlot.getId());
         return appointmentDto;

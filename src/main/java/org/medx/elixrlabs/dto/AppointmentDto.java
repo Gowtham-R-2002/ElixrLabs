@@ -36,4 +36,6 @@ public class AppointmentDto {
 
     @NotNull
     private Long appointmentId;
+
+    private ResponseOrderDto order;
 }

@@ -169,8 +169,8 @@ public class OrderControllerTest {
 
     @Test
     void testGetOrdersByPatient() {
-        when(patientService.getOrdersByPatient(userNameDto)).thenReturn(responseOrderDtos);
-        ResponseEntity<List<ResponseOrderDto>> result = orderController.getOrdersByPatient(userNameDto);
+        when(patientService.getOrdersByPatient(userNameDto.getEmail())).thenReturn(responseOrderDtos);
+        ResponseEntity<List<ResponseOrderDto>> result = orderController.getOrdersByPatient(userNameDto.getEmail());
         assertEquals(responseOrderDtos, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }

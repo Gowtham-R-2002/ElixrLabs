@@ -1,20 +1,13 @@
 package org.medx.elixrlabs.controller;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import org.medx.elixrlabs.dto.AppointmentDto;
 import org.medx.elixrlabs.dto.AppointmentsQueryDto;
@@ -25,6 +18,7 @@ import org.medx.elixrlabs.service.AppointmentSlotService;
 import org.medx.elixrlabs.service.SampleCollectorService;
 import org.medx.elixrlabs.service.impl.JwtService;
 import org.medx.elixrlabs.util.LocationEnum;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * REST controller for managing SampleCollector-related operations.
@@ -83,21 +77,19 @@ public class SampleCollectorController {
         return new ResponseEntity<>(sampleCollectorService.deleteSampleCollector(), HttpStatus.NO_CONTENT);
     }
 
-    /**
-     * Gets all appointments unassigned in the particular place
-     *
-     * @param appointmentsQueryDto {@link AppointmentsQueryDto} contains date to be queried.
-     * @return {@link List<AppointmentDto>} Appointments that are unassigned in that particular location.
-     */
-    @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentDto>> getAppointments(@Valid @RequestBody AppointmentsQueryDto appointmentsQueryDto) {
-        LocationEnum place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
-        List<AppointmentDto> appointments = appointmentSlotService.getAppointmentsByPlace(place, appointmentsQueryDto.getDate());
-        return new ResponseEntity<>(appointments, HttpStatus.OK);
-    }
+//    /**
+//     * Gets all appointments unassigned in the particular place
+//     *
+//     * @param appointmentsQueryDto {@link AppointmentsQueryDto} contains date to be queried.
+//     * @return {@link List<AppointmentDto>} Appointments that are unassigned in that particular location.
+//     */
+//    @GetMapping("/appointments")
+//    public ResponseEntity<List<AppointmentDto>> getAppointments(@Valid @RequestBody AppointmentsQueryDto appointmentsQueryDto) {
+//    }
 
     /**
      * Assigns the appointment to the currently logged in sample collector.
+     *
      * @param id The ID of the appointment to be assigned
      * @return The status code 202 Accepted
      */
@@ -109,6 +101,7 @@ public class SampleCollectorController {
 
     /**
      * Updates the status of the appointment as sample collected.
+     *
      * @param id The ID of the appointment
      * @return The status code of 202 Accepted
      */
@@ -120,35 +113,30 @@ public class SampleCollectorController {
 
     /**
      * Gets all assigned appointments of the currently logged in sample collector
+     *
      * @return {@link List<AppointmentDto>} Appointments that are assigned to the currently logged in sample collector
      */
-    @GetMapping("appointments/assigned")
-    public ResponseEntity<List<AppointmentDto>> getAllAssignedAppointments() {
-        List<AppointmentDto> appointmentDtos = appointmentSlotService
-                .getAppointmentsBySampleCollector();
-        return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
+    @GetMapping("appointments")
+    public ResponseEntity<List<AppointmentDto>> getAllAssignedAppointments(@RequestParam(required = false, name = "assigned") Boolean isAssigned, @RequestParam(required = false, name = "collected") Boolean isCollected, @RequestBody(required = false) AppointmentsQueryDto appointmentsQueryDto) {
+        System.out.println(isAssigned + " " + isCollected);
+        if (isAssigned == null && isCollected == null) {
+            LocationEnum place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
+            List<AppointmentDto> appointments = appointmentSlotService.getAppointmentsByPlace(place, appointmentsQueryDto.getDate());
+            return new ResponseEntity<>(appointments, HttpStatus.OK);
+        } else if (isAssigned && isCollected == null) {
+            List<AppointmentDto> appointmentDtos = appointmentSlotService
+                    .getAppointmentsBySampleCollector();
+            return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
+        } else if (isAssigned && !isCollected) {
+            List<AppointmentDto> appointmentDtos = appointmentSlotService
+                    .getPendingAppointmentsBySampleCollector();
+            return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
+        } else if (isAssigned && isCollected) {
+            List<AppointmentDto> appointmentDtos = appointmentSlotService
+                    .getCollectedAppointmentsBySampleCollector();
+            return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
+        } else {
+            throw new NoSuchElementException("URI Not found ! Check the URI entered !");
+        }
     }
-
-    /**
-     * Gets all sample-collected appointments of the currently logged in sample collector
-     * @return {@link List<AppointmentDto>} Sample-collected Appointments of the currently logged in sample collector
-     */
-    @GetMapping("appointments/assigned/collected")
-    public ResponseEntity<List<AppointmentDto>> getCollectedAppointments() {
-        List<AppointmentDto> appointmentDtos = appointmentSlotService
-                .getCollectedAppointmentsBySampleCollector();
-        return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
-    }
-
-    /**
-     * Gets all appointments of the currently logged in sample collector that have uncollected samples
-     * @return {@link List<AppointmentDto>} Appointments of the currently logged in sample collector that have uncollected samples
-     */
-    @GetMapping("appointments/assigned/pending")
-    public ResponseEntity<List<AppointmentDto>> getPendingAppointments() {
-        List<AppointmentDto> appointmentDtos = appointmentSlotService
-                .getPendingAppointmentsBySampleCollector();
-        return new ResponseEntity<>(appointmentDtos, HttpStatus.OK);
-    }
-
 }

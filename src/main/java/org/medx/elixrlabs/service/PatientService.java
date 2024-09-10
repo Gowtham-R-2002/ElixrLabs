@@ -85,6 +85,6 @@ public interface PatientService {
      * @return all the orders related to the patient
      */
 
-    List<ResponseOrderDto> getOrdersByPatient(RequestUserNameDto patient);
+    List<ResponseOrderDto> getOrdersByPatient(String username);
 
 }

@@ -152,7 +152,7 @@ public class PatientServiceTest {
             return savedPatient;
         });
 
-        ResponsePatientDto result = patientService.createOrUpdatePatient(userDto);
+        ResponsePatientDto result = patientService.createPatient(userDto);
         assertNotNull(result);
         assertEquals("newpatient@example.com", result.getEmail());
         verify(patientRepository, times(1)).save(any(Patient.class));
@@ -169,7 +169,7 @@ public class PatientServiceTest {
         when(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)).thenReturn(patientRole);
         when(patientRepository.save(any(Patient.class))).thenReturn(patient);
 
-        ResponsePatientDto result = patientService.createOrUpdatePatient(userDto);
+        ResponsePatientDto result = patientService.createPatient(userDto);
 
         assertNotNull(result);
         assertEquals("test@example.com", result.getEmail());
@@ -187,7 +187,7 @@ public class PatientServiceTest {
         when(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)).thenReturn(patientRole);
         when(patientRepository.save(any(Patient.class))).thenThrow(new RuntimeException("Database error"));
         LabException exception = assertThrows(LabException.class, () -> {
-            patientService.createOrUpdatePatient(userDto);
+            patientService.createPatient(userDto);
         });
         assertTrue(exception.getMessage().contains("Error while saving Patient with email: error@example.com"));
         verify(patientRepository, times(1)).save(any(Patient.class));
@@ -325,7 +325,7 @@ public class PatientServiceTest {
                 .email(email)
                 .build();
         when(patientRepository.getPatientOrders(email)).thenReturn(patient);
-        List<ResponseOrderDto> result = patientService.getOrdersByPatient(requestUserNameDto);
+        List<ResponseOrderDto> result = patientService.getOrdersByPatient(user.getEmail());
         verify(patientRepository, times(1)).getPatientOrders(email);
         assertNotNull(result);
         assertEquals(result.size(), 1);
@@ -339,7 +339,7 @@ public class PatientServiceTest {
                 .build();
         when(patientRepository.getPatientOrders(email)).thenThrow(new RuntimeException("DB error"));
         LabException exception = assertThrows(LabException.class, () -> {
-            patientService.getOrdersByPatient(requestUserNameDto);
+            patientService.getOrdersByPatient(user.getEmail());
         });
 
         verify(patientRepository, times(1)).getPatientOrders(email);

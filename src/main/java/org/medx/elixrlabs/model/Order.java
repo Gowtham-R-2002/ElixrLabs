@@ -85,6 +85,7 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "test_id"))
     private List<LabTest> tests;
 
+    @JsonIgnore
     @OneToOne
     private AppointmentSlot slot;
 

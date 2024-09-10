@@ -126,6 +126,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     @Override
     public OrderSuccessDto bookSlot(SlotBookDto slotBookDto) {
+        OrderSuccessDto orderSuccessDto;
         logger.debug("Attempting to book slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
         if (!isSlotAvailable(slotBookDto)) {
             logger.warn("Slot booking failed for date: {}, time slot: {} - Slot filled", slotBookDto.getDate(), slotBookDto.getTimeSlot());
@@ -157,14 +158,17 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                     .orderDateTime(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("GMT+05:30"))))
                     .build();
             emailService.sendInvoice(order.getTests(), order.getTestPackage(), order.getPrice(), patient.getUser().getEmail(), order.getOrderDateTime());
-            appointmentSlotRepository.save(appointmentSlot);
+            AppointmentSlot savedAddpointment = appointmentSlotRepository.save(appointmentSlot);
             cartService.deleteCart();
             logger.info("Slot booked successfully for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
-            return orderService.createOrUpdateOrder(order);
+            orderSuccessDto = orderService.createOrUpdateOrder(order);
+            savedAddpointment.setOrder(orderService.getOrder(orderSuccessDto.getId()));
+            appointmentSlotRepository.save(appointmentSlot);
         } catch (Exception e) {
             logger.error("Exception occurred while booking slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
             throw new SlotException("Unable to book slot", e);
         }
+        return orderSuccessDto;
     }
 
     @Override

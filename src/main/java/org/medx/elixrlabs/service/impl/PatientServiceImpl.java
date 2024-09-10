@@ -166,12 +166,13 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<ResponseOrderDto> getOrdersByPatient(RequestUserNameDto patient) {
-        String email = patient.getEmail();
+    public List<ResponseOrderDto> getOrdersByPatient(String username) {
+        String email = username;
         List<ResponseOrderDto> orderDtos;
         logger.debug("Attempting to get orders by patient with email: {}", email);
+        Patient patient = getPatientByEmail(email);
         try {
-            orderDtos = patientRepository.getPatientOrders(email).getOrders().stream()
+            orderDtos = patient.getOrders().stream()
                     .map(OrderMapper::toResponseOrderDto)
                     .toList();
             logger.info("Successfully fetched orders of patient with email: {}", email);

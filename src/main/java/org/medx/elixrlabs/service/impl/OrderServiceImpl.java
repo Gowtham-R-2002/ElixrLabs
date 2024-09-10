@@ -57,6 +57,10 @@ public class OrderServiceImpl implements OrderService {
             logger.warn("Error while getting order with id: {}", id);
             throw new LabException("Error while fetching order with id: " + id, e);
         }
+        if (null == order) {
+            logger.warn("Order not found with ID : {}", id );
+            throw new NoSuchElementException("Order not found with ID : " + id);
+        }
         return order;
     }
 
