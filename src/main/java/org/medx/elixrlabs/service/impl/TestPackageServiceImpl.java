@@ -89,18 +89,19 @@ public class TestPackageServiceImpl implements TestPackageService {
     @Override
     public ResponseTestPackageDto getTestPackageById(long id) {
         logger.debug("Retrieving TestPackage by ID: {}", id);
+        TestPackage testPackage;
         try {
-            TestPackage testPackage = testPackageRepository.findByIdAndIsDeletedFalse(id);
-            if (testPackage == null) {
-                logger.warn("TestPackage not found for ID: {}", id);
-                throw new NoSuchElementException("TestPackage not found with ID: " + id);
-            }
+            testPackage = testPackageRepository.findByIdAndIsDeletedFalse(id);
             logger.info("Successfully retrieved TestPackage with ID: {}", id);
-            return TestPackageMapper.toTestPackageDto(testPackage);
         } catch (Exception e) {
             logger.warn("Failed to retrieve TestPackage by ID: {}", id);
             throw new LabException("Error occurred while retrieving TestPackage" + id , e);
         }
+        if (testPackage == null) {
+            logger.warn("TestPackage not found for ID: {}", id);
+            throw new NoSuchElementException("TestPackage not found with ID: " + id);
+        }
+        return TestPackageMapper.toTestPackageDto(testPackage);
     }
 
     @Override
