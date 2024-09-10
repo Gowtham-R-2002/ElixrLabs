@@ -1,18 +1,15 @@
 package org.medx.elixrlabs.controller;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 import jakarta.validation.Valid;
+import org.medx.elixrlabs.util.LocationEnum;
+import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import org.medx.elixrlabs.dto.CartDto;
 import org.medx.elixrlabs.dto.OrderSuccessDto;
@@ -64,7 +61,12 @@ public class PatientController {
      * @return A set of available appointment slots.
      */
     @GetMapping("slots")
-    public ResponseEntity<Set<String>> getAvailableSlots(@Valid @RequestBody RequestSlotBookDto slotBookDto) {
+    public ResponseEntity<Set<String>> getAvailableSlots(@RequestParam(name = "location") LocationEnum location, @RequestParam(name = "test-collection-place")TestCollectionPlaceEnum testCollectionPlace, @RequestParam(name = "date")LocalDate date) {
+        RequestSlotBookDto slotBookDto = RequestSlotBookDto.builder()
+                .testCollectionPlace(testCollectionPlace)
+                .location(location)
+                .date(date)
+                .build();
         return new ResponseEntity<>(appointmentSlotService.getAvailableSlots(slotBookDto), HttpStatus.OK);
     }
 

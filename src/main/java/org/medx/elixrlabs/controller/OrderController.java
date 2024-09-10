@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.bind.annotation.*;
@@ -43,6 +44,7 @@ public class OrderController {
      *
      * @return A list of {@link ResponseOrderDto} associated with the patient.
      */
+    @RolesAllowed("PATIENT")
     @GetMapping()
     public ResponseEntity<List<ResponseOrderDto>> getOrdersOfPatient() {
         return new ResponseEntity<>(patientService.getOrders(), HttpStatus.OK);

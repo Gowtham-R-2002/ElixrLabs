@@ -132,7 +132,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .message(methodArgumentTypeMismatchException.getMessage() + " Check the type of data entered !")
+                .message(methodArgumentTypeMismatchException.getMessage() + ". Check the type of data entered !")
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

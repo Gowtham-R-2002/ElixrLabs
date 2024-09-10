@@ -1,5 +1,6 @@
 package org.medx.elixrlabs.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -107,10 +108,13 @@ public class SampleCollectorController {
      * @return {@link List<AppointmentDto>} Appointments that are assigned to the currently logged in sample collector
      */
     @GetMapping("appointments")
-    public ResponseEntity<List<AppointmentDto>> getAppointments(@RequestParam(required = false, name = "assigned") Boolean isAssigned, @RequestParam(required = false, name = "collected") Boolean isCollected, @RequestBody(required = false) AppointmentsQueryDto appointmentsQueryDto) {
-        if (isAssigned == null && isCollected == null) {
+    public ResponseEntity<List<AppointmentDto>> getAppointments(@RequestParam(required = false, name = "assigned") Boolean isAssigned, @RequestParam(required = false, name = "collected") Boolean isCollected, @RequestParam(required = false, name = "date") LocalDate date) {
+        if((null == isAssigned) && (null == isCollected) && (null == date)) {
+            throw new NoSuchElementException("URI Not found ! Check the URI entered !");
+        }
+        if (isAssigned == null && isCollected == null && date != null) {
             LocationEnum place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
-            List<AppointmentDto> appointments = appointmentSlotService.getAppointmentsByPlace(place, appointmentsQueryDto.getDate());
+            List<AppointmentDto> appointments = appointmentSlotService.getAppointmentsByPlace(place, date);
             return new ResponseEntity<>(appointments, HttpStatus.OK);
         } else if (isAssigned && isCollected == null) {
             List<AppointmentDto> appointmentDtos = appointmentSlotService

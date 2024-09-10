@@ -125,7 +125,7 @@ public class PatientControllerTest {
     @Test
     void testGetAvailableSlots() {
         when(appointmentSlotService.getAvailableSlots(any(RequestSlotBookDto.class))).thenReturn(Set.of("1AM", "2AM"));
-        ResponseEntity<Set<String>> result = patientController.getAvailableSlots(requestSlotBookDto);
+        ResponseEntity<Set<String>> result = patientController.getAvailableSlots(LocationEnum.MARINA, TestCollectionPlaceEnum.HOME, LocalDate.now());
         assertEquals(Set.of("1AM", "2AM"), result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
@@ -140,7 +140,7 @@ public class PatientControllerTest {
 
     @Test
     void testUpdatePatient() {
-        when(patientService.createOrUpdatePatient(userDto)).thenReturn(responsePatientDto);
+        when(patientService.createPatient(userDto)).thenReturn(responsePatientDto);
         ResponseEntity<ResponsePatientDto> result = patientController.updatePatient(userDto);
         assertEquals(responsePatientDto, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());

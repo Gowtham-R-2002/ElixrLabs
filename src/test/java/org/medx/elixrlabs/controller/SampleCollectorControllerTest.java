@@ -154,7 +154,7 @@ class SampleCollectorControllerTest {
         when(sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()))
                 .thenReturn(SampleCollector.builder().user(User.builder().place(LocationEnum.MARINA).build()).build());
         when(appointmentSlotService.getAppointmentsByPlace(LocationEnum.MARINA, appointmentsQueryDto.getDate())).thenReturn(appointmentDtos);
-        assertEquals(2, sampleCollectorController.getAppointments(null, null, appointmentsQueryDto).getBody().size());
+        assertEquals(2, sampleCollectorController.getAppointments(null, null, LocalDate.now()).getBody().size());
         }
     }
 
@@ -191,7 +191,7 @@ class SampleCollectorControllerTest {
     @Test
     void testGetPendingAppointments() {
         when(appointmentSlotService.getPendingAppointmentsBySampleCollector()).thenReturn(appointmentDtos);
-        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getAppointments(stattrue, false, null);
+        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getAppointments(true, false, null);
         assertEquals(appointmentDtos,result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
