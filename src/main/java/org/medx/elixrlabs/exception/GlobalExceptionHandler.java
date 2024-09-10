@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.NoSuchElementException;
@@ -123,6 +124,15 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .message(missingServletRequestParameterException.getMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException methodArgumentTypeMismatchException) {
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .message(methodArgumentTypeMismatchException.getMessage() + " Check the type of data entered !")
                 .build();
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
