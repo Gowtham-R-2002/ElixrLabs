@@ -204,5 +204,4 @@ public class PatientServiceImpl implements PatientService {
         logger.debug("Checking that order is owned by patient using order Id {} and patient email {}", orderId, email);
         return orderService.getOrder(orderId).getPatient().getUser().getUsername().equals(email);
     }
-
 }
