@@ -106,17 +106,20 @@ public class SampleCollectorController {
      * @return {@link List<AppointmentDto>} Appointments that are assigned to the currently logged in sample collector
      */
     @GetMapping("appointments")
-    public ResponseEntity<List<AppointmentDto>> getAppointments(@RequestParam(required = false, name = "assigned") Boolean isAssigned, @RequestParam(required = false, name = "collected") Boolean isCollected, @RequestParam(required = false, name = "date") LocalDate date) {
+    public ResponseEntity<List<AppointmentDto>> getAppointments(@RequestParam(required = false, name = "assigned") Boolean isAssigned
+            , @RequestParam(required = false, name = "collected") Boolean isCollected
+            , @RequestParam(required = false, name = "date") LocalDate date) {
+        LocationEnum place;
+        try {
+
+            place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
+        } catch (Exception e) {
+            throw new NullPointerException("Sample Collector is not verified !");
+        }
         if((null == isAssigned) && (null == isCollected) && (null == date)) {
             throw new NoSuchElementException("URI Not found ! Check the URI entered !");
         }
         if (isAssigned == null && isCollected == null && date != null) {
-            LocationEnum place = null;
-            try {
-                place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
-            } catch (Exception e) {
-                throw new NullPointerException("Sample Collecor is Not verified !");
-            }
             List<AppointmentDto> appointments = appointmentSlotService.getAppointmentsByPlace(place, date);
             return new ResponseEntity<>(appointments, HttpStatus.OK);
         } else if (isAssigned && isCollected == null) {
