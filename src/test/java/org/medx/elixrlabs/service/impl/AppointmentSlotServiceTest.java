@@ -1,6 +1,5 @@
 package org.medx.elixrlabs.service.impl;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -146,7 +145,7 @@ public class AppointmentSlotServiceTest {
 
     @Test
     void testGetAvailableSlots() {
-        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
         when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
         Set<String> availableSlotTimings = appointmentSlotService.getAvailableSlots(requestSlotBookDto);
         assertEquals(availableSlotTimings.size(), 12);
@@ -154,7 +153,7 @@ public class AppointmentSlotServiceTest {
 
     @Test
     void testGetAvailableSlots_exception() {
-        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(null);
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(null);
         assertThrows(LabException.class, () -> appointmentSlotService.getAvailableSlots(requestSlotBookDto));
     }
 
@@ -162,7 +161,7 @@ public class AppointmentSlotServiceTest {
     void testBookSlot() {
         try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
             mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
+            when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
             when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
             when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
             when(cartService.getCartByPatient()).thenReturn(cart);
@@ -176,7 +175,7 @@ public class AppointmentSlotServiceTest {
     void testBookSlot_cart_null() {
         try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
             mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(user.getEmail());
-            when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
+            when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
             when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
             when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
             when(cartService.getCartByPatient()).thenReturn(ResponseCartDto.builder().tests(new ArrayList<>()).build());
@@ -187,7 +186,7 @@ public class AppointmentSlotServiceTest {
     @Test
     void testBookSlot_exception() {
 
-        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(null, slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(null, slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>());
         when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
 
         when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
@@ -199,7 +198,7 @@ public class AppointmentSlotServiceTest {
     @Test
     void testBookSlot_exception_slot_filled() {
 
-        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(LocationEnum.MARINA, slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>(Arrays.asList(AppointmentSlot.builder().timeSlot("7PM").build(), AppointmentSlot.builder().timeSlot("7PM").build(), AppointmentSlot.builder().timeSlot("7PM").build())));
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(LocationEnum.MARINA, slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(new ArrayList<>(Arrays.asList(AppointmentSlot.builder().timeSlot("7PM").build(), AppointmentSlot.builder().timeSlot("7PM").build(), AppointmentSlot.builder().timeSlot("7PM").build())));
         when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build(), SampleCollector.builder().build()));
 
         when(patientService.getPatientByEmail(patient.getUser().getEmail())).thenReturn(patient);
@@ -210,7 +209,7 @@ public class AppointmentSlotServiceTest {
 
     @Test
     void testGetAppointmentsByPlace() {
-        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(LocationEnum.MARINA, TestCollectionPlaceEnum.HOME, slotBookDto.getDate())).thenReturn(new ArrayList<>(Collections.singletonList(AppointmentSlot.builder()
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(LocationEnum.MARINA, TestCollectionPlaceEnum.HOME, slotBookDto.getDate())).thenReturn(new ArrayList<>(Collections.singletonList(AppointmentSlot.builder()
                 .testCollectionPlace(TestCollectionPlaceEnum.HOME)
                 .location(LocationEnum.MARINA)
                 .timeSlot("7AM")
@@ -226,7 +225,7 @@ public class AppointmentSlotServiceTest {
 
     @Test
     void testGetAppointmentsByPlace_exception() {
-        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(LocationEnum.MARINA, TestCollectionPlaceEnum.HOME, slotBookDto.getDate())).thenReturn(null);
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(LocationEnum.MARINA, TestCollectionPlaceEnum.HOME, slotBookDto.getDate())).thenReturn(null);
         assertThrows(LabException.class, () -> appointmentSlotService.getAppointmentsByPlace(LocationEnum.MARINA, slotBookDto.getDate()));
     }
 
@@ -377,7 +376,7 @@ public class AppointmentSlotServiceTest {
     @Test
     void testSBookSlot_slotFull() {
         List<AppointmentSlot> appointmentSlots = new ArrayList<>(Arrays.asList(AppointmentSlot.builder().timeSlot("7PM").build(), AppointmentSlot.builder().timeSlot("7PM").build()));
-        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(appointmentSlots);
+        when(appointmentSlotRepository.findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate())).thenReturn(appointmentSlots);
         when(sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation())).thenReturn(List.of(SampleCollector.builder().build()));
         assertThrows(SlotException.class, () -> appointmentSlotService.bookSlot(slotBookDto));
     }

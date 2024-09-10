@@ -91,7 +91,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         logger.debug("Fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
         try {
             List<AppointmentSlot> appointments = appointmentSlotRepository
-                    .findByLocationAndTestCollectionPlaceAndDateSlot(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate());
+                    .findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(slotBookDto.getLocation(), slotBookDto.getTestCollectionPlace(), slotBookDto.getDate());
             List<String> bookedTimeSlots = appointments.stream()
                     .map(AppointmentSlot::getTimeSlot).toList();
             Set<TimeSlotEnum> availableSlots = Arrays.stream(TimeSlotEnum.values())
@@ -176,7 +176,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         try {
             logger.debug("Fetching appointments for location: {}, date: {}", location, date);
             List<AppointmentSlot> appointments = appointmentSlotRepository
-                    .findByLocationAndTestCollectionPlaceAndDateSlot(location, TestCollectionPlaceEnum.HOME, date);
+                    .findByLocationAndTestCollectionPlaceAndDateSlotAndSampleCollectorNull(location, TestCollectionPlaceEnum.HOME, date);
             logger.info("Appointments fetched successfully for location: {}, date: {}", location, date);
             return appointments.stream().map(AppointmentMapper::convertToDto).toList();
         } catch (Exception e) {
