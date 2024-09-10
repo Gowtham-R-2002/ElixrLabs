@@ -28,8 +28,6 @@ import org.medx.elixrlabs.service.OrderService;
 import org.medx.elixrlabs.service.PatientService;
 import org.medx.elixrlabs.service.RoleService;
 import org.medx.elixrlabs.service.TestResultService;
-import org.medx.elixrlabs.util.GenderEnum;
-import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.RoleEnum;
 
 /**
@@ -61,7 +59,6 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-
     @Override
     public ResponsePatientDto createPatient(UserDto userDto) {
         logger.debug("Attempting to create Patient for email: {}", userDto.getEmail());
@@ -76,7 +73,7 @@ public class PatientServiceImpl implements PatientService {
         } catch (DataIntegrityViolationException e) {
             throw new DataIntegrityViolationException("User with same mail already exists!");
         } catch (Exception e) {
-            logger.warn("Error while creating Patient with email:{}", userDto.getEmail());
+            logger.error("Error while creating Patient with email:{}", userDto.getEmail());
             throw new LabException("Error while saving Patient with email: " + userDto.getEmail(), e);
         }
         return PatientMapper.toPatientDto(savedPatient);
@@ -95,7 +92,7 @@ public class PatientServiceImpl implements PatientService {
             resultPatient = patientRepository.save(patient);
             logger.info("Successfully updated Patient for email: {}", userDto.getEmail());
         } catch (Exception e) {
-            logger.warn("Error while updating Patient with email:{}", userDto.getEmail());
+            logger.error("Error while updating Patient with email:{}", userDto.getEmail());
             throw new LabException("Error while saving Patient with email: " + userDto.getEmail(), e);
         }
         return PatientMapper.toPatientDto(resultPatient);
@@ -111,7 +108,7 @@ public class PatientServiceImpl implements PatientService {
                     .toList();
             logger.info("Successfully fetched all patients");
         } catch (Exception e) {
-            logger.warn("Error while fetching all patients");
+            logger.error("Error while fetching all patients");
             throw new LabException("Error while fetching all patients", e);
         }
         return patientDtos;
@@ -129,7 +126,7 @@ public class PatientServiceImpl implements PatientService {
                     .toList();
             logger.info("Successfully fetched all orders");
         } catch (Exception e) {
-            logger.warn("Error while fetching all orders");
+            logger.error("Error while fetching all orders");
             throw new LabException("Error while fetching all orders", e);
         }
         return orderDtos;
@@ -144,7 +141,7 @@ public class PatientServiceImpl implements PatientService {
             logger.info("Successfully fetched Test report with order Id: {}", orderId);
         } else {
             logger.warn("Invalid order ID entered: {}", orderId);
-            throw new LabException("Invalid order ID entered!");
+            throw new NoSuchElementException("Invalid order ID entered: " + orderId);
         }
         return testResultDto;
     }
@@ -163,7 +160,7 @@ public class PatientServiceImpl implements PatientService {
             patientRepository.save(patient);
             logger.info("Successfully deleted the patient with Id: {}", email);
         } catch (Exception e) {
-            logger.warn("Error while deleting Patient with email: {}", email);
+            logger.error("Error while deleting Patient with email: {}", email);
             throw new LabException("Error while deleting Patient with email: " + email);
         }
     }
@@ -179,7 +176,7 @@ public class PatientServiceImpl implements PatientService {
                     .toList();
             logger.info("Successfully fetched orders of patient with email: {}", email);
         } catch (Exception e) {
-            logger.warn("Error while getting orders of patient with email: {}", email);
+            logger.error("Error while getting orders of patient with email: {}", email);
             throw new LabException("Error while getting orders of patient with email: " + email, e);
         }
         return orderDtos;
@@ -192,8 +189,12 @@ public class PatientServiceImpl implements PatientService {
         try {
             patient = patientRepository.findByEmailAndIsDeletedFalse(email);
         } catch (Exception e) {
-            logger.warn("Error while getting patient with email: {}", email);
+            logger.error("Error while getting patient with email: {}", email);
             throw new LabException("Error while getting patient with email: " + email, e);
+        }
+        if (null == patient) {
+            logger.warn("Patient not found while retrieving with email: {}", email);
+            throw new NoSuchElementException("Patient not found while retrieving with email: " + email);
         }
         logger.info("Successfully fetched patient with email: {}", email);
         return patient;
