@@ -80,7 +80,7 @@ public class LabServiceImpl implements LabService {
             if (order.getTestStatus().equals(TestStatusEnum.PENDING) && order.getSampleCollectionPlace().equals(TestCollectionPlaceEnum.HOME)) {
                 throw new LabException("Cannot update report for patient whose sample is not collected!");
             }
-            Map<LabTestDto, String> parsedResultDto = resultDto.getTestIdWithResult()
+            Map<LabTestDto, String> parsedResultDto = resultDto.getTestIdsWithResults()
                     .stream()
                     .collect(Collectors.toMap(
                             id -> labTestService.getLabTestById(id.getTestId()),
