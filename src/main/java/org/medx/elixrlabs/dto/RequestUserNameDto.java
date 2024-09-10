@@ -23,7 +23,6 @@ import lombok.NoArgsConstructor;
 public class RequestUserNameDto {
     @NotNull
     @NotBlank
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}",
-            flags = Pattern.Flag.CASE_INSENSITIVE)
+    @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9]+(\\.[a-z]+)+$", message = "Enter a valid email address !")
     private String email;
 }
