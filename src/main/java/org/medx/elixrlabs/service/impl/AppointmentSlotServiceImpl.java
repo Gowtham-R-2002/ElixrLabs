@@ -183,12 +183,12 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     @Override
     public void assignSampleCollectorToAppointment(Long id) {
+        logger.debug("Assigning sample collector to appointment with id: {}", id);
+        SampleCollector sampleCollector = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
+        AppointmentSlot appointmentSlot = appointmentSlotRepository.findByIdAndAppointmentPlace(id, TestCollectionPlaceEnum.HOME)
+                .orElseThrow(() -> new NoSuchElementException("No appointment slot found with id: " + id));
+        appointmentSlot.setSampleCollector(sampleCollector);
         try {
-            logger.debug("Assigning sample collector to appointment with id: {}", id);
-            AppointmentSlot appointmentSlot = appointmentSlotRepository.findById(id)
-                    .orElseThrow(() -> new LabException("No appointment slot found with id: " + id));
-            SampleCollector sampleCollector = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
-            appointmentSlot.setSampleCollector(sampleCollector);
             appointmentSlotRepository.save(appointmentSlot);
             logger.info("Sample collector assigned successfully to appointment with id: {}", id);
         } catch (Exception e) {
@@ -202,6 +202,9 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         logger.debug("Marking sample as collected for appointment with id: {}", id);
         AppointmentSlot appointmentSlot = appointmentSlotRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No appointment slot found with id: " + id));
+        if (!appointmentSlot.getSampleCollector().equals(sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()))) {
+            throw new NoSuchElementException("No appointment slot found with id: " + id);
+        }
         appointmentSlot.setSampleCollected(true);
         Order order = orderService.getOrderByAppointment(appointmentSlot);
         order.setTestStatus(TestStatusEnum.IN_PROGRESS);

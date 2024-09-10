@@ -2,6 +2,7 @@ package org.medx.elixrlabs.repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.medx.elixrlabs.model.AppointmentSlot;
 import org.medx.elixrlabs.util.LocationEnum;
@@ -24,6 +25,8 @@ public interface AppointmentSlotRepository extends JpaRepository<AppointmentSlot
     List<AppointmentSlot> findBySampleCollectorIdAndIsSampleCollectedFalse(Long id);
 
     List<AppointmentSlot> findBySampleCollectorIdAndIsSampleCollectedTrue(Long id);
+
+    Optional<AppointmentSlot> findByIdAndAppointmentPlace(Long id, TestCollectionPlaceEnum place);
 
     List<AppointmentSlot> findByLocationAndTestCollectionPlaceAndDateSlot(LocationEnum location, TestCollectionPlaceEnum testCollectionPlace, LocalDate date);
 

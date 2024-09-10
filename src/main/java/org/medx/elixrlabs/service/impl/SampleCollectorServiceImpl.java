@@ -66,7 +66,7 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
             logger.warn("User already exists with email {}", userDto.getEmail());
             throw new DataIntegrityViolationException("User already exists with email " + userDto.getEmail());
         } catch (Exception e) {
-            logger.warn("Error while creating SampleCollector with email: {}", userDto.getEmail());
+            logger.error("Error while creating SampleCollector with email: {}", userDto.getEmail());
             throw new LabException("Error while saving SampleCollector with email: " + userDto.getEmail(), e);
         }
         return SampleCollectorMapper.convertToSampleCollectorDto(savedSampleCollector);
@@ -86,7 +86,7 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
             result = sampleCollectorRepository.save(existingSampleCollector);
             logger.info("Successfully Updated existing SampleCollector with email: {}", userDto.getEmail());
         } catch (Exception e) {
-            logger.warn("Error while updating SampleCollector with email: {}", userDto.getEmail());
+            logger.error("Error while updating SampleCollector with email: {}", userDto.getEmail());
             throw new LabException("Error while updating SampleCollector with email: " + userDto.getEmail(), e);
         }
         return SampleCollectorMapper.convertToSampleCollectorDto(result);
@@ -101,7 +101,7 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
             sampleCollectorRepository.save(sampleCollector);
             logger.info("Successfully marked SampleCollector as deleted for user email: {}", SecurityContextHelper.extractEmailFromContext());
         } catch (Exception e) {
-            logger.warn("Error while deleting SampleCollector with email: {}", SecurityContextHelper.extractEmailFromContext());
+            logger.error("Error while deleting SampleCollector with email: {}", SecurityContextHelper.extractEmailFromContext());
             throw new LabException("Error while deleting SampleCollector with email: " + SecurityContextHelper.extractEmailFromContext());
         }
         return true;
