@@ -116,24 +116,24 @@ class SampleCollectorControllerTest {
 
     @Test
     void testCreateSampleCollector_positive() {
-        when(sampleCollectorService.createOrUpdateSampleCollector(any(UserDto.class))).thenReturn(sampleCollectorDto1);
+        when(sampleCollectorService.createSampleCollector(any(UserDto.class))).thenReturn(sampleCollectorDto1);
 
         ResponseEntity<SampleCollectorDto> response = sampleCollectorController.createSampleCollector(userDto);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertNotNull(response.getBody());
-        verify(sampleCollectorService).createOrUpdateSampleCollector(userDto);
+        verify(sampleCollectorService).createSampleCollector(userDto);
     }
 
     @Test
     void testUpdateSampleCollector_positive() {
-        when(sampleCollectorService.createOrUpdateSampleCollector(any(UserDto.class))).thenReturn(sampleCollectorDto1);
+        when(sampleCollectorService.updateSampleCollector(any(UserDto.class))).thenReturn(sampleCollectorDto1);
 
         ResponseEntity<SampleCollectorDto> response = sampleCollectorController.updateSampleCollector(userDto);
 
         assertEquals(HttpStatus.ACCEPTED, response.getStatusCode());
         assertNotNull(response.getBody());
-        verify(sampleCollectorService).createOrUpdateSampleCollector(userDto);
+        verify(sampleCollectorService).updateSampleCollector(userDto);
     }
 
     @Test
@@ -154,7 +154,7 @@ class SampleCollectorControllerTest {
         when(sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()))
                 .thenReturn(SampleCollector.builder().user(User.builder().place(LocationEnum.MARINA).build()).build());
         when(appointmentSlotService.getAppointmentsByPlace(LocationEnum.MARINA, appointmentsQueryDto.getDate())).thenReturn(appointmentDtos);
-        assertEquals(2, sampleCollectorController.getAppointments(appointmentsQueryDto).getBody().size());
+        assertEquals(2, sampleCollectorController.getAppointments(null, null, appointmentsQueryDto).getBody().size());
         }
     }
 
@@ -172,18 +172,18 @@ class SampleCollectorControllerTest {
         assertEquals(HttpStatus.ACCEPTED, result.getStatusCode());
     }
 
-//    @Test
-//    void testGetAllAssignedAppointments() {
-//        when(appointmentSlotService.getAppointmentsBySampleCollector()).thenReturn(appointmentDtos);
-//        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getAllAssignedAppointments(true);
-//        assertEquals(appointmentDtos, result.getBody());
-//        assertEquals(HttpStatus.OK, result.getStatusCode());
-//    }
+    @Test
+    void testGetAllAssignedAppointments() {
+        when(appointmentSlotService.getAppointmentsBySampleCollector()).thenReturn(appointmentDtos);
+        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getAppointments(true, null, null);
+        assertEquals(appointmentDtos, result.getBody());
+        assertEquals(HttpStatus.OK, result.getStatusCode());
+    }
 
     @Test
     void testGetCollectedAppointments() {
         when(appointmentSlotService.getCollectedAppointmentsBySampleCollector()).thenReturn(appointmentDtos);
-        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getCollectedAppointments();
+        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getAppointments(true, true, null);
         assertEquals(appointmentDtos, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
@@ -191,7 +191,7 @@ class SampleCollectorControllerTest {
     @Test
     void testGetPendingAppointments() {
         when(appointmentSlotService.getPendingAppointmentsBySampleCollector()).thenReturn(appointmentDtos);
-        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getPendingAppointments();
+        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getAppointments(stattrue, false, null);
         assertEquals(appointmentDtos,result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }
