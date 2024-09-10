@@ -77,16 +77,6 @@ public class SampleCollectorController {
         return new ResponseEntity<>(sampleCollectorService.deleteSampleCollector(), HttpStatus.NO_CONTENT);
     }
 
-//    /**
-//     * Gets all appointments unassigned in the particular place
-//     *
-//     * @param appointmentsQueryDto {@link AppointmentsQueryDto} contains date to be queried.
-//     * @return {@link List<AppointmentDto>} Appointments that are unassigned in that particular location.
-//     */
-//    @GetMapping("/appointments")
-//    public ResponseEntity<List<AppointmentDto>> getAppointments(@Valid @RequestBody AppointmentsQueryDto appointmentsQueryDto) {
-//    }
-
     /**
      * Assigns the appointment to the currently logged in sample collector.
      *
@@ -118,7 +108,6 @@ public class SampleCollectorController {
      */
     @GetMapping("appointments")
     public ResponseEntity<List<AppointmentDto>> getAllAssignedAppointments(@RequestParam(required = false, name = "assigned") Boolean isAssigned, @RequestParam(required = false, name = "collected") Boolean isCollected, @RequestBody(required = false) AppointmentsQueryDto appointmentsQueryDto) {
-        System.out.println(isAssigned + " " + isCollected);
         if (isAssigned == null && isCollected == null) {
             LocationEnum place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
             List<AppointmentDto> appointments = appointmentSlotService.getAppointmentsByPlace(place, appointmentsQueryDto.getDate());
