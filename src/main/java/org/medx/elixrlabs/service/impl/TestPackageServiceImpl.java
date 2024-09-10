@@ -44,6 +44,7 @@ public class TestPackageServiceImpl implements TestPackageService {
     public ResponseTestPackageDto createOrUpdateTestPackage(RequestTestPackageDto requestTestPackageDto) {
         logger.info("Creating or updating TestPackage with name: {}", requestTestPackageDto.getName());
         TestPackage testPackage = TestPackageMapper.toTestPackage(requestTestPackageDto);
+        TestPackage existingTestPackage = getTestPackage(requestTestPackageDto.getId());
         List<LabTest> tests;
         TestPackage savedTestPackage;
         tests = requestTestPackageDto.getLabTestIds().stream()
@@ -57,6 +58,9 @@ public class TestPackageServiceImpl implements TestPackageService {
         double offerPrice = price * 0.8;
         testPackage.setPrice(offerPrice);
         testPackage.setTests(tests);
+        if (existingTestPackage != null){
+            testPackage.setId(existingTestPackage.getId());
+        }
         try {
             savedTestPackage = testPackageRepository.save(testPackage);
             logger.info("Successfully saved TestPackage with name: {}", requestTestPackageDto.getName());
@@ -65,6 +69,16 @@ public class TestPackageServiceImpl implements TestPackageService {
             throw new LabException("Error occurred while saving TestPackage" + requestTestPackageDto.getName(), e);
         }
         return TestPackageMapper.toTestPackageDto(savedTestPackage);
+    }
+
+    private TestPackage getTestPackage(Long id) {
+        TestPackage testPackage;
+        try {
+            testPackage = testPackageRepository.findByIdAndIsDeletedFalse(id);
+        } catch (Exception e) {
+            throw new NoSuchElementException("Error while fetching test package with ID : " + id);
+        }
+        return testPackage;
     }
 
     @Override

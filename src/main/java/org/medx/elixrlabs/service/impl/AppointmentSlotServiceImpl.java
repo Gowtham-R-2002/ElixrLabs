@@ -159,9 +159,9 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                     .build();
             emailService.sendInvoice(order.getTests(), order.getTestPackage(), order.getPrice(), patient.getUser().getEmail(), order.getOrderDateTime());
             AppointmentSlot savedAddpointment = appointmentSlotRepository.save(appointmentSlot);
-            cartService.deleteCart();
             logger.info("Slot booked successfully for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
             orderSuccessDto = orderService.createOrUpdateOrder(order);
+            cartService.deleteCart();
             savedAddpointment.setOrder(orderService.getOrder(orderSuccessDto.getId()));
             appointmentSlotRepository.save(appointmentSlot);
         } catch (Exception e) {
