@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 import org.medx.elixrlabs.util.LocationEnum;
 
 /**
@@ -21,10 +22,11 @@ import org.medx.elixrlabs.util.LocationEnum;
 public class AdminDto {
     @NotNull
     @NotBlank
-    @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9]+(\\.[a-z]+)+$", message = "Enter a valid email address !")
+    @Email(regexp = "^[a-zA-Z]+[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9]+(\\.[a-z]+)+$", message = "Enter a valid email address ! Eg : user@example.com")
     private String email;
     @NotNull
     @NotBlank
+    @Length(min = 6, max = 15)
     private String password;
     @NotNull
     private LocationEnum place;
