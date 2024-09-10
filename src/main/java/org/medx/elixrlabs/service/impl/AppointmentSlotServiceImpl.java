@@ -185,7 +185,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
     public void assignSampleCollectorToAppointment(Long id) {
         logger.debug("Assigning sample collector to appointment with id: {}", id);
         SampleCollector sampleCollector = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
-        AppointmentSlot appointmentSlot = appointmentSlotRepository.findByIdAndAppointmentPlace(id, TestCollectionPlaceEnum.HOME)
+        AppointmentSlot appointmentSlot = appointmentSlotRepository.findByIdAndTestCollectionPlace(id, TestCollectionPlaceEnum.HOME)
                 .orElseThrow(() -> new NoSuchElementException("No appointment slot found with id: " + id));
         appointmentSlot.setSampleCollector(sampleCollector);
         try {

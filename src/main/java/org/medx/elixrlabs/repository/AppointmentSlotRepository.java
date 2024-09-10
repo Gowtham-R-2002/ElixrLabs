@@ -26,7 +26,7 @@ public interface AppointmentSlotRepository extends JpaRepository<AppointmentSlot
 
     List<AppointmentSlot> findBySampleCollectorIdAndIsSampleCollectedTrue(Long id);
 
-    Optional<AppointmentSlot> findByIdAndAppointmentPlace(Long id, TestCollectionPlaceEnum place);
+    Optional<AppointmentSlot> findByIdAndTestCollectionPlace(Long id, TestCollectionPlaceEnum place);
 
     List<AppointmentSlot> findByLocationAndTestCollectionPlaceAndDateSlot(LocationEnum location, TestCollectionPlaceEnum testCollectionPlace, LocalDate date);
 
