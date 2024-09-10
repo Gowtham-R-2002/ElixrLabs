@@ -126,12 +126,12 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
 
     @Override
     public OrderSuccessDto bookSlot(SlotBookDto slotBookDto) {
+        logger.debug("Attempting to book slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
+        if (!isSlotAvailable(slotBookDto)) {
+            logger.warn("Slot booking failed for date: {}, time slot: {} - Slot filled", slotBookDto.getDate(), slotBookDto.getTimeSlot());
+            throw new SlotException("Slot filled!");
+        }
         try {
-            logger.debug("Attempting to book slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
-            if (!isSlotAvailable(slotBookDto)) {
-                logger.warn("Slot booking failed for date: {}, time slot: {} - Slot filled", slotBookDto.getDate(), slotBookDto.getTimeSlot());
-                throw new SlotException("Slot filled!");
-            }
             Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
             ResponseCartDto cart = cartService.getCartByPatient();
             if (cart.getTests().isEmpty() && cart.getTestPackage() == null) {
