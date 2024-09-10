@@ -134,8 +134,9 @@ public class LabTestServiceTest {
     }
 
     @Test
-    void testRemoveLabTestById_exception() {
+    void testRemoveLabTestById_negative() {
         when(labTestRepository.findByIdAndIsDeletedFalse(1L)).thenReturn(null);
-        assertThrows(LabException.class, () -> labTestService.removeLabTestById(1L));
+        Exception exception = assertThrows(NoSuchElementException.class, () -> labTestService.removeLabTestById(1L));
+        assertEquals("Lab test Not Found with id: " + 1L, exception.getMessage());
     }
 }
