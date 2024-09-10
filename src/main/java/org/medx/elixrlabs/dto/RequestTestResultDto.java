@@ -21,5 +21,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class RequestTestResultDto {
     @NotNull
-    private List<RequestTestIdWithResultDto> testIdWithResult;
+    private List<RequestTestIdWithResultDto> testIdsWithResults;
 }
