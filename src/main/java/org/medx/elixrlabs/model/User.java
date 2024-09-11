@@ -67,6 +67,9 @@ public class User extends Auditable implements UserDetails {
     @Enumerated(EnumType.STRING)
     private GenderEnum gender;
 
+    @Column(name = "is_blocked")
+    private boolean isBlocked;
+
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
