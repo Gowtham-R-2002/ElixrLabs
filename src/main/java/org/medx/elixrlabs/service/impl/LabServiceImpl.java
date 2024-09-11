@@ -1,6 +1,7 @@
 package org.medx.elixrlabs.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -84,8 +85,8 @@ public class LabServiceImpl implements LabService {
                 logger.warn("Cannot update report for patient whose sample is not collected!");
                 throw new LabException("Cannot update report for patient whose sample is not collected!");
             }
-            Set<Long> userOrderTestIds = order.getTests().stream().map(test -> test.getId()).collect(Collectors.toSet());
-            Set<Long> userOrderPackageTestIds = order.getTestPackage().getTests().stream().map(test -> test.getId()).collect(Collectors.toSet());
+            Set<Long> userOrderTestIds = (order.getTests().isEmpty() || order.getTests() == null) ? new HashSet<>() : order.getTests().stream().map(test -> test.getId()).collect(Collectors.toSet());
+            Set<Long> userOrderPackageTestIds = order.getTestPackage() == null ? new HashSet<>() :  order.getTestPackage().getTests().stream().map(test -> test.getId()).collect(Collectors.toSet());
             userOrderTestIds.addAll(userOrderPackageTestIds);
             Set<Long> resultTestIds = resultDto.getTestIdsWithResults().stream().map(result -> result.getTestId()).collect(Collectors.toSet());
             if(!userOrderTestIds.equals(resultTestIds)) {
