@@ -1,14 +1,12 @@
 package org.medx.elixrlabs.service.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.TimeZone;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -101,7 +99,10 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                                     ? sampleCollectorService.getSampleCollectorByPlace(slotBookDto.getLocation()).size()
                                     : Integer.parseInt(dotenv.get("LAB_SLOT_COUNT")))).collect(Collectors.toSet());
             logger.info("Available slots fetched successfully for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
-            return availableSlots.stream().map(TimeSlotEnum::getTime).collect(Collectors.toSet());
+            if(!LocalDate.now().equals(slotBookDto.getDate())) {
+                return availableSlots.stream().map(TimeSlotEnum::getTime).collect(Collectors.toSet());
+            }
+            return filterTime(availableSlots.stream().map(TimeSlotEnum::getTime).collect(Collectors.toSet()));
         } catch (Exception e) {
             logger.warn("Exception occurred while fetching available slots for location: {}, date: {}", slotBookDto.getLocation(), slotBookDto.getDate());
             throw new LabException("Unable to fetch available slots", e);
@@ -211,6 +212,10 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         logger.debug("Marking sample as collected for appointment with id: {}", id);
         AppointmentSlot appointmentSlot = appointmentSlotRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("No appointment slot found with id: " + id));
+        if(!isSampleCanBeMarked(appointmentSlot.getDateSlot(), appointmentSlot.getTimeSlot())) {
+            logger.warn("Cannot mark appointment as collected before the appointment time!");
+            throw new AntecedentDateException("Cannot mark appointment as collected before the appointment time!");
+        }
         if (!appointmentSlot.getSampleCollector().equals(sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()))) {
             throw new NoSuchElementException("No appointment slot found with id: " + id);
         }
@@ -292,4 +297,85 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         }
     }
 
+    /**
+     * <p>
+     * Filters available time slots based on the current time and meridian (AM/PM).
+     * If the current time is in the PM and exactly 12:00 PM, only PM slots after 12:00 PM
+     * are considered. If the current time is in the AM, both AM slots and PM slots starting
+     * from 12:00 PM are considered.
+     * </p>
+     *
+     * @param availableSlots the set of available time slots.
+     * @return a filtered set of available time slots.
+     */
+    private Set<String> filterTime(Set<String> availableSlots) {
+        logger.debug("Starting to filter available time slots based on the current time.");
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        String currentTime = dateFormat.format(new java.util.Date());
+        String meridian = currentTime.substring(currentTime.length() - 2, currentTime.length()).toUpperCase();
+        if (meridian.equals("PM") && currentTime.substring(0, 2).equals("12")) {
+            return filterByMeridian(availableSlots, meridian, "00:00 MM");
+        } else if (meridian.equals("PM")) {
+            return filterByMeridian(availableSlots, meridian, currentTime);
+        }
+        Set<String> newAvailableSlots = filterByMeridian(availableSlots, meridian, currentTime);
+        newAvailableSlots.addAll(filterByMeridian(availableSlots, "PM", "00:00 MM"));
+        newAvailableSlots.add("12PM");
+        logger.info("Filtered slots after merging AM and PM slots: {}", newAvailableSlots);
+        return newAvailableSlots;
+    }
+
+    /**
+     * <p>
+     * Filters available time slots based on the specified meridian and current time.
+     * This method filters time slots based on the given meridian (AM/PM) and ensures that
+     * only times greater than the current time are included in the resulting set.
+     * </p>
+     *
+     * @param availableSlots the set of available time slots.
+     * @param meridian the meridian (AM/PM) to filter the slots by.
+     * @param currentTime the current time to compare against.
+     * @return a filtered set of available time slots.
+     */
+    private Set<String> filterByMeridian(Set<String> availableSlots, String meridian, String currentTime) {
+        logger.debug("Filtering available slots by meridian: {} and current time: {}", meridian, currentTime);
+        availableSlots = availableSlots.stream().filter(time -> time.contains(meridian)).collect(Collectors.toSet());
+        int currentHour = Integer.parseInt(currentTime.substring(0, 2));
+        availableSlots = availableSlots.stream().filter(time -> {
+            String[] splittedTime = time.split(Character.toString(meridian.charAt(0)));
+            int incomingTime = Integer.parseInt(splittedTime[0]);
+            if (incomingTime == 12 && meridian.equals("PM")) return false;
+            return incomingTime > currentHour;
+        }).collect(Collectors.toSet());
+        logger.info("Filtered slots after comparison: {}", availableSlots);
+        return availableSlots;
+    }
+
+    /**
+     * <p>
+     * Checks whether the sample can be marked based on the appointment date and time slot.
+     * The method compares the current time with the given appointment time slot and
+     * determines whether the sample can be marked based on if the appointment time has passed.
+     * </p>
+     *
+     * @param dateSlot the appointment date.
+     * @param timeSlot the time slot of the appointment.
+     * @return {@code true} if the sample can be marked, {@code false} otherwise.
+     */
+    private boolean isSampleCanBeMarked(LocalDate dateSlot, String timeSlot) {
+        logger.debug("Checking whether the sample can be marked for the date: {} and time slot: {}", dateSlot, timeSlot);
+        LocalDate date = LocalDate.now();
+        int hours = 0;
+        if (timeSlot.equals("12PM")) {
+            hours = 12;
+        } else if (timeSlot.substring(timeSlot.length() - 2, timeSlot.length()).equals("PM")) {
+            hours = Integer.parseInt(Character.toString(timeSlot.charAt(0))) + 12;
+        } else {
+            String[] splitTime = timeSlot.split("A");
+            hours = Integer.parseInt(splitTime[0]);
+        }
+        LocalDateTime appointmentDateTime = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), hours, 0);
+        logger.debug("Appointment date and time: {}", appointmentDateTime);
+        return appointmentDateTime.isBefore(LocalDateTime.now());
+    }
 }
