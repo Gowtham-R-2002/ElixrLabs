@@ -159,7 +159,7 @@ public class LabControllerTest {
         responseOrderDtos = List.of(firstResponseOrderDto, secondResponseOrderDto);
 
         requestTestResultDto = RequestTestResultDto.builder()
-                .testIdWithResult(List.of(RequestTestIdWithResultDto.builder()
+                .testIdsWithResults(List.of(RequestTestIdWithResultDto.builder()
                         .testId(1L)
                         .result("Good Health Condition")
                         .build()))

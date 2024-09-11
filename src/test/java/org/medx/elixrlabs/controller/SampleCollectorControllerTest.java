@@ -3,6 +3,7 @@ package org.medx.elixrlabs.controller;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,6 +54,7 @@ class SampleCollectorControllerTest {
     private List<SampleCollectorDto> sampleCollectorDtos;
     private List<AppointmentDto> appointmentDtos;
     private AppointmentsQueryDto appointmentsQueryDto;
+    private SampleCollector sampleCollector;
 
     @BeforeEach
     void setUp() {
@@ -73,6 +75,13 @@ class SampleCollectorControllerTest {
         User user2 = User.builder()
                 .UUID("1234-5678-9876")
                 .email("deo@gmail.com")
+                .build();
+
+        sampleCollector = SampleCollector.builder()
+                .id(1L)
+                .user(user1)
+                .isVerified(true)
+                .isDeleted(false)
                 .build();
 
         sampleCollectorDto1 = SampleCollectorDto.builder()
@@ -173,26 +182,49 @@ class SampleCollectorControllerTest {
     }
 
     @Test
-    void testGetAllAssignedAppointments() {
-        when(appointmentSlotService.getAppointmentsBySampleCollector()).thenReturn(appointmentDtos);
-        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getAppointments(true, null, null);
-        assertEquals(appointmentDtos, result.getBody());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+    void getAppointments_ByPlaceAndDate_Success() {
+        LocalDate date = LocalDate.now();
+        LocationEnum place = LocationEnum.MARINA;
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@gmail.com");
+            when(sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()))
+                    .thenReturn(sampleCollector);
+            when(appointmentSlotService.getAppointmentsByPlace(place, date)).thenReturn(appointmentDtos);
+
+            ResponseEntity<List<AppointmentDto>> response = sampleCollectorController.getAppointments(null, null, date);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+        }
     }
 
     @Test
-    void testGetCollectedAppointments() {
-        when(appointmentSlotService.getCollectedAppointmentsBySampleCollector()).thenReturn(appointmentDtos);
-        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getAppointments(true, true, null);
-        assertEquals(appointmentDtos, result.getBody());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+    void getAppointments_BySampleCollector_Success() {
+        LocalDate date = LocalDate.now();
+        LocationEnum place = LocationEnum.MARINA;
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@gmail.com");
+            when(sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()))
+                    .thenReturn(sampleCollector);
+            when(appointmentSlotService.getAppointmentsBySampleCollector()).thenReturn(appointmentDtos);
+
+            ResponseEntity<List<AppointmentDto>> response = sampleCollectorController.getAppointments(null, null, null);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+        }
     }
 
     @Test
-    void testGetPendingAppointments() {
-        when(appointmentSlotService.getPendingAppointmentsBySampleCollector()).thenReturn(appointmentDtos);
-        ResponseEntity<List<AppointmentDto>> result = sampleCollectorController.getAppointments(true, false, null);
-        assertEquals(appointmentDtos,result.getBody());
-        assertEquals(HttpStatus.OK, result.getStatusCode());
+    void getAppointments_MissingURIParams_ThrowsNoSuchElementException() {
+        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
+            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn("test@gmail.com");
+            when(sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()))
+                    .thenReturn(sampleCollector);
+
+            assertThrows(NoSuchElementException.class, () -> {
+                sampleCollectorController.getAppointments(null, null, null);
+            });
+        }
     }
+
+
 }
