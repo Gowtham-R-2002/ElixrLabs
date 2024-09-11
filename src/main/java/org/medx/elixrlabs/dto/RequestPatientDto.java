@@ -41,7 +41,7 @@ public class RequestPatientDto {
     private LocalDate dateOfBirth;
     @NotNull
     @NotBlank
-    @Pattern(regexp = "^[0-9]+$")
+    @Pattern(regexp = "^[0-9]+$", message = "Phone number must contain digits only")
     @Size(min = 10, max = 10)
     private String phoneNumber;
     @NotNull

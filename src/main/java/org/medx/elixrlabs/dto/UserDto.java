@@ -41,7 +41,7 @@ public class UserDto {
 
     @NotBlank(message = "Phone number cannot be blank!")
     @NotNull(message = "Phone number is required!")
-    @Pattern(regexp = "^[0-9]+$")
+    @Pattern(regexp = "^[0-9]+$", message = "Phone number must contain digits only")
     @Size(max = 10, min = 10, message = "Phone number must be exactly 10 digits long")
     private String phoneNumber;
 
