@@ -191,6 +191,10 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
         SampleCollector sampleCollector = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext());
         AppointmentSlot appointmentSlot = appointmentSlotRepository.findByIdAndTestCollectionPlace(id, TestCollectionPlaceEnum.HOME)
                 .orElseThrow(() -> new NoSuchElementException("No appointment slot found with id: " + id));
+        if (appointmentSlot.getSampleCollector() != null) {
+            logger.warn("Appointment already assigned to another sample collcetor");
+            throw new NoSuchElementException("Appointment already assigned to another sample collcetor");
+        }
         appointmentSlot.setSampleCollector(sampleCollector);
         try {
             appointmentSlotRepository.save(appointmentSlot);
