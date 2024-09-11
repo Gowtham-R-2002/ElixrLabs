@@ -30,20 +30,17 @@ public class UserService implements UserDetailsService {
     @Override
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
         logger.debug("Attempting to load user by email: {}", email);
+        User user;
         try {
-            User user = userRepository.findByEmailWithRole(email);
-            if (user != null) {
-                System.out.println(user.getRoles().getFirst().getName());
-                logger.info("Successfully loaded user with email: {}", email);
-                return user;
-            } else {
-                logger.warn("User not found with email: {}", email);
-                throw new UsernameNotFoundException("User not found with email: " + email);
-            }
+            user = userRepository.findByEmailWithRole(email);
+        } catch (UsernameNotFoundException e) {
+            logger.warn("User not found with email: {}", email);
+            throw new UsernameNotFoundException("User not found with email: " + email);
         } catch (Exception e) {
-            logger.warn("An error occurred while loading user by email: {}", email, e);
-            throw new LabException("Error occurred while loading user by email: " + email, e);
+            logger.error("Error occurred while fetching user with email : {}" , email );
+            throw new LabException("Error occurred while fetching user with email :" + email );
         }
+        return user;
     }
 
     public void saveUser(User user) {
