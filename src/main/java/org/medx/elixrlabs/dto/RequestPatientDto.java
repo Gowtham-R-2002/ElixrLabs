@@ -27,12 +27,15 @@ import org.medx.elixrlabs.util.GenderEnum;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RequestPatientDto {
-    @NotBlank(message = "Message cannot be blank!")
-    @NotNull
-    @Email(regexp = "^[a-zA-Z]+[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9]+(\\.[a-z]+)+$", message = "Enter a valid email address ! Eg : user@example.com")
+    @NotBlank(message = "Email cannot be blank!")
+    @NotNull(message = "Email cannot be blank!")
+    @Email(regexp = "^[a-zA-Z]+[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9]+(\\.[a-z]+)+$",
+            message = "Enter a valid email address ! Eg : user@example.com")
     private String email;
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Password cannot be null !")
+    @NotBlank(message = "Password cannot be blank !")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}",
+            message = "Password must contain atleast one uppercase character, one lowercase character, one symbol and a number")
     private String password;
     @NotNull
     private LocalDate dateOfBirth;

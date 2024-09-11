@@ -85,6 +85,7 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = getPatientByEmail(userDto.getEmail());
         User user = UserMapper.toUser(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_PATIENT)));
         user.setUUID(patient.getUser().getUUID());
         patient.setUser(user);
         Patient resultPatient;
