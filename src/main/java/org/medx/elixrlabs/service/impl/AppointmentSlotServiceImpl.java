@@ -155,6 +155,7 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
                     .testPackage(cart.getTestPackage() == null ? null : TestPackageMapper.toTestPackageFromResponseDto(cart.getTestPackage()))
                     .testStatus(TestStatusEnum.PENDING)
                     .price(cart.getPrice())
+                    .address(slotBookDto.getAddress())
                     .orderDateTime(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("GMT+05:30"))))
                     .build();
             emailService.sendInvoice(order.getTests(), order.getTestPackage(), order.getPrice(), patient.getUser().getEmail(), order.getOrderDateTime());

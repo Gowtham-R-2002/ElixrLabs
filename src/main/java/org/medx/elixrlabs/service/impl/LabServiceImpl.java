@@ -8,7 +8,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ import org.medx.elixrlabs.dto.RequestTestIdWithResultDto;
 import org.medx.elixrlabs.dto.RequestTestResultDto;
 import org.medx.elixrlabs.dto.ResponseOrderDto;
 import org.medx.elixrlabs.dto.TestResultDto;
+import org.medx.elixrlabs.exception.BadRequestException;
 import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.helper.SecurityContextHelper;
 import org.medx.elixrlabs.mapper.TestResultMapper;
@@ -37,7 +37,6 @@ import org.medx.elixrlabs.util.LocationEnum;
 import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 import org.medx.elixrlabs.util.TestStatusEnum;
 
-
 /**
  * <p>
  * Service implementation for managing lab-related operations.
@@ -50,6 +49,7 @@ import org.medx.elixrlabs.util.TestStatusEnum;
 public class LabServiceImpl implements LabService {
 
     private static final Logger logger = LoggerFactory.getLogger(LabServiceImpl.class);
+
     @Autowired
     private OrderService orderService;
 
@@ -73,26 +73,27 @@ public class LabServiceImpl implements LabService {
             return orderService.getOrdersByLocation(location);
         } catch (Exception e) {
             logger.warn("Error while fetching orders: {}", e.getMessage());
-            throw new LabException("Error while fetching orders: " , e);
+            throw new LabException("Error while fetching orders: ", e);
         }
     }
 
     @Override
     public void assignReport(long orderId, RequestTestResultDto resultDto) {
+
+        Order order = orderService.getOrder(orderId);
+        if (order.getTestStatus().equals(TestStatusEnum.PENDING) && order.getSampleCollectionPlace().equals(TestCollectionPlaceEnum.HOME)) {
+            logger.warn("Cannot update report for patient whose sample is not collected!");
+            throw new LabException("Cannot update report for patient whose sample is not collected!");
+        }
+        Set<Long> userOrderTestIds = (order.getTests().isEmpty() || order.getTests() == null) ? new HashSet<>() : order.getTests().stream().map(test -> test.getId()).collect(Collectors.toSet());
+        Set<Long> userOrderPackageTestIds = order.getTestPackage() == null ? new HashSet<>() : order.getTestPackage().getTests().stream().map(test -> test.getId()).collect(Collectors.toSet());
+        userOrderTestIds.addAll(userOrderPackageTestIds);
+        Set<Long> resultTestIds = resultDto.getTestIdsWithResults().stream().map(result -> result.getTestId()).collect(Collectors.toSet());
+        if (!userOrderTestIds.equals(resultTestIds)) {
+            logger.warn("Result Test ID's doesn't match with Patient Order test/package ID's");
+            throw new BadRequestException("Result Test ID's doesn't match with Patient Order test/package ID's");
+        }
         try {
-            Order order = orderService.getOrder(orderId);
-            if (order.getTestStatus().equals(TestStatusEnum.PENDING) && order.getSampleCollectionPlace().equals(TestCollectionPlaceEnum.HOME)) {
-                logger.warn("Cannot update report for patient whose sample is not collected!");
-                throw new LabException("Cannot update report for patient whose sample is not collected!");
-            }
-            Set<Long> userOrderTestIds = (order.getTests().isEmpty() || order.getTests() == null) ? new HashSet<>() : order.getTests().stream().map(test -> test.getId()).collect(Collectors.toSet());
-            Set<Long> userOrderPackageTestIds = order.getTestPackage() == null ? new HashSet<>() :  order.getTestPackage().getTests().stream().map(test -> test.getId()).collect(Collectors.toSet());
-            userOrderTestIds.addAll(userOrderPackageTestIds);
-            Set<Long> resultTestIds = resultDto.getTestIdsWithResults().stream().map(result -> result.getTestId()).collect(Collectors.toSet());
-            if(!userOrderTestIds.equals(resultTestIds)) {
-                logger.warn("Result Test ID's doesn't match with Patient Order test/package ID's");
-                throw new BadRequestException("Result Test ID's doesn't match with Patient Order test/package ID's");
-            }
             Map<LabTestDto, String> parsedResultDto = resultDto.getTestIdsWithResults()
                     .stream()
                     .collect(Collectors.toMap(
@@ -129,8 +130,8 @@ public class LabServiceImpl implements LabService {
     @Override
     public TestResultDto getTestResultByOrder(long orderId) {
         Order order = orderService.getOrder(orderId);
-        if(order.getTestStatus().equals(TestStatusEnum.PENDING) || order.getTestStatus().equals(TestStatusEnum.IN_PROGRESS)) {
-            logger.warn("Test Result not available yet ! for order ID : {}", orderId );
+        if (order.getTestStatus().equals(TestStatusEnum.PENDING) || order.getTestStatus().equals(TestStatusEnum.IN_PROGRESS)) {
+            logger.warn("Test Result not available yet ! for order ID : {}", orderId);
             throw new NoSuchElementException("Test Result not available yet ! for order ID : " + orderId);
         }
         return TestResultMapper.toTestResultDto(order.getTestResult());

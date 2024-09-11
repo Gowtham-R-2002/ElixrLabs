@@ -95,4 +95,7 @@ public class Order {
     private double price;
 
     private Calendar orderDateTime;
+
+    private String address;
+
 }

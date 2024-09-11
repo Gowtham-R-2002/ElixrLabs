@@ -46,6 +46,7 @@ public class OrderMapper {
                 .tests(order.getTests().stream().map(LabTestMapper::toResponseTestDto).toList())
                 .testPackageDto(order.getTestPackage() == null ? null : TestPackageMapper.toTestPackageDto(order.getTestPackage()))
                 .testStatus(order.getTestStatus())
+                .address(order.getAddress())
                 .build();
     }
 }
