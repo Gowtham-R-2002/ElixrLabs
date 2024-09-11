@@ -57,7 +57,6 @@ public class PatientController {
     /**
      * <p>Retrieves available appointment slots based on the provided slot booking request.</p>
      *
-     * @param slotBookDto Contains the data for retrieving available slots.
      * @return A set of available appointment slots.
      */
     @GetMapping("slots")
