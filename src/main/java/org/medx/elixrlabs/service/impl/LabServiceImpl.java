@@ -1,11 +1,14 @@
 package org.medx.elixrlabs.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +82,16 @@ public class LabServiceImpl implements LabService {
         try {
             Order order = orderService.getOrder(orderId);
             if (order.getTestStatus().equals(TestStatusEnum.PENDING) && order.getSampleCollectionPlace().equals(TestCollectionPlaceEnum.HOME)) {
+                logger.warn("Cannot update report for patient whose sample is not collected!");
                 throw new LabException("Cannot update report for patient whose sample is not collected!");
+            }
+            Set<Long> userOrderTestIds = (order.getTests().isEmpty() || order.getTests() == null) ? new HashSet<>() : order.getTests().stream().map(test -> test.getId()).collect(Collectors.toSet());
+            Set<Long> userOrderPackageTestIds = order.getTestPackage() == null ? new HashSet<>() :  order.getTestPackage().getTests().stream().map(test -> test.getId()).collect(Collectors.toSet());
+            userOrderTestIds.addAll(userOrderPackageTestIds);
+            Set<Long> resultTestIds = resultDto.getTestIdsWithResults().stream().map(result -> result.getTestId()).collect(Collectors.toSet());
+            if(!userOrderTestIds.equals(resultTestIds)) {
+                logger.warn("Result Test ID's doesn't match with Patient Order test/package ID's");
+                throw new BadRequestException("Result Test ID's doesn't match with Patient Order test/package ID's");
             }
             Map<LabTestDto, String> parsedResultDto = resultDto.getTestIdsWithResults()
                     .stream()
