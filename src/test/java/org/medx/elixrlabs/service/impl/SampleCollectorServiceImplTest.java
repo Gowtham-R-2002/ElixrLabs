@@ -1,14 +1,17 @@
 package org.medx.elixrlabs.service.impl;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.medx.elixrlabs.util.GenderEnum;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,24 +53,33 @@ class SampleCollectorServiceImplTest {
     private SampleCollector sampleCollector;
     private List<SampleCollector> sampleCollectors;
     private String email;
+    private SampleCollectorDto sampleCollectorDto;
 
     @BeforeEach
     void setUp() {
         userDto = UserDto.builder()
-                .email("sabari@gmail.com")
-                .password("sabari@123")
+                .dateOfBirth(LocalDate.of(1999, 8, 7))
+                .email("samplecollector@gmail.com")
+                .password("sample@123")
+                .place(LocationEnum.VELACHERY)
+                .phoneNumber("1234567890")
+                .gender(GenderEnum.M)
                 .build();
 
         User user1 = User.builder()
                 .UUID("1234-5678")
-                .email("sabari@gmail.com")
+                .dateOfBirth(LocalDate.of(1999, 8, 7))
+                .email("samplecollector@gmail.com")
+                .place(LocationEnum.VELACHERY)
+                .phoneNumber("1234567890")
+                .gender(GenderEnum.M)
                 .isBlocked(false)
                 .build();
 
         User user2 = User.builder()
                 .UUID("1234-5678-9876")
-                .email("sabari@gmail.com")
-                .password("sabari@123")
+                .email("samplecollector@gmail.com")
+                .password("sample@123")
                 .isBlocked(false)
                 .build();
 
@@ -85,40 +97,66 @@ class SampleCollectorServiceImplTest {
 
         sampleCollectors = Arrays.asList(sampleCollector, sampleCollector2);
 
-        email = "sabari@gmail.com";
+        email = "samplecollector@gmail.com";
+
+        sampleCollectorDto = SampleCollectorDto.builder()
+                .place(LocationEnum.VELACHERY)
+                .dateOfBirth(LocalDate.of(1999, 8, 7))
+                .email("samplecollector@gmail.com")
+                .phoneNumber("1234567890")
+                .isVerified(true)
+                .gender(GenderEnum.M)
+                .id(1L)
+                .build();
 
     }
 
     @Test
-    void testCreateOrUpdateSampleCollector_positive() {
-        when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenReturn(sampleCollector);
+    void testCreateSampleCollector_positive() {
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)).thenReturn(new Role());
         when(sampleCollectorRepository.save(any(SampleCollector.class))).thenReturn(sampleCollector);
-        SampleCollectorDto result = sampleCollectorService.createOrUpdateSampleCollector(userDto);
-        assertNotNull(result);
+        SampleCollectorDto result = sampleCollectorService.createSampleCollector(userDto);
+        assertEquals(sampleCollectorDto, result);
         verify(sampleCollectorRepository).save(any(SampleCollector.class));
     }
 
     @Test
-    void testCreateOrUpdateSampleCollector_negative() {
-        when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenReturn(null);
+    void testCreateSampleCollector_negative() {
         when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
         when(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)).thenReturn(new Role());
-        when(sampleCollectorRepository.save(any(SampleCollector.class))).thenReturn(sampleCollector);
-        SampleCollectorDto result = sampleCollectorService.createOrUpdateSampleCollector(userDto);
-        assertNotNull(result);
+        when(sampleCollectorRepository.save(any(SampleCollector.class))).thenThrow(DataIntegrityViolationException.class);
+        Exception exception = assertThrows(DataIntegrityViolationException.class, () -> sampleCollectorService.createSampleCollector(userDto));
+        assertEquals("User already exists with email " + sampleCollectorDto.getEmail(), exception.getMessage());
     }
 
     @Test
-    void testCreateOrUpdateSampleCollector_exception() {
-        try (MockedStatic<SecurityContextHelper> mockedStatic = mockStatic(SecurityContextHelper.class)) {
-            mockedStatic.when(SecurityContextHelper::extractEmailFromContext).thenReturn(email);
-            when(sampleCollectorRepository.getSampleCollectorByEmail(anyString())).thenThrow(new RuntimeException("Database error"));
-            assertThrows(RuntimeException.class, () -> {
-                sampleCollectorService.createOrUpdateSampleCollector(userDto);
-            });
-        }
+    void testCreateSampleCollector_exception() {
+        when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)).thenReturn(new Role());
+        when(sampleCollectorRepository.save(any(SampleCollector.class))).thenThrow(RuntimeException.class);
+        Exception exception = assertThrows(LabException.class, () -> sampleCollectorService.createSampleCollector(userDto));
+        assertEquals("Error while saving SampleCollector with email: " + sampleCollectorDto.getEmail(), exception.getMessage());
+    }
+
+    @Test
+    void testUpdateSampleCollector_positive() {
+        when(sampleCollectorService.getSampleCollectorByEmail(sampleCollectorDto.getEmail())).thenReturn(sampleCollector);
+        when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)).thenReturn(new Role());
+        when(sampleCollectorRepository.save(any(SampleCollector.class))).thenReturn(sampleCollector);
+        SampleCollectorDto result = sampleCollectorService.updateSampleCollector(userDto);
+        assertEquals(sampleCollectorDto, result);
+    }
+
+    @Test
+    void testUpdateSampleCollector_exception() {
+        when(sampleCollectorService.getSampleCollectorByEmail(sampleCollectorDto.getEmail())).thenReturn(sampleCollector);
+        when(bCryptPasswordEncoder.encode(anyString())).thenReturn("encodedPassword");
+        when(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)).thenReturn(new Role());
+        when(sampleCollectorRepository.save(any(SampleCollector.class))).thenThrow(RuntimeException.class);
+        Exception exception = assertThrows(LabException.class, () -> sampleCollectorService.updateSampleCollector(userDto));
+        assertEquals("Error while updating SampleCollector with email: " + userDto.getEmail(), exception.getMessage());
     }
 
     @Test
@@ -214,13 +252,26 @@ class SampleCollectorServiceImplTest {
     }
 
     @Test
+    void testVerifySampleCollector_negative() {
+        when(sampleCollectorRepository.getUnVerifiedSampleCollectorByEmail(anyString())).thenReturn(null);
+        Exception exception = assertThrows(NoSuchElementException.class, () -> sampleCollectorService.verifySampleCollector(sampleCollectorDto.getEmail()));
+        assertEquals("No Sample Collector found for username : " + sampleCollectorDto.getEmail(), exception.getMessage());
+    }
+
+    @Test
     void testGetAllSampleCollectors_positive() {
         when(sampleCollectorRepository.findAll()).thenReturn(sampleCollectors);
         List<SampleCollectorDto> result = sampleCollectorService.getAllSampleCollectors();
 
         assertNotNull(result);
         assertEquals(2,result.size());
-        assertEquals("sabari@gmail.com", result.getFirst().getEmail());
+        assertEquals(sampleCollectorDto.getEmail(), result.getFirst().getEmail());
     }
 
+    @Test
+    void testGetAllSampleCollectors_negative() {
+        when(sampleCollectorRepository.findAll()).thenReturn(null);
+        Exception exception = assertThrows(NoSuchElementException.class, () -> sampleCollectorService.getAllSampleCollectors());
+        assertEquals("There is no Sample Collectors", exception.getMessage());
+    }
 }

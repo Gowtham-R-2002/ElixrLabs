@@ -53,7 +53,7 @@ public class TestPackageServiceImpl implements TestPackageService {
                                 .getLabTestById(testId)))
                 .toList();
         double price = tests.stream()
-                        .mapToDouble(LabTest :: getPrice)
+                .mapToDouble(LabTest::getPrice)
                 .sum();
         double offerPrice = price * 0.8;
         testPackage.setPrice(offerPrice);
@@ -109,7 +109,7 @@ public class TestPackageServiceImpl implements TestPackageService {
             logger.info("Successfully retrieved TestPackage with ID: {}", id);
         } catch (Exception e) {
             logger.warn("Failed to retrieve TestPackage by ID: {}", id);
-            throw new LabException("Error occurred while retrieving TestPackage" + id , e);
+            throw new LabException("Error occurred while retrieving TestPackage" + id, e);
         }
         if (testPackage == null) {
             logger.warn("TestPackage not found for ID: {}", id);
@@ -121,12 +121,12 @@ public class TestPackageServiceImpl implements TestPackageService {
     @Override
     public boolean deleteTestPackageById(long id) {
         logger.info("Deleting TestPackage by ID: {}", id);
+        TestPackage testPackage = testPackageRepository.findByIdAndIsDeletedFalse(id);
+        if (testPackage == null) {
+            logger.warn("TestPackage not found for deletion with ID: {}", id);
+            throw new NoSuchElementException("TestPackage not found with ID: " + id);
+        }
         try {
-            TestPackage testPackage = testPackageRepository.findByIdAndIsDeletedFalse(id);
-            if (testPackage == null) {
-                logger.warn("TestPackage not found for deletion with ID: {}", id);
-                throw new NoSuchElementException("TestPackage not found with ID: " + id);
-            }
             testPackage.setDeleted(true);
             testPackageRepository.save(testPackage);
             logger.info("Successfully marked TestPackage as deleted with ID: {}", id);

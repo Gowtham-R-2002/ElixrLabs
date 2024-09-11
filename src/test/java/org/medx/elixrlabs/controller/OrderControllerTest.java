@@ -143,7 +143,7 @@ public class OrderControllerTest {
         responseOrderDtos = List.of(firstResponseOrderDto, secondResponseOrderDto);
 
         requestTestResultDto = RequestTestResultDto.builder()
-                .testIdWithResult(List.of(RequestTestIdWithResultDto.builder()
+                .testIdsWithResults(List.of(RequestTestIdWithResultDto.builder()
                         .testId(1L)
                         .result("Good Health Condition")
                         .build()))
@@ -210,7 +210,7 @@ public class OrderControllerTest {
     @Test
     void testGetTestReport() {
         when(patientService.getTestReport(anyLong())).thenReturn(testResultDto);
-        ResponseEntity<TestResultDto> result = orderController.getTestReport(order.getId());
+        ResponseEntity<TestResultDto> result = orderController.getTestResult(order.getId());
         assertEquals(testResultDto, result.getBody());
         assertEquals(HttpStatus.OK, result.getStatusCode());
     }

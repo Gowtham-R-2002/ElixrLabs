@@ -111,7 +111,6 @@ public class SampleCollectorController {
             , @RequestParam(required = false, name = "date") LocalDate date) {
         LocationEnum place;
         try {
-
             place = sampleCollectorService.getSampleCollectorByEmail(SecurityContextHelper.extractEmailFromContext()).getUser().getPlace();
         } catch (Exception e) {
             throw new NullPointerException("Sample Collector is not verified !");
