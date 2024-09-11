@@ -41,12 +41,13 @@ public class UserDto {
 
     @NotBlank(message = "Phone number cannot be blank!")
     @NotNull(message = "Phone number is required!")
+    @Pattern(regexp = "^[0-9]+$")
     @Size(max = 10, min = 10, message = "Phone number must be exactly 10 digits long")
     private String phoneNumber;
 
-    @NotNull
+    @NotNull(message = "Gender is required!")
     private GenderEnum gender;
 
-    @NotNull
+    @NotNull(message = "Place is required!")
     private LocationEnum place;
 }
