@@ -89,6 +89,7 @@ public class AdminServiceImpl implements AdminService {
                 .place(adminDto.getPlace())
                 .roles(List.of(roleService.getRoleByName(RoleEnum.ROLE_ADMIN)))
                 .build();
+        user.setUUID(admin.getUser().getUUID());
         admin.setUser(user);
         logger.info("Attempting to update Admin with email : {}", adminDto.getEmail());
         Admin savedAdmin;
