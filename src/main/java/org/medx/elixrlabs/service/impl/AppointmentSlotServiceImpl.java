@@ -132,37 +132,37 @@ public class AppointmentSlotServiceImpl implements AppointmentSlotService {
             logger.warn("Slot booking failed for date: {}, time slot: {} - Slot filled", slotBookDto.getDate(), slotBookDto.getTimeSlot());
             throw new SlotException("Slot filled!");
         }
+        Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
+        ResponseCartDto cart = cartService.getCartByPatient();
+        if (cart.getTests().isEmpty() && cart.getTestPackage() == null) {
+            throw new NoSuchElementException("Cart is empty!");
+        }
+        AppointmentSlot appointmentSlot = AppointmentSlot.builder()
+                .dateSlot(slotBookDto.getDate())
+                .patient(patient)
+                .timeSlot(slotBookDto.getTimeSlot())
+                .location(slotBookDto.getLocation())
+                .testCollectionPlace(slotBookDto.getTestCollectionPlace())
+                .build();
+        Order order = Order.builder()
+                .slot(appointmentSlot)
+                .tests(cart.getTests().stream().map(LabTestMapper::toLabTest).collect(Collectors.toList()))
+                .paymentStatus(PaymentStatusEnum.PAID)
+                .patient(patient)
+                .sampleCollectionPlace(slotBookDto.getTestCollectionPlace())
+                .labLocation(slotBookDto.getLocation())
+                .testPackage(cart.getTestPackage() == null ? null : TestPackageMapper.toTestPackageFromResponseDto(cart.getTestPackage()))
+                .testStatus(TestStatusEnum.PENDING)
+                .price(cart.getPrice())
+                .orderDateTime(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("GMT+05:30"))))
+                .build();
         try {
-            Patient patient = patientService.getPatientByEmail(SecurityContextHelper.extractEmailFromContext());
-            ResponseCartDto cart = cartService.getCartByPatient();
-            if (cart.getTests().isEmpty() && cart.getTestPackage() == null) {
-                throw new NoSuchElementException("Cart is empty!");
-            }
-            AppointmentSlot appointmentSlot = AppointmentSlot.builder()
-                    .dateSlot(slotBookDto.getDate())
-                    .patient(patient)
-                    .timeSlot(slotBookDto.getTimeSlot())
-                    .location(slotBookDto.getLocation())
-                    .testCollectionPlace(slotBookDto.getTestCollectionPlace())
-                    .build();
-            Order order = Order.builder()
-                    .slot(appointmentSlot)
-                    .tests(cart.getTests().stream().map(LabTestMapper::toLabTest).collect(Collectors.toList()))
-                    .paymentStatus(PaymentStatusEnum.PAID)
-                    .patient(patient)
-                    .sampleCollectionPlace(slotBookDto.getTestCollectionPlace())
-                    .labLocation(slotBookDto.getLocation())
-                    .testPackage(cart.getTestPackage() == null ? null : TestPackageMapper.toTestPackageFromResponseDto(cart.getTestPackage()))
-                    .testStatus(TestStatusEnum.PENDING)
-                    .price(cart.getPrice())
-                    .orderDateTime(Calendar.getInstance(TimeZone.getTimeZone(ZoneId.of("GMT+05:30"))))
-                    .build();
             emailService.sendInvoice(order.getTests(), order.getTestPackage(), order.getPrice(), patient.getUser().getEmail(), order.getOrderDateTime());
-            AppointmentSlot savedAddpointment = appointmentSlotRepository.save(appointmentSlot);
+            AppointmentSlot savedAppointment = appointmentSlotRepository.save(appointmentSlot);
             logger.info("Slot booked successfully for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
             orderSuccessDto = orderService.createOrUpdateOrder(order);
             cartService.deleteCart();
-            savedAddpointment.setOrder(orderService.getOrder(orderSuccessDto.getId()));
+            savedAppointment.setOrder(orderService.getOrder(orderSuccessDto.getId()));
             appointmentSlotRepository.save(appointmentSlot);
         } catch (Exception e) {
             logger.error("Exception occurred while booking slot for date: {}, time slot: {}", slotBookDto.getDate(), slotBookDto.getTimeSlot());
