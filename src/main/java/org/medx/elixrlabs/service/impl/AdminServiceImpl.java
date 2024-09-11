@@ -2,6 +2,7 @@ package org.medx.elixrlabs.service.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.medx.elixrlabs.dto.AdminDto;
@@ -83,12 +84,17 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AdminDto updateAdmin(AdminDto adminDto) {
         Admin admin = getAdminByEmail(adminDto.getEmail());
+        if (null == admin) {
+            logger.warn("Admin not found with email : {}", adminDto.getEmail());
+            throw new NoSuchElementException("Admin not found with email : " + adminDto.getEmail());
+        }
         User user = User.builder()
                 .email(adminDto.getEmail())
                 .password(bCryptPasswordEncoder.encode(adminDto.getPassword()))
                 .place(adminDto.getPlace())
                 .roles(List.of(roleService.getRoleByName(RoleEnum.ROLE_ADMIN)))
                 .build();
+        user.setUUID(admin.getUser().getUUID());
         admin.setUser(user);
         logger.info("Attempting to update Admin with email : {}", adminDto.getEmail());
         Admin savedAdmin;
