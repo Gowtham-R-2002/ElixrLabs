@@ -85,6 +85,9 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
         try {
             result = sampleCollectorRepository.save(existingSampleCollector);
             logger.info("Successfully Updated existing SampleCollector with email: {}", userDto.getEmail());
+        } catch (DataIntegrityViolationException e) {
+            logger.warn("Admin already exists with username : {}", userDto.getEmail());
+            throw new DataIntegrityViolationException("Admin already exists with the email id : " + userDto.getEmail());
         } catch (Exception e) {
             logger.error("Error while updating SampleCollector with email: {}", userDto.getEmail());
             throw new LabException("Error while updating SampleCollector with email: " + userDto.getEmail(), e);

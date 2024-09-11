@@ -94,7 +94,10 @@ public class AdminServiceImpl implements AdminService {
         Admin savedAdmin;
         try {
             savedAdmin = adminRepository.save(admin);
-        }catch (Exception e) {
+        } catch (DataIntegrityViolationException e) {
+            logger.warn("Admin already exists with username : {}", adminDto.getEmail());
+            throw new DataIntegrityViolationException("Admin already exists with the email id : " + adminDto.getEmail());
+        } catch (Exception e) {
             logger.error("Error occurred while updating admin with email : {}", adminDto.getEmail());
             throw new LabException("Error occurred while updating admin with email : " + adminDto.getEmail(), e);
         }

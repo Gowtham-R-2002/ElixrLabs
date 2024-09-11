@@ -25,17 +25,17 @@ import org.medx.elixrlabs.util.LocationEnum;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    @NotNull
-    @NotBlank
+    @NotNull(message = "Email is required !")
+    @NotBlank(message = "Email must not be blank !")
     @Email(regexp = "^[a-zA-Z]+[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9]+(\\.[a-z]+)+$", message = "Enter a valid email address ! Eg : user@example.com")
     private String email;
 
-    @NotNull
-    @NotBlank
-    @Length(min = 6, max = 15)
+    @NotNull(message = "Password is required!")
+    @NotBlank(message = "Password cannot be blank!")
+    @Length(min = 6, max = 15, message = "Password must contain max 15 characters and min 6 characters !")
     private String password;
 
-    @NotNull
+    @NotNull(message = "Date of birth is required!")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
