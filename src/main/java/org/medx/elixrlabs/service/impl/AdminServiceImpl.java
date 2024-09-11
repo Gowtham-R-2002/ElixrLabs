@@ -117,8 +117,8 @@ public class AdminServiceImpl implements AdminService {
         List<Admin> admins = adminRepository.findAll();
         return admins.stream().collect(Collectors
                 .toMap(
-                        x -> x.getUser().getEmail(),
-                        x -> (x.isDeleted() ? "Deleted" : "Not Deleted")
+                        x -> ("ID + " + x.getId() + " ") +  x.getUser().getEmail(),
+                        x -> ("Place : " + x.getUser().getPlace() + " ") + (x.isDeleted() ? "Deleted" : "Not Deleted")
                 )
         );
     }
