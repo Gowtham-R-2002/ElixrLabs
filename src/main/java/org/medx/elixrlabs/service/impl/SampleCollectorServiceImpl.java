@@ -76,6 +76,10 @@ public class SampleCollectorServiceImpl implements SampleCollectorService {
     public SampleCollectorDto updateSampleCollector(UserDto userDto) {
         logger.info("Attempting to update SampleCollector for email: {}", userDto.getEmail());
         SampleCollector existingSampleCollector = getSampleCollectorByEmail(userDto.getEmail());
+        if (null == existingSampleCollector) {
+            logger.warn("No sample collector found for email : {}", userDto.getEmail());
+            throw new NoSuchElementException("No sample collector found for email : " + userDto.getEmail());
+        }
         User user = UserMapper.toUser(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setRoles(List.of(roleService.getRoleByName(RoleEnum.ROLE_SAMPLE_COLLECTOR)));

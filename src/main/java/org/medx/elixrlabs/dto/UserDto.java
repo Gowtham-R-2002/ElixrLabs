@@ -39,9 +39,9 @@ public class UserDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
-    @NotBlank
-    @NotNull
-    @Size(max = 10, min = 10)
+    @NotBlank(message = "Phone number cannot be blank!")
+    @NotNull(message = "Phone number is required!")
+    @Size(max = 10, min = 10, message = "Phone number must be exactly 10 digits long")
     private String phoneNumber;
 
     @NotNull
