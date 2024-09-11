@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import org.medx.elixrlabs.dto.LabTestDto;
@@ -44,6 +45,9 @@ public class LabTestServiceImpl implements LabTestService {
             LabTest savedLabTest = labTestRepository.save(labTest);
             logger.info("Lab test created/updated successfully with id: {}", savedLabTest.getId());
             return LabTestMapper.toRetrieveLabTestDto(savedLabTest);
+        } catch (DataIntegrityViolationException e) {
+            logger.warn("Test with name : {} already exists !", labTestDto.getName());
+            throw new DataIntegrityViolationException("Test with name : " +labTestDto.getName() + " already exists !");
         } catch (Exception e) {
             logger.warn("Error while creating/updating lab test: {}", labTestDto.getName());
             throw new LabException("Error while creating/updating lab test: " + labTestDto.getName(), e);
