@@ -155,7 +155,7 @@ public class PatientServiceImpl implements PatientService {
             logger.warn("Patient not found with email: {}", email);
             throw new NoSuchElementException("Patient not found with email: " + email);
         }
-        patient.setDeleted(true);
+        patient.getUser().setDeleted(true);
         try {
             patientRepository.save(patient);
             logger.info("Successfully deleted the patient with Id: {}", email);

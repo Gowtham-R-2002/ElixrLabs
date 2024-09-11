@@ -20,6 +20,7 @@ import org.medx.elixrlabs.util.LocationEnum;
 @Data
 @Builder
 public class AdminDto {
+    private Long id;
     @NotNull(message = "Email field is required!")
     @NotBlank(message = "Email must not be blank!")
     @Email(regexp = "^[a-zA-Z]+[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9]+(\\.[a-z]+)+$", message = "Enter a valid email address ! Eg : user@example.com")

@@ -107,7 +107,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void deleteAdmin(RequestUserNameDto userNameDto) {
         Admin admin = getAdminByEmail(userNameDto.getEmail());
-        admin.setDeleted(true);
+        admin.getUser().setDeleted(true);
         adminRepository.save(admin);
     }
 
@@ -117,7 +117,7 @@ public class AdminServiceImpl implements AdminService {
         List<Admin> admins = adminRepository.findAll();
         return admins.stream().collect(Collectors
                 .toMap(
-                        x -> ("ID + " + x.getId() + " ") +  x.getUser().getEmail(),
+                        x -> ("ID : " + x.getId() + " ") +  x.getUser().getEmail(),
                         x -> ("Place : " + x.getUser().getPlace() + " ") + (x.isDeleted() ? "Deleted" : "Not Deleted")
                 )
         );
