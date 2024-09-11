@@ -32,6 +32,8 @@ public class UserDto {
 
     @NotNull(message = "Password is required!")
     @NotBlank(message = "Password cannot be blank!")
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{6,}",
+            message = "Password must contain atleast one uppercase character, one lowercase character, one symbol and a number")
     @Length(min = 6, max = 15, message = "Password must contain max 15 characters and min 6 characters !")
     private String password;
 
