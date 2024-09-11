@@ -31,7 +31,7 @@ public class LabTestDto {
     @NotBlank
     private String description;
 
-    @Min(value = 500, message = "Must be greater than 500")
+    @Min(value = 50, message = "Must be greater than 50")
     private double price;
 
     @NotNull
