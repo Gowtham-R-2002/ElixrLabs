@@ -5,12 +5,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-import org.medx.elixrlabs.dto.AdminDto;
-import org.medx.elixrlabs.dto.RequestUserNameDto;
-import org.medx.elixrlabs.exception.LabException;
-import org.medx.elixrlabs.model.User;
-import org.medx.elixrlabs.service.RoleService;
-import org.medx.elixrlabs.util.RoleEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +12,15 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.medx.elixrlabs.dto.AdminDto;
+import org.medx.elixrlabs.dto.RequestUserNameDto;
+import org.medx.elixrlabs.exception.LabException;
 import org.medx.elixrlabs.model.Admin;
+import org.medx.elixrlabs.model.User;
 import org.medx.elixrlabs.repository.AdminRepository;
-import org.medx.elixrlabs.repository.RoleRepository;
 import org.medx.elixrlabs.service.AdminService;
+import org.medx.elixrlabs.service.RoleService;
+import org.medx.elixrlabs.util.RoleEnum;
 
 /**
  * <p>
@@ -114,13 +113,24 @@ public class AdminServiceImpl implements AdminService {
     public void deleteAdmin(RequestUserNameDto userNameDto) {
         Admin admin = getAdminByEmail(userNameDto.getEmail());
         admin.getUser().setDeleted(true);
-        adminRepository.save(admin);
+        try {
+            adminRepository.save(admin);
+        } catch (Exception e) {
+            logger.error("Error while removing admin of email {}", userNameDto.getEmail());
+            throw new LabException("Unable to delete admin with email " + userNameDto.getEmail(), e);
+        }
     }
 
 
     @Override
     public Map<String, String> getAllAdmins() {
-        List<Admin> admins = adminRepository.findAll();
+        List<Admin> admins;
+        try {
+            admins = adminRepository.findAll();
+        } catch (Exception e) {
+            logger.error("Error while fetching all the admins");
+            throw new LabException("Unable to fetch all the admins", e);
+        }
         return admins.stream().collect(Collectors
                 .toMap(
                         x -> ("ID : " + x.getId() + " ") +  x.getUser().getEmail(),

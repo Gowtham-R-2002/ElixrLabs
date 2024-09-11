@@ -360,8 +360,8 @@ public class PatientServiceTest {
     void getPatientByEmail_failure_patientNotFound() {
         String email = "nonexistent@example.com";
         when(patientRepository.findByEmailAndIsDeletedFalse(email)).thenReturn(null);
-        Patient result = patientService.getPatientByEmail(email);
-        assertNull(result);
+        Exception exception = assertThrows(NoSuchElementException.class,() -> patientService.getPatientByEmail(email));
+        assertEquals("Patient not found while retrieving with email: " + email, exception.getMessage());
         verify(patientRepository, times(1)).findByEmailAndIsDeletedFalse(email);
     }
 
