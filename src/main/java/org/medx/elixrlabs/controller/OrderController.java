@@ -45,7 +45,7 @@ public class OrderController {
      * @return A list of {@link ResponseOrderDto} associated with the patient.
      */
     @RolesAllowed("PATIENT")
-    @GetMapping()
+    @GetMapping("me")
     public ResponseEntity<List<ResponseOrderDto>> getOrdersOfPatient() {
         return new ResponseEntity<>(patientService.getOrders(), HttpStatus.OK);
     }
@@ -67,7 +67,7 @@ public class OrderController {
      * @return A list of {@link ResponseOrderDto} containing order details.
      */
     @RolesAllowed("ADMIN")
-    @GetMapping("all")
+    @GetMapping
     public ResponseEntity<List<ResponseOrderDto>> getOrders() {
         logger.debug("Getting the orders");
         return new ResponseEntity<>(labService.getOrders(), HttpStatus.OK);

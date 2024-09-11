@@ -61,7 +61,7 @@ public class SampleCollectorController {
      * @param userDto {@link UserDto} The DTO containing sample collector data.
      * @return the updated sample collector DTO with HTTP status 202 ACCEPTED.
      */
-    @PutMapping
+    @PutMapping("me")
     public ResponseEntity<SampleCollectorDto> updateSampleCollector(@Valid @RequestBody UserDto userDto) {
         return new ResponseEntity<>(sampleCollectorService.updateSampleCollector(userDto), HttpStatus.ACCEPTED);
     }
@@ -71,7 +71,7 @@ public class SampleCollectorController {
      *
      * @return boolean value with HTTP status 204 NO CONTENT.
      */
-    @DeleteMapping
+    @DeleteMapping("me")
     public ResponseEntity<Boolean> deleteSampleCollector() {
         return new ResponseEntity<>(sampleCollectorService.deleteSampleCollector(), HttpStatus.NO_CONTENT);
     }
@@ -82,7 +82,7 @@ public class SampleCollectorController {
      * @param id The ID of the appointment to be assigned
      * @return The status code 202 Accepted
      */
-    @PatchMapping("/appointments/{id}")
+    @PatchMapping("me/appointments/{id}")
     public ResponseEntity<Void> assignAppointment(@PathVariable Long id) {
         appointmentSlotService.assignSampleCollectorToAppointment(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -94,7 +94,7 @@ public class SampleCollectorController {
      * @param id The ID of the appointment
      * @return The status code of 202 Accepted
      */
-    @PatchMapping("/appointments/{id}/status")
+    @PatchMapping("me/appointments/{id}/status")
     public ResponseEntity<Void> markSampleCollected(@PathVariable Long id) {
         appointmentSlotService.markSampleCollected(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -105,7 +105,7 @@ public class SampleCollectorController {
      *
      * @return {@link List<AppointmentDto>} Appointments that are assigned to the currently logged in sample collector
      */
-    @GetMapping("appointments")
+    @GetMapping("me/appointments")
     public ResponseEntity<List<AppointmentDto>> getAppointments(@RequestParam(required = false, name = "assigned") Boolean isAssigned
             , @RequestParam(required = false, name = "collected") Boolean isCollected
             , @RequestParam(required = false, name = "date") LocalDate date) {

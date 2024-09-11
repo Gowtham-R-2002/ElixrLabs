@@ -93,7 +93,7 @@ public class SuperAdminController {
      * @return a {@link ResponseEntity} with an HTTP status of OK (200) when the user is
      *         successfully blocked.
      */
-    @PatchMapping("admins")
+    @PatchMapping
     public ResponseEntity<HttpStatus.Series> blockUser(@Valid @RequestBody RequestUserNameDto requestUserNameDto) {
         superAdminService.blockUser(requestUserNameDto);
         return new ResponseEntity<>(HttpStatus.OK);

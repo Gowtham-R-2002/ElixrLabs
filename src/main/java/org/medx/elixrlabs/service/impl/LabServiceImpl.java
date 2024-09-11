@@ -3,6 +3,7 @@ package org.medx.elixrlabs.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -116,6 +117,10 @@ public class LabServiceImpl implements LabService {
     @Override
     public TestResultDto getTestResultByOrder(long orderId) {
         Order order = orderService.getOrder(orderId);
+        if(order.getTestStatus().equals(TestStatusEnum.PENDING) || order.getTestStatus().equals(TestStatusEnum.IN_PROGRESS)) {
+            logger.warn("Test Result not available yet ! for order ID : {}", orderId );
+            throw new NoSuchElementException("Test Result not available yet ! for order ID : " + orderId);
+        }
         return TestResultMapper.toTestResultDto(order.getTestResult());
     }
 

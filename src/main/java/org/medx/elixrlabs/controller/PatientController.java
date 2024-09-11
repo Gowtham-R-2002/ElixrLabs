@@ -88,7 +88,7 @@ public class PatientController {
      * @param userDto Contains the updated data for the patient.
      * @return The updated {@link ResponsePatientDto}.
      */
-    @PutMapping
+    @PutMapping("me")
     public ResponseEntity<ResponsePatientDto> updatePatient(@Valid @RequestBody UserDto userDto) {
         ResponsePatientDto savedUser = patientService.updatePatient(userDto);
         return new ResponseEntity<>(savedUser, HttpStatus.OK);
@@ -99,7 +99,7 @@ public class PatientController {
      *
      * @return A response indicating the deletion status.
      */
-    @DeleteMapping
+    @DeleteMapping("me")
     public ResponseEntity<HttpStatus.Series> deletePatient() {
         patientService.deletePatient();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -111,7 +111,7 @@ public class PatientController {
      * @param cartDto Contains the data for the tests or packages to be added to the cart.
      * @return The updated {@link ResponseCartDto}.
      */
-    @PutMapping("carts")
+    @PutMapping("me/carts")
     public ResponseEntity<ResponseCartDto> addTestOrPackagesToCart(@Valid @RequestBody CartDto cartDto) {
         return new ResponseEntity<>(cartService.addTestsOrPackagesToCart(cartDto), HttpStatus.ACCEPTED);
     }
@@ -121,7 +121,7 @@ public class PatientController {
      *
      * @return The {@link ResponseCartDto} for the patient.
      */
-    @GetMapping("carts")
+    @GetMapping("me/carts")
     public ResponseEntity<ResponseCartDto> getCart() {
         return new ResponseEntity<>(cartService.getCartByPatient(), HttpStatus.OK);
     }
@@ -131,7 +131,7 @@ public class PatientController {
      *
      * @return A response indicating the removal status.
      */
-    @DeleteMapping("carts")
+    @DeleteMapping("me/carts")
     public ResponseEntity<HttpStatus.Series> removeTestsOrPackageFromCart() {
         cartService.deleteCart();
         return new ResponseEntity<>(HttpStatus.OK);
