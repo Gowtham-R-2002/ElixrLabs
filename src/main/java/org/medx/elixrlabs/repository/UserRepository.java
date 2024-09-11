@@ -18,7 +18,7 @@ import org.medx.elixrlabs.model.User;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    String getUserWithRole = "FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email AND u.isDeleted = false";
+    String getUserWithRole = "FROM User u LEFT JOIN FETCH u.roles WHERE u.email = :email AND u.isDeleted = false AND u.isBlocked = false";
 
     @Query(getUserWithRole)
     User findByEmailWithRole(@Param("email") String email);
