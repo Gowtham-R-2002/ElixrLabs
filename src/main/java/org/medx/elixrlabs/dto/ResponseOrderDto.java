@@ -23,10 +23,18 @@ import org.medx.elixrlabs.util.TestStatusEnum;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResponseOrderDto {
+
     @NotNull
     private long id;
+
     private List<ResponseTestInCartDto> tests;
+
     private ResponseTestPackageDto testPackageDto;
+
     @NotNull
     private TestStatusEnum testStatus;
+
+    @NotNull
+    private String address;
+
 }

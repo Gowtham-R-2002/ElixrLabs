@@ -21,13 +21,21 @@ import org.medx.elixrlabs.util.TestCollectionPlaceEnum;
 @Data
 @Builder
 public class SlotBookDto {
+
     @NotNull
     private LocationEnum location;
+
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+
     @TimeSlot
     private String timeSlot;
+
     @NotNull
     private TestCollectionPlaceEnum testCollectionPlace;
+
+    @NotNull
+    private String address;
+
 }
