@@ -1,11 +1,16 @@
 package org.medx.elixrlabs.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import org.medx.elixrlabs.dto.LabTestDto;
+import org.medx.elixrlabs.dto.ResponseTestPackageDto;
+import org.medx.elixrlabs.exception.BadRequestException;
 import org.medx.elixrlabs.model.Patient;
+import org.medx.elixrlabs.model.TestPackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +65,17 @@ public class CartServiceImpl implements CartService {
             userCart = Cart.builder()
                     .patient(patient)
                     .build();
+        }
+        if ((cartDto.getTestIds() != null && !cartDto.getTestIds().isEmpty() && (cartDto.getTestPackageId() != null))) {
+            ResponseTestPackageDto responseTestPackageDto = testPackageService.getTestPackageById(cartDto.getTestPackageId());
+            List<Long> testIds = responseTestPackageDto.getLabTests().stream().map(LabTestDto::getId).toList();
+            cartDto.getTestIds().stream().filter(testId -> {
+                int count = Collections.frequency(testIds, testId);
+                if(count == 1) {
+                    throw new BadRequestException("Test Package contains the test with ID : " + testId + "! Remove the test and add to cart again");
+                }
+                return false;
+            }).collect(Collectors.toSet());
         }
         if (cartDto.getTestIds() != null) {
             List<LabTest> tests = cartDto.getTestIds()
